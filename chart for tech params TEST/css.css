@@ -1,0 +1,19 @@
+.legend {
+    font-size: 13px;
+    line-height: 10px;
+}
+
+.legend table {
+    border-spacing: 0px;
+    border-collapse: separate;
+}
+
+.mouse-events .flot-overlay {
+    cursor: crosshair;
+}
+
+.tb-legend-keys td:first-child span {
+    height: 16px!important;
+    width: 33px!important;
+    border-radius: 5px;
+}
