@@ -1,6 +1,5 @@
 self.onInit = function() {
     self.ctx.flot = new TbFlot(self.ctx);
-    const entityName = self.ctx.datasources[0].entityName
     self.ctx.updateWidgetParams();
 }
 
@@ -21,7 +20,6 @@ self.onDataUpdated = function() {
             lastValues.push({
                 name: label,
                 value: +lastValue[1].toFixed(2)
-
             })
         } else if(obj.data.length < 1) {
             lastValues.push({
@@ -33,8 +31,10 @@ self.onDataUpdated = function() {
 
     lastValues.forEach(val => {
         arrayLabels.forEach((label, index) => {
-            if (val.name.trim() == label.innerHTML.trim()) {
-                label.innerHTML += `| ${val.value}`
+            const html = label.innerHTML.slice(0, label.innerHTML.lastIndexOf('|')).trim()
+
+            if (val.name.trim() == html) {
+                label.innerHTML = `${html} | ${val.value}`
             }
         })
     })

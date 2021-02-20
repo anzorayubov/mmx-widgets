@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f16758c5-e835-40eb-982c-d94bdb0a97aa" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chart for tech params TEST/css.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chart for tech params TEST/html.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chart for tech params TEST/script.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/chart for tech params TEST/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/chart for tech params TEST/script.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +33,12 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/chart for tech params TEST" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="vue.rearranger.settings.migration" value="true" />
@@ -54,7 +57,8 @@
       <option name="presentableId" value="Default" />
       <updated>1613580091105</updated>
       <workItem from="1613580092275" duration="86000" />
-      <workItem from="1613811695806" duration="171000" />
+      <workItem from="1613811695806" duration="225000" />
+      <workItem from="1613831338344" duration="626000" />
     </task>
     <servers />
   </component>
@@ -71,5 +75,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
