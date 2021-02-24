@@ -6,17 +6,15 @@ self.onInit = function() {
 self.onDataUpdated = function() {
     self.ctx.flot.update();
 
-    const tbKeys = document.querySelectorAll('.tb-legend-keys td:last-child')
     const lastValues = []
     const arrayLabels = document.querySelectorAll('.tb-legend-keys td:nth-child(2)')
     const array = self.ctx.data
 
-    array.forEach((obj, index) => {
+    array.forEach((obj) => {
         const lastValue = obj.data[obj.data.length-1]
         const label = obj.dataKey.label.trim()
 
         if (lastValue) {
-            let innerHTML = arrayLabels[index].innerHTML
             lastValues.push({
                 name: label,
                 value: +lastValue[1].toFixed(2)
@@ -30,15 +28,13 @@ self.onDataUpdated = function() {
     })
 
     lastValues.forEach(val => {
-        arrayLabels.forEach((label, index) => {
+        arrayLabels.forEach((label) => {
             const html = label.innerHTML.slice(0, label.innerHTML.lastIndexOf('|')).trim()
-
-            if (val.name.trim() == html) {
+            if (val.name.trim() === html) {
                 label.innerHTML = `${html} | ${val.value}`
             }
         })
     })
-
 }
 
 self.onResize = function() {

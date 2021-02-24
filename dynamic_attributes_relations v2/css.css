@@ -1,0 +1,172 @@
+.parameter_name {
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+}
+.parameter_name span {
+    font-size: 14px;
+    text-align: right;
+    color: #43C6C9;
+}
+.productLabel {
+    margin-top: 10px;
+}
+.column {
+    display: flex;
+    flex-direction: column;
+    color: gray;
+
+}
+.column span {
+    font-size: 14px;
+}
+
+.headerTableAttrs {
+    margin: 5px 20px 16px 20px;
+    height: 30px;
+    display: flex;
+    justify-content: space-around;
+    border-radius: 10px;
+}
+.qtyErrorsNowText {
+    font-size: 12px;
+}
+.entityImg {
+    text-align:center;
+    width: 36%;
+}
+
+.headerTableAttrs > div {
+    width: 50%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    border: 1px solid #eee;
+    transition: background-color 300ms;
+}
+.headerTableAttrs>div:nth-child(1) {
+    border-radius: 10px 0 0 10px;
+    border-right: 1px solid #816e6e;
+}
+
+.headerTableAttrs>div:nth-child(2) {
+    border-radius: 0 10px 10px 0;
+}
+.entityDiv{
+    background: #ffffff;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    /*width: 98%;*/
+    /*max-height: 200px;*/
+    padding-bottom: 8px;
+}
+
+.entityNameHeader {
+    border-radius: 20px 20px 0 0;
+    background-color: #EAEAEA;
+    height: 35px;
+
+}
+.entityNameHeader:hover {
+    background-color: rgb(208 209 234);
+}
+
+h4 {
+    margin: 0 auto;
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 30px;
+    text-transform: uppercase;
+}
+h4 i {
+    margin-right: 6px;
+}
+
+.qtyErrorsNow {
+    background-color: #fff;
+    color: #fff;
+    border-left: none!important;
+}
+
+.nowStatus {
+    border-right: none!important;
+}
+
+.nowStatusImg img {
+    margin-left:5px ;
+}
+
+.analitycButton{
+    padding: 0;
+    border: none;
+    border-radius: 20px;
+    margin-left: 5%;
+    background-color: #ffe630;
+    width: 140px;
+    height: 30px;
+    font-size: 0.7em;
+    font-weight: 600;
+}
+
+.reportButton{
+    padding: 0;
+    border: none;
+    border-radius: 20px;
+    background-color: #ffe630;
+    width: 140px;
+    height: 30px;
+    font-size: 0.7em;
+    font-weight: 600;
+    position: absolute; right: 5%;
+}
+
+.spacer{
+
+}
+.leftColumn{
+    font-weight: bold;
+    width: 50%;
+    font-size: 0.7em;
+}
+.rightColumn{
+    font-size: 0.7em;
+    text-align: right;
+    width: 50%;
+}
+
+.mainImg {
+    max-width: 84%;
+    height: auto;
+}
+
+h5 {
+    margin: 5px 0;
+    text-align: center;
+}
+.box {
+    display: flex;
+    justify-content: space-evenly;
+    margin: 0 auto;
+    position: relative;
+    width: 90%;
+}
+.box div {
+    width: 50%;
+    padding: 0 5px;
+}
+
+.entityDiv .box>span {
+    color: gray;
+    font-weight: bold;
+    font-size: 15px;
+    position: absolute;
+    bottom: -19px;
+    width: 184px;
+    left: 45%;
+}
+
+#inWork {
+    display: flex;
+    flex-direction: column;
+}
+
