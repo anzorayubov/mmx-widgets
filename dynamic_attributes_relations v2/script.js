@@ -19,7 +19,6 @@ function getData() {
         }
         entities[name][key] = value
     })
-    // log('entities', entities)
     drawTable(entities)
 }
 
@@ -83,20 +82,20 @@ function msToTime(duration) {
     minutes = (minutes < 10) ? "0" + minutes : minutes;
     seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-    hours = hours === '00' ? 0 : hours
+    hours = hours == '00' ? 0 : hours
 
-    if (days === '' && hours !== 0) {
-        return `${hours.toString().substr(0,1) === '0' ?
+    if (days === '' && hours != 0) {
+        return `${hours.toString().substr(0,1) == '0' ?
             hours.toString().slice(1) :
             hours}<span style="font-size:12px">ч:</span>${minutes}<span style="font-size:12px">м</span>`
-    } else if(hours === '0') {
-        return `${minutes.toString().substr(0,1) === 0 ?
+    } else if(hours == '0') {
+        return `${minutes.toString().substr(0,1) == 0 ?
             minutes.toString().slice(1) :
             minutes}<span style="font-size:12px">м</span>`
     } else {
-        return `${days}<span style="font-size:12px">д:</span>${hours.toString().substr(0,1) === '0' ?
+        return `${days}<span style="font-size:12px">д:</span>${hours.toString().substr(0,1) == '0' ?
             hours.toString().slice(1) :
-            hours}<span style="font-size:12px">ч:</span>${minutes.toString().substr(0,1) === 0 ?
+            hours}<span style="font-size:12px">ч:</span>${minutes.toString().substr(0,1) == 0 ?
             minutes.toString().slice(1) :
             minutes}<span style="font-size:12px">м</span>`
     }
@@ -149,10 +148,10 @@ function drawTable(data){
 
                 tableForOEE += `
               <span class="parameter_name">${
-                    key==='oee' ? 'ОЕЕ':
-                        key==='oee_availability' ? 'Доступность':
-                            key==='oee_productivity' ? 'Производительность':
-                                key==='oee_quality' ? 'Качество': key}
+                    key=='oee' ? 'ОЕЕ':
+                        key=='oee_availability' ? 'Доступность':
+                            key=='oee_productivity' ? 'Производительность':
+                                key=='oee_quality' ? 'Качество': key}
                   <span>
                         &nbsp;${value.value == null ?
                     'н&nbsp;/&nbsp;д' : value.value == undefined ?
@@ -163,20 +162,20 @@ function drawTable(data){
               <span id="inWork">
               `
                 for (let key in value) {
-                    if(key ==='value' || key==='trend')
+                    if(key =='value' || key=='trend')
                         continue;
                     if(value[key] == null)
                         value[key] = 0
                     tableForOEE += `
                     <span style="font-size: 12px; color: #c1c0c0;">${
-                        key==='TP' ? 'Факт':
-                            key==='DP' ? 'Брак':
-                                key==='OT' ? 'Работа':
-                                    key==='NOT' ? 'Простой':
-                                        key==='TPP' ? 'План':
-                                            key==='GP' ? 'Норма':
-                                                key==='good' ? 'Норма':
-                                                    key==='bad' ? 'Брак':
+                        key=='TP' ? 'Факт':
+                            key=='DP' ? 'Брак':
+                                key=='OT' ? 'Работа':
+                                    key=='NOT' ? 'Простой':
+                                        key=='TPP' ? 'План':
+                                            key=='GP' ? 'Норма':
+                                                key=='good' ? 'Норма':
+                                                    key=='bad' ? 'Брак':
                                                         key } : ${(key==='OT' || key==='NOT') ? msToTime(value[key]*60000) : value[key]}</span>`
                 }
                 tableForOEE += `</span>`
