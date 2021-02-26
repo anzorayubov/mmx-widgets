@@ -2,6 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f16758c5-e835-40eb-982c-d94bdb0a97aa" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Dynamic attributes v2 telemetria/css.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Dynamic attributes v2 telemetria/html.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Dynamic attributes v2 telemetria/script.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dynamic_attributes_relations v2 telemetria/css.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dynamic_attributes_relations v2 telemetria/html.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dynamic_attributes_relations v2 telemetria/script.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chart for tech params TEST/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/chart for tech params TEST/script.js" afterDir="false" />
     </list>
@@ -31,7 +37,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/chart for tech params TEST" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -45,6 +51,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\AyubovAI\Documents\GitHub\mmx-widgets" />
       <recent name="C:\Users\AyubovAI\Documents\GitHub\mmx-widgets\chart for tech params TEST" />
     </key>
   </component>
@@ -58,7 +65,8 @@
       <updated>1613580091105</updated>
       <workItem from="1613580092275" duration="86000" />
       <workItem from="1613811695806" duration="225000" />
-      <workItem from="1613831338344" duration="626000" />
+      <workItem from="1613831338344" duration="727000" />
+      <workItem from="1614348559016" duration="133000" />
     </task>
     <servers />
   </component>

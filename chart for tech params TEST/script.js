@@ -33,7 +33,7 @@ self.onDataUpdated = function() {
         arrayLabels.forEach((label, index) => {
             const html = label.innerHTML.slice(0, label.innerHTML.lastIndexOf('|')).trim()
 
-            if (val.name.trim() == html) {
+            if (val.name.trim() === html) {
                 label.innerHTML = `${html} | ${val.value}`
             }
         })

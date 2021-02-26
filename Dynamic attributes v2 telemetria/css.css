@@ -1,0 +1,141 @@
+#headerTableAttrs {
+    margin: 10px 16px;
+    height: 38px;
+    display: flex;
+    justify-content: space-around;
+    border-radius: 10px;
+}
+
+#headerTableAttrs > div {
+    width: 50%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    height: 32px;
+    border: 1px solid #eee;
+    transition: background-color 300ms;
+}
+#headerTableAttrs>div:nth-child(1) {
+    border-radius: 10px 0 0 10px;
+    border-right: 1px solid #eee;
+}
+
+#headerTableAttrs>div:nth-child(2) {
+    border-radius: 0 10px 10px 0;
+}
+
+.qtyErrorsNow {
+    background-color: #fff;
+    color: #fff;
+    border-left: none!important;
+}
+.nowStatus {
+    border-right: none!important;
+    color: #fff;
+}
+.nowStatusImg img {
+    margin-left:5px ;
+}
+
+#img {
+    text-align: center;
+}
+
+.mainImg {
+    max-width: 90%;
+    /*margin-left: 5%;*/
+    height: 280px;
+
+    /*box-shadow: 2px 2px 2px #dcdcdc;*/
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+}
+
+
+/*.img{*/
+/*    margin: 10px;*/
+/*    padding: 0;*/
+/*    position: relative;*/
+/*    width:64px;*/
+/*    height:64px;*/
+/*    background: #c2c2c2;*/
+/*    border: 1px solid #000;*/
+/*    border-radius:3px;*/
+/*}*/
+
+/*.img img{*/
+/*    position: absolute;*/
+/*    left:50%;*/
+/*    top:50%;*/
+/*    transform: translate(-50%, -50%);*/
+/*    max-width:100%;*/
+/*    max-height: 100%;*/
+/*}*/
+
+
+
+#qtyErrorsNowText {
+    font-size: 12px;
+}
+
+.analitycButton{
+    padding: 0;
+    border: none;
+    border-radius: 20px;
+    margin-left: 5%;
+    background-color: #ffe630;
+    width: 140px;
+    height: 30px;
+    font-size: 0.7em;
+    font-weight: 600;
+}
+
+.reportButton{
+    padding: 0;
+    border: none;
+    border-radius: 20px;
+    background-color: #ffe630;
+    width: 140px;
+    height: 30px;
+    font-size: 0.7em;
+    font-weight: 600;
+    position: absolute; right: 5%;
+}
+
+.leftColumn{
+    font-weight: bold;
+    width: 50%;
+    font-size: 0.7em;
+}
+
+.rightColumn{
+    font-size: 0.7em;
+    text-align: right;
+    width: 50%;
+}
+
+
+table {
+    margin-left: 5%;
+    margin-right: 5%;
+    max-width: 90%;
+    border-collapse: collapse;
+    color: gray;
+}
+
+#info, #parameters, #oee {
+    width: 90%;
+}
+
+h5 {
+    margin: 5px 0;
+    text-align: center;
+}
+
+#inWork td:nth-child(odd) {
+    width: 10px;
+}
+#inWork td:nth-child(even) {
+    width: 15px;
+}
+
