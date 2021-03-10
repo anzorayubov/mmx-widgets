@@ -4,7 +4,7 @@ let timeFrom
 
 function declOfNum(number, titles) {
     cases = [2, 0, 1, 1, 1, 2];
-    return titles[ (number%100>4 && number%100<20)? 2 : cases[(number%10<5)?number%10:5] ];
+    return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
 }
 
 function getData() {
@@ -12,30 +12,35 @@ function getData() {
     const entities = {}
 
     ctx.data.forEach((element) => {
-        if(element.datasource.entityType !== 'DEVICE')
+        if (element.datasource.entityType !== 'DEVICE')
             return
 
         const id = element.datasource.entityAliasId
         const name = element.datasource.name
         const key = element.dataKey.name
-        let value = element.data[element.data.length-1]?.[1]
-        try {value = JSON.parse(value) } catch (e) {}
+        let value = element.data[element.data.length - 1]?.[1]
+        try {
+            value = JSON.parse(value)
+        } catch (e) {
+        }
 
-        if(!entities[name]) {
-            entities[name] = { id, name }
+        if (!entities[name]) {
+            entities[name] = {id, name}
         }
         entities[name][key] = value
     })
 
 
-
-    for(let machine in entities) {
+    for (let machine in entities) {
         ctx.deviceService.findByName(machine).subscribe(device => {
-            ctx.attributeService.getEntityAttributes({id:device.id.id, entityType: 'DEVICE'}, 'SERVER_SCOPE', [
-                "imgBase64","factoryNumber","visibleAttributes", "statesList"]).subscribe(atributes => {
+            ctx.attributeService.getEntityAttributes({id: device.id.id, entityType: 'DEVICE'}, 'SERVER_SCOPE', [
+                "imgBase64", "factoryNumber", "visibleAttributes", "statesList"]).subscribe(atributes => {
                 atributes.forEach(({key, value}) => {
-                    try{value=JSON.parse(value)}catch(e){}
-                    entities[device.name][key]=value
+                    try {
+                        value = JSON.parse(value)
+                    } catch (e) {
+                    }
+                    entities[device.name][key] = value
                 })
                 drawTable(entities)
             })
@@ -90,11 +95,11 @@ function msToTime(duration) {
     hours = hours == '00' ? 0 : hours
 
     if (days === '' && hours != 0) {
-        return `${hours.toString().substr(0,1) == '0' ? hours.toString().slice(1) : hours}<span style="font-size:12px">ч:</span>${minutes}<span style="font-size:12px">м</span>`
-    } else if(hours == '0') {
-        return `${minutes.toString().substr(0,1) == 0 ? minutes.toString().slice(1) : minutes}<span style="font-size:12px">м</span>`
+        return `${hours.toString().substr(0, 1) == '0' ? hours.toString().slice(1) : hours}<span style="font-size:12px">ч:</span>${minutes}<span style="font-size:12px">м</span>`
+    } else if (hours == '0') {
+        return `${minutes.toString().substr(0, 1) == 0 ? minutes.toString().slice(1) : minutes}<span style="font-size:12px">м</span>`
     } else {
-        return `${days}<span style="font-size:12px">д:</span>${hours.toString().substr(0,1) == '0' ? hours.toString().slice(1) : hours}<span style="font-size:12px">ч:</span>${minutes.toString().substr(0,1) == 0 ? minutes.toString().slice(1) : minutes}<span style="font-size:12px">м</span>`
+        return `${days}<span style="font-size:12px">д:</span>${hours.toString().substr(0, 1) == '0' ? hours.toString().slice(1) : hours}<span style="font-size:12px">ч:</span>${minutes.toString().substr(0, 1) == 0 ? minutes.toString().slice(1) : minutes}<span style="font-size:12px">м</span>`
     }
 }
 
@@ -107,55 +112,55 @@ function drawTable(data) {
     var tableForOEE = ``
 
     const statesImgs = {
-        "0":`<img style="width: 11px;  margin: 4px 7px 0 0; " src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAgCAYAAAASYli2AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC8SURBVHgB7ZbBDcIwDEWdTtIRMiIbABPACkzQbgIbhA2MLYIaIvu3h/bmL6WK7JenNocmRBJmzjImGYW/0flITiBfm79GG61lR+bz1e5lMoSQT/okkCTphJAfZLxB/2XUIK/CKwAeRm2dl6+4GPtx91YhPjXQ3970e2dITX6gnRPCEIYwhCFshPLzvfUNqZ29RZDXCThnT9ZCyMvjCYBiCCF/yEE/g/68sbb0eO/LUoVGXi5Bpc6z9xqI/wA78ekPPbVOHwAAAABJRU5ErkJggg==">`,
+        "0": `<img style="width: 11px;  margin: 4px 7px 0 0; " src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAgCAYAAAASYli2AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC8SURBVHgB7ZbBDcIwDEWdTtIRMiIbABPACkzQbgIbhA2MLYIaIvu3h/bmL6WK7JenNocmRBJmzjImGYW/0flITiBfm79GG61lR+bz1e5lMoSQT/okkCTphJAfZLxB/2XUIK/CKwAeRm2dl6+4GPtx91YhPjXQ3970e2dITX6gnRPCEIYwhCFshPLzvfUNqZ29RZDXCThnT9ZCyMvjCYBiCCF/yEE/g/68sbb0eO/LUoVGXi5Bpc6z9xqI/wA78ekPPbVOHwAAAABJRU5ErkJggg==">`,
         "5": `<img style="width: 25px;  margin: 2px 5px 0 0; " src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAEaSURBVHgB7dfhDYIwEIbhbwRHYARHYARGYBQ30A1kA92AERyhIzhCbZMjNgqUwpXU+D1JE3+YO16VBAEiIiIiIiqMtfbgTuNOhV/lL94dY99a5CCfVu3OEcpGIrw7tLmh548lRitoIsK7QNNIxOC59bc8E9FBkyyas/pT2y1CljWREIMVdo2QhXUkpEei3SNk6TUS4u+TxTd9qRFJMSVFPOVCTGpMSRH+IqrgPaelMcVGpMQUH7EgpnfnIa/LjojETOmQy5YIpMV0yEUjIphlIiHqT83D4qtWhMwzkZAa2uz4E61ZGyEz+0jIAdrc0JtmhMycey7T/W8RLG01I4K5jf3+ieWJCJZWslj9K5dvp80xm4iIiIjoP7wALerdhix9EWYAAAAASUVORK5CYII=">`,
         "6": `<img style="width: 11px;  margin: 4px 7px 0 0; " src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAgCAYAAAASYli2AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC8SURBVHgB7ZbBDcIwDEWdTtIRMiIbABPACkzQbgIbhA2MLYIaIvu3h/bmL6WK7JenNocmRBJmzjImGYW/0flITiBfm79GG61lR+bz1e5lMoSQT/okkCTphJAfZLxB/2XUIK/CKwAeRm2dl6+4GPtx91YhPjXQ3970e2dITX6gnRPCEIYwhCFshPLzvfUNqZ29RZDXCThnT9ZCyMvjCYBiCCF/yEE/g/68sbb0eO/LUoVGXi5Bpc6z9xqI/wA78ekPPbVOHwAAAABJRU5ErkJggg==">`
     }
 
-    for(let entity in data) {
+    for (let entity in data) {
 
         // console.log('data[entity]', data[entity])
 
         const name = data[entity].name
         const id = data[entity].id
 
-        for(let key in data[entity]) {
+        for (let key in data[entity]) {
             const keyType = key
             let value = data[entity][key]
 
-            if(value === undefined)
+            if (value === undefined)
                 value = '-'
 
             switch (key) {
                 case 'imgBase64':
                     let nowImg = `<img class="mainImg" src="${value}"/>`;
                     let oldImg = $('#img').html()
-                    oldImg = oldImg.slice(oldImg.indexOf("src=")+5)
-                    oldImg = oldImg.slice(0,oldImg.indexOf(">")-1)
-                    if(oldImg != value)
+                    oldImg = oldImg.slice(oldImg.indexOf("src=") + 5)
+                    oldImg = oldImg.slice(0, oldImg.indexOf(">") - 1)
+                    if (oldImg != value)
                         $('#img').html(nowImg)
                     break;
 
                 case 'qtyErrorsNow':
                     const qtyErrors = $('#qtyErrorsNowText')
 
-                    if(parseInt(value) < 0 || !value)
+                    if (parseInt(value) < 0 || !value)
                         value = 0
 
                     qtyErrors.html(`${value} Активные события`)
-                    qtyErrors.parent().css({'background-color':'#B5393F'})
+                    qtyErrors.parent().css({'background-color': '#B5393F'})
 
                     if (value < 1) {
-                        qtyErrors.parent().css({'background-color':'gray'})
+                        qtyErrors.parent().css({'background-color': 'gray'})
                     }
                     break;
 
                 case 'universalStateNew':
                     const statesList = data[entity].statesList
-                    if(typeof value == 'undefined')
+                    if (typeof value == 'undefined')
                         value = '6'
                     statesList.forEach(state => {
-                        if(state.universalState.toString() == value.toString()) {
+                        if (state.universalState.toString() == value.toString()) {
                             let img = statesImgs[value.toString()] || '<img>'
                             $('.nowStatus').css({"background-color": state.color})
                             $('#nowStatusImg').html(img)
@@ -183,10 +188,10 @@ function drawTable(data) {
                     tableForInfo += `
                     <tr> 
                         <td colspan="5" style="font-size: 14px; font-weight:bold">${
-                        key=='factoryNumber' ? 'Инвентарный номер':
-                            key=='fullFilledProduct' ? 'Общий произведенный продукт':
-                                key=='hourMeter' ? 'Время работы':
-                                    key=='productLabel' ? 'Текущий рецепт' : key}</td>
+                        key == 'factoryNumber' ? 'Инвентарный номер' :
+                            key == 'fullFilledProduct' ? 'Общий произведенный продукт' :
+                                key == 'hourMeter' ? 'Время работы' :
+                                    key == 'productLabel' ? 'Текущий рецепт' : key}</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -202,10 +207,10 @@ function drawTable(data) {
                     tableForOEE += `
                     <tr style="">
                         <td colspan="3" style="font-size: 14px; font-weight:bold">${
-                        key=='oee' ? 'ОЕЕ':
-                            key=='oee_availability' ? 'Доступность':
-                                key=='oee_productivity' ? 'Производительность':
-                                    key=='oee_quality' ? 'Качество': key}</td>
+                        key == 'oee' ? 'ОЕЕ' :
+                            key == 'oee_availability' ? 'Доступность' :
+                                key == 'oee_productivity' ? 'Производительность' :
+                                    key == 'oee_quality' ? 'Качество' : key}</td>
                         <td></td> 
                         <td></td> 
                         <td></td> 
@@ -218,10 +223,10 @@ function drawTable(data) {
                 `
                     tableForOEE += `
               <span class="parameter_name">${
-                        key=='oee' ? 'ОЕЕ':
-                            key=='oee_availability' ? 'Доступность':
-                                key=='oee_productivity' ? 'Производительность':
-                                    key=='oee_quality' ? 'Качество': key}
+                        key == 'oee' ? 'ОЕЕ' :
+                            key == 'oee_availability' ? 'Доступность' :
+                                key == 'oee_productivity' ? 'Производительность' :
+                                    key == 'oee_quality' ? 'Качество' : key}
                   <span>
                         &nbsp;${value.value == null ?
                         'н&nbsp;/&nbsp;д' : value.value == undefined ?
@@ -232,21 +237,21 @@ function drawTable(data) {
               <span id="inWork">`
 
                     for (let key in value) {
-                        if(key =='value' || key=='trend')
+                        if (key == 'value' || key == 'trend')
                             continue;
 
                         if (key == 'OT' || key == 'NOT') {
-                            value[key] = value[key] ? msToTime(value[key]* 60000) : 0
+                            value[key] = value[key] ? msToTime(value[key] * 60000) : 0
                         }
 
                         tableForOEE += `
                     <td  style="font-size: 12px; color: #c1c0c0;">${
-                            key=='TP' ? 'Факт':
-                                key=='DP' ? 'Брак':
-                                    key=='OT' ? 'Работа':
-                                        key=='NOT' ? 'Простой':
-                                            key=='TPP' ? 'План':
-                                                key=='GP' ? 'Норма':
+                            key == 'TP' ? 'Факт' :
+                                key == 'DP' ? 'Брак' :
+                                    key == 'OT' ? 'Работа' :
+                                        key == 'NOT' ? 'Простой' :
+                                            key == 'TPP' ? 'План' :
+                                                key == 'GP' ? 'Норма' :
                                                     key} : ${value[key]}</td>`
                     }
 
@@ -274,7 +279,6 @@ function drawTable(data) {
                     })
 
                     break;
-
 
 
             }
@@ -316,7 +320,7 @@ function drawTable(data) {
     $('#oee').html(tableForOEE)
 }
 
-self.onInit = function() {
+self.onInit = function () {
     self.ctx.datasourceTitleCells = [];
     self.ctx.valueCells = [];
     self.ctx.labelCells = [];
@@ -324,18 +328,18 @@ self.onInit = function() {
 
 }
 
-self.onDataUpdated = function(force) {
+self.onDataUpdated = function (force) {
 
     let jsonKeys = []
     let entityType;
     let entityName;
     let entityID;
 
-    if(!self.ctx)
+    if (!self.ctx)
         return
 
     const requiredKeys = [
-        {"name": "Фото","key": "imgBase64"},
+        {"name": "Фото", "key": "imgBase64"},
         {name: "Таблетный пресс", key: "name", type: "info"},
         {name: "Количество ошибок", key: "qtyErrorsNow", type: "info"},
         {name: "Инвентарный номер", key: "factoryNumber", type: "info"},
@@ -349,8 +353,8 @@ self.onDataUpdated = function(force) {
 
 }
 
-self.onResize = function() {
+self.onResize = function () {
 }
 
-self.onDestroy = function() {
+self.onDestroy = function () {
 }
