@@ -42,8 +42,7 @@ function getEntityMap() {
         for (let ws = 0; ws < entityList.length; ws++) {//
 
             html += `<li><a class="workshopsList" href="javascript:void(0);"><i class="fa fa-angle-down fa-lg " ></i></a><span><a class="workshopsList" stateName="workshop" entityId=${entityList[ws].id} entityType=${entityList[ws].entity_type}>${entityList[ws].name}</a></span>`
-
-
+            
             if (typeof entityList[ws].childs !== 'undefined' && typeof entityList[ws].childs.error == 'undefined' && entityList[ws].childs.length > 0) {
                 //Линия есть, тоже пушим
                 html += `<ul class="lineLevel">`
@@ -130,13 +129,10 @@ function syncingDates() {
         }
     })
 
-    currentTimeInTB = ''
-    oldTime = null
-
     let dateFromStorage = JSON.parse(sessionStorage.getItem('selectedDate'))
 
     if (dateFromStorage) {
-        // забить время в ТВ
+        // забить время в ТВ если оно есть в storage
         ctx.timewindowFunctions.onUpdateTimewindow(dateFromStorage.from, dateFromStorage.to)
     }
 
@@ -162,22 +158,20 @@ function syncingDates() {
 
     // каждую секуду проверяем изменилась ли переменная
     setInterval(() => {
-
         if (currentTimeInTB != oldTime) {
             if (self.ctx && self.ctx.dashboardTimewindow.history) {
-                let timeFrom = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs
-                let timeTo = self.ctx.dashboardTimewindow.history.fixedTimewindow.endTimeMs
-                let from = new Date(timeFrom)
-                let to = new Date(timeTo)
+                let timeFrom = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs,
+                    timeTo = self.ctx.dashboardTimewindow.history.fixedTimewindow.endTimeMs,
+                    from = new Date(timeFrom),
+                    to = new Date(timeTo)
 
                 setDateToDatePicker(from, to)
 
-                sessionStorage.setItem('selectedDate', JSON.stringify({
-                    from: timeFrom,
-                    to: timeTo
-                }))
+                // sessionStorage.setItem('selectedDate', JSON.stringify({
+                //     from: timeFrom,
+                //     to: timeTo
+                // }))
 
-                let dateFromStorage = JSON.parse(sessionStorage.getItem('selectedDate'))
             }
 
             oldTime = currentTimeInTB;
@@ -185,13 +179,11 @@ function syncingDates() {
         }
 
         if (self.ctx && self.ctx.dashboardTimewindow.realtime && isChanged) {
-            console.log('realtime')
-
-            let timeShift = self.ctx.dashboardTimewindow.realtime.timewindowMs
-            let timeFrom = Date.now() - timeShift
-            let timeTo = Date.now()
-            let from = new Date(timeFrom)
-            let to = new Date(timeTo)
+            let timeShift = self.ctx.dashboardTimewindow.realtime.timewindowMs,
+                timeFrom = Date.now() - timeShift,
+                timeTo = Date.now(),
+                from = new Date(timeFrom),
+                to = new Date(timeTo)
 
             setDateToDatePicker(from, to)
             isChanged = false
@@ -501,7 +493,6 @@ function jqueryActions() {
 
         e.preventDefault();
         let thisClick = e.currentTarget.attributes
-        console.log('thisClick', thisClick)
         let nowObj = self.ctx.actionsApi.getActiveEntityInfo()
         let entityId = nowObj.entityId.id
 
@@ -523,7 +514,6 @@ function jqueryActions() {
                 thisClick.entityName.value,
                 thisClick.statename.value,
             )
-            console.log('new state', actionDescriptor.targetDashboardStateId)
             //actionDescriptor.targetDashboardStateId = thisClick.statename.value
         }
 
@@ -740,14 +730,13 @@ function horizontalNavigation() {
             "Насыщение HDGC100-HUTTLIN": 'huttlin',
             "Блистерная BMP-250R-Heino Ilsemann": 'bmp_250r_heino_ilsemann',
         }
-        // console.log('goalEntity', goalEntity.name)
 
         let entityName = e.currentTarget.innerHTML
         let entityDescriptor = {
             id: goalEntity.id,
             entityType: goalEntity.entity_type
         }
-        console.log('prevNext goalEntity', goalEntity)
+
         let actionDescriptor = self.ctx.actionsApi.getActionDescriptors('elementClick')[0]
         let nowState = self.ctx.stateController.stateValue
         if (nowState.indexOf('_graph') !== -1) {
@@ -755,7 +744,7 @@ function horizontalNavigation() {
         } else if (nowState.indexOf('_main') !== -1) {
             nowState = machineStatesMap[goalEntity.name] + nowState.slice(nowState.indexOf('_main'))
         }
-        console.log(nowState)
+
         actionDescriptor.targetDashboardStateId = nowState
 
         // ПОД ВОПРОСОМ!
@@ -912,10 +901,6 @@ function drawCheckboxForCalendar() {
                         break;
                 }
 
-                // меняем дату в ТВ
-
-                let milliseconds = Date.now()
-
                 $(`.applyBtn`).click(() => {
                     let checkboxes = $(`#toggleForCalendar input[type="checkbox"]`)
 
@@ -938,7 +923,6 @@ function drawCheckboxForCalendar() {
 
                         self.ctx.interval.make(() => {
                             updateTime()
-                            // console.log('update time, при клике apply')
                         }, 5000)
 
                     } else {
@@ -947,6 +931,37 @@ function drawCheckboxForCalendar() {
                 })
             }
         })
+
+        // clear all listeners
+        $(".applyBtn").off()
+
+        $(`.applyBtn`).click(() => {
+            if (self.ctx && self.ctx.dashboardTimewindow.history) {
+                const oldDate = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs
+
+                let interval = setInterval(() => {
+                    const timeFrom = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs
+
+                    if (oldDate != timeFrom) {
+                        let timeFrom = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs,
+                            timeTo = self.ctx.dashboardTimewindow.history.fixedTimewindow.endTimeMs,
+                            from = new Date(timeFrom),
+                            to = new Date(timeTo)
+
+                        sessionStorage.setItem('selectedDate', JSON.stringify({
+                            from: timeFrom,
+                            to: timeTo
+                        }))
+
+                        clearInterval(interval)
+                        console.log('date saved', timeFrom, timeTo)
+                    }
+                }, 1000)
+
+            }
+        })
+
+
     })
 }
 
