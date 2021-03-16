@@ -26,20 +26,16 @@ function getEntityMap() {
 
     function getAnswer() {
         let answer = []
-        try {
-            answer = JSON.parse(xhr.responseText);
-        } catch (e) {
-        }
+        try { answer = JSON.parse(xhr.responseText) } catch (e) {}
         structure = answer
         entityHierarchy = answer
         drawBurgerMap(answer)
-
     }
 
     function drawBurgerMap(entityList) {
         let html = '<ul class="accordeon">'
         //Создаём цеха
-        for (let ws = 0; ws < entityList.length; ws++) {//
+        for (let ws = 0; ws < entityList.length; ws++) {
 
             html += `<li><a class="workshopsList" href="javascript:void(0);"><i class="fa fa-angle-down fa-lg " ></i></a><span><a class="workshopsList" stateName="workshop" entityId=${entityList[ws].id} entityType=${entityList[ws].entity_type}>${entityList[ws].name}</a></span>`
 
@@ -47,7 +43,7 @@ function getEntityMap() {
                 //Линия есть, тоже пушим
                 html += `<ul class="lineLevel">`
                 let sections = entityList[ws].childs
-                for (let s = 0; s < sections.length; s++) {//
+                for (let s = 0; s < sections.length; s++) {
                     html += `
     	             <li>
     	             <a href="#">
@@ -87,9 +83,7 @@ function getEntityMap() {
 
         $('#burgerMenu').html(html)
         horizontalNavigation()
-
     }
-
 }
 
 function initialize() {
@@ -100,7 +94,6 @@ function initialize() {
     $(document).undelegate("[entityid]", 'click')
     let gridsters = $('gridster-item')
     for (let i = 0; i < gridsters.length; i++) {
-
         if (gridsters[i].textContent.indexOf('mainMenu') !== -1)
             continue;
         gridsters[i].style['z-index'] = 0
@@ -141,8 +134,6 @@ function syncingDates() {
         if (self.ctx && self.ctx.dashboardTimewindow.history) {
             currentTimeInTB = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs +
                 self.ctx.dashboardTimewindow.history.fixedTimewindow.endTimeMs
-
-            // isChanged = true
         }
     }, 1000)
 
@@ -152,8 +143,7 @@ function syncingDates() {
             $('input[name="daterange"]').data('daterangepicker').setEndDate(to)
             $('i[name="daterange"]').data('daterangepicker').setStartDate(from)
             $('i[name="daterange"]').data('daterangepicker').setEndDate(to)
-        } catch (e) {
-        }
+        } catch (e) {}
     }
 
     // каждую секуду проверяем изменилась ли переменная
@@ -166,12 +156,6 @@ function syncingDates() {
                     to = new Date(timeTo)
 
                 setDateToDatePicker(from, to)
-
-                // sessionStorage.setItem('selectedDate', JSON.stringify({
-                //     from: timeFrom,
-                //     to: timeTo
-                // }))
-
             }
 
             oldTime = currentTimeInTB;
@@ -204,8 +188,6 @@ function jqueryActions() {
                 let timeShift = self.ctx.dashboardTimewindow.realtime.timewindowMs
                 timeFrom = Date.now() - timeShift
                 timeTo = Date.now()
-
-
             } else {
                 timeFrom = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs
                 timeTo = self.ctx.dashboardTimewindow.history.fixedTimewindow.endTimeMs
@@ -222,12 +204,11 @@ function jqueryActions() {
         }
 
         $('input[name="datefilter"],i[name="datefilter"] ').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('DD.MM') + ' - ' + picker.endDate.format('DD.MM'));
+            $(this).val(picker.startDate.format('DD.MM') + '-' + picker.endDate.format('DD.MM'));
         });
 
         try {
             self.ctx.$scope.$on('dashboardTimewindowChanged', function () {
-
                 $scope = self.ctx.$scope;
                 $scope.ctx = self.ctx;
                 $('input[name="daterange"]').data('daterangepicker').setStartDate($scope.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs);
@@ -307,30 +288,26 @@ function jqueryActions() {
 
         $('.drp-selected').css({'display': 'none',})
 
-        $('.btn-primary').css(
-            {
-                'background-color': '#EAEAEA',
-                'border': 'none',
-                'color': '#525252',
-                'padding': '8px 16px',
-                'border-radius': '8px',
-                'text-decoration': 'none',
-                'display': 'inline-block',
-                'font-size': '13px',
-            }
-        )
-        $('.cancelBtn').css(
-            {
-                'background-color': '#B3B3B3',
-                'border': 'none',
-                'color': '#525252',
-                'padding': '8px 16px',
-                'border-radius': '8px',
-                'text-decoration': 'none',
-                'display': 'inline-block',
-                'font-size': '13px',
-            }
-        )
+        $('.btn-primary').css({
+            'background-color': '#EAEAEA',
+            'border': 'none',
+            'color': '#525252',
+            'padding': '8px 16px',
+            'border-radius': '8px',
+            'text-decoration': 'none',
+            'display': 'inline-block',
+            'font-size': '13px',
+        })
+        $('.cancelBtn').css({
+            'background-color': '#B3B3B3',
+            'border': 'none',
+            'color': '#525252',
+            'padding': '8px 16px',
+            'border-radius': '8px',
+            'text-decoration': 'none',
+            'display': 'inline-block',
+            'font-size': '13px',
+        })
 
         $('.daterangepicker .drp-buttons').css({
             'display': 'flex',
@@ -341,7 +318,6 @@ function jqueryActions() {
             'border': '3px solid #EAEAEA',
             'border-radius': '10px'
         })
-
 
         $('#mainHeadMenuButton').click(() => {
             if ($('#checkbox3').is(':checked')) {
@@ -511,7 +487,6 @@ function jqueryActions() {
                 thisClick.entityName.value,
                 thisClick.statename.value,
             )
-            //actionDescriptor.targetDashboardStateId = thisClick.statename.value
         }
 
         // $(document).undelegate(".accordeon > li > a, .lineLevel > li > a", 'click')
@@ -709,14 +684,10 @@ function horizontalNavigation() {
                                 goalEntity = sections[s].childs[m + shift]
                                 break
                             }
-
                         }
-
                     }
                 }
-
             }
-
         }
         const machineStatesMap = {
             "Обандероливающая CHRIST": 'christ',
@@ -752,7 +723,6 @@ function horizontalNavigation() {
         // self.ctx.stateController.openState(goalEntity.id, {}, false)
 
         self.ctx.actionsApi.handleWidgetAction(e, actionDescriptor, entityDescriptor, entityName)
-
     })
     // end delegate paginator
 }
@@ -815,12 +785,11 @@ function drawCheckboxForCalendar() {
             'opacity': '0.6',
             'filter': 'blur(3px)',
             'display': 'none'
-
         })
         let toggleForCalendarSelect = $('#toggleForCalendar select')
         $(`.daterangepicker .drp-calendar.right`).css({'padding-bottom': '26px'})
         $(`.daterangepicker #toggleForCalendar select`).css({
-            ' border-color': '#d6d5d5', 'border-radius': '7px',
+            'border-color': '#d6d5d5', 'border-radius': '7px',
             'font-size': '12px',
             'font-weight': 'bold',
         })
@@ -837,7 +806,6 @@ function drawCheckboxForCalendar() {
             } else {
                 toggleForCalendarSelect.attr('disabled', 'disabled')
                 $('.opacity_box').css({'display': 'none'})
-
                 self.ctx.interval.clearAll()
             }
 
@@ -873,7 +841,6 @@ function drawCheckboxForCalendar() {
                     }
                 })
             }
-
         })
 
         toggleForCalendarSelect.change((event) => {
@@ -905,22 +872,16 @@ function drawCheckboxForCalendar() {
                             value: value,
                             checked: true
                         }
-
                         localStorage.setItem('selectedRealTime', JSON.stringify(realtimeObj))
-
                         self.ctx.interval.clearAll()
-
                         function updateTime() {
                             let milliseconds = Date.now()
                             ctx.timewindowFunctions.onUpdateTimewindow(milliseconds - value, milliseconds)
                         }
-
                         updateTime()
-
                         self.ctx.interval.make(() => {
                             updateTime()
                         }, 5000)
-
                     } else {
                         self.ctx.interval.clearAll()
                     }
@@ -953,11 +914,8 @@ function drawCheckboxForCalendar() {
                         console.log('date saved', timeFrom, timeTo)
                     }
                 }, 1000)
-
             }
         })
-
-
     })
 }
 
@@ -966,20 +924,17 @@ self.onInit = function () {
     self.ctx.interval = {
         // to keep a reference to all the intervals
         intervals: [],
-
         // create another interval
         make(func, duration) {
             let newInterval = setInterval(func, duration)
             this.intervals.push(newInterval)
             return newInterval
         },
-
         // clear a single interval
         clear(id) {
             this.intervals.splice(this.intervals.indexOf(id), 1)
             return clearInterval(id)
         },
-
         // clear all intervals
         clearAll() {
             this.intervals.forEach((id) => {
@@ -999,11 +954,9 @@ self.onInit = function () {
 
     // открытие с анимацией
     $('.userInfo').click((e) => {
-
         let x = document.getElementById("roleDropdownMenu");
         if (x.style.display != "none" && x.style.display != "") {
             $('#roleDropdownMenu').hide(200)
-
         } else {
             $('.userInfo .dropdownWindow').show(200)
             $('.userInfo .dropdownWindow').mouseleave(function () {
@@ -1021,7 +974,6 @@ self.onInit = function () {
     })
 
     $('#burgerMenu').click((event) => {
-
         if (event.target.classList.contains('lineLevel') && !event.target.classList.contains('active')
             || event.target.classList.contains('fa-angle-down') && !event.target.classList.contains('active')) {
             event.target.classList.add('active')
@@ -1030,11 +982,9 @@ self.onInit = function () {
         }
     })
 
-
     getCustomerRole()
 
     let currentUser = JSON.parse(localStorage.getItem('currentUser'))
-
     let userName = ''
 
     if (typeof currentUser.lastName != 'undefined')
@@ -1044,13 +994,11 @@ self.onInit = function () {
 
     $('.info #userName').html(`${userName}`)
     $('.info #userRole').html(`${currentUser.roleName}`)
-
-
 }
 
 function getCustomerRole() {
     let user = {}
-    if (self.ctx.dashboard.authUser.authority == "TENANT_ADMIN") {
+    if (self.ctx.dashboard.authUser.authority === "TENANT_ADMIN") {
         user.lastName = self.ctx.dashboard.authUser.sub
         user.role = 'administrator'
         user.roleName = 'Редактор'
@@ -1088,8 +1036,7 @@ self.onResize = function () {
     $('#datepickerInput').css('top', $('#paginator').css('top'))
 }
 
-self.onDataUpdated = function () {
-}
+self.onDataUpdated = function () {}
 
 self.typeParameters = function () {
     return {
