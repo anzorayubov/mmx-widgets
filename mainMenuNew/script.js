@@ -1,15 +1,16 @@
 var structure = {}
 
 function mainHeadMenuButtonClicked() {
-    let x = document.getElementById("burgerMenu");
-    if (x.style.display != "none") {
-        $('#burgerMenu').hide(200)
+    const burgerMenu = $('#burgerMenu')
+
+    if (burgerMenu[0].style.display != "none") {
+        burgerMenu.hide(200)
     } else {
-        $('#burgerMenu').show(200)
-        $('#burgerMenu').mouseleave(() => {
+        burgerMenu.show(200)
+        burgerMenu.mouseleave(() => {
             setTimeout(() => {
                 if ($('.accordeon:hover').length == 0) {
-                    $('#burgerMenu').hide(200)
+                    burgerMenu.hide(200)
                     $('#checkbox3').prop('checked', false);
                 }
             }, 500);
@@ -18,7 +19,6 @@ function mainHeadMenuButtonClicked() {
 }
 
 function getEntityMap() {
-
     let xhr = new XMLHttpRequest();
     xhr.open('GET', 'http://' + window.location.hostname + ':1880/mainMenu', true);
     xhr.send();
@@ -37,43 +37,57 @@ function getEntityMap() {
         //Создаём цеха
         for (let ws = 0; ws < entityList.length; ws++) {
 
-            html += `<li><a class="workshopsList" href="javascript:void(0);"><i class="fa fa-angle-down fa-lg " ></i></a><span><a class="workshopsList" stateName="workshop" entityId=${entityList[ws].id} entityType=${entityList[ws].entity_type}>${entityList[ws].name}</a></span>`
+            html += `
+                <li><a class="workshopsList" href="javascript:void(0);">
+                        <i class="fa fa-angle-down fa-lg"></i>
+                    </a>
+                    <span>
+                        <a class="workshopsList" 
+                            stateName="workshop" 
+                            entityId=${entityList[ws].id} 
+                            entityType=${entityList[ws].entity_type}>${entityList[ws].name}</a>
+                    </span>`
 
-            if (typeof entityList[ws].childs !== 'undefined' && typeof entityList[ws].childs.error == 'undefined' && entityList[ws].childs.length > 0) {
+            if (entityList[ws].childs && !entityList[ws].childs.error && entityList[ws].childs.length > 0) {
+
                 //Линия есть, тоже пушим
                 html += `<ul class="lineLevel">`
                 let sections = entityList[ws].childs
                 for (let s = 0; s < sections.length; s++) {
                     html += `
-    	             <li>
-    	             <a href="#">
-    	               <i class="fa fa-angle-down fa-lg  lineLevel"></i>
-    	             </a>
-    	             <span>
-    	               <a  stateName="section" entityId=${sections[s].id} entityType=${sections[s].entity_type}>${sections[s].name}</a>
-    	             </span>`
+    	              <li>
+        	             <a href="#">
+        	               <i class="fa fa-angle-down fa-lg  lineLevel"></i>
+        	             </a>
+        	             <span>
+        	               <a  stateName="section" entityId=${sections[s].id} entityType=${sections[s].entity_type}>${sections[s].name}</a>
+        	             </span>`
 
-                    if (typeof sections[s].childs !== 'undefined' && typeof sections[s].childs.error == 'undefined' && sections[s].childs.length > 0) {
+                    if (sections[s].childs && !sections[s].childs.error && sections[s].childs.length > 0) {
 
                         //И оборудование есть, пушим финалочку
-
                         html += `<ul>`
                         for (let m = 0; m < sections[s].childs.length; m++) {
                             let machine = sections[s].childs[m]
-                            html += `<li class="machineLevel"><span><a  stateName="machine"  entityId=${machine.id} entityType=${machine.entity_type} entityName=${machine.name.replace(/\s+/g, '')}>${machine.name}</a></span></li>`
+                            html += `
+                                <li class="machineLevel">
+                                  <span>
+                                    <a stateName="machine" 
+                                       entityId=${machine.id}
+                                       entityType=${machine.entity_type}
+                                       entityName=${machine.name.replace(/\s+/g, '')}>${machine.name}</a>
+                                  </span>
+                                </li>`
                         }
                         //Закрываем станкИ
                         html += `</ul>`
-
                     }
                     //Закрываем линиЮ
                     html += '</li>'
                 }
-
                 //Закрываем линиИ
                 html += '</ul>'
             }
-
             //Закрываем цеха
             html += '</li>'
         }
@@ -911,7 +925,6 @@ function drawCheckboxForCalendar() {
                         }))
 
                         clearInterval(interval)
-                        console.log('date saved', timeFrom, timeTo)
                     }
                 }, 1000)
             }
