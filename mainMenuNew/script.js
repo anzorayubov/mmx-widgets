@@ -3,7 +3,7 @@ var structure = {}
 function mainHeadMenuButtonClicked() {
     const burgerMenu = $('#burgerMenu')
 
-    if (burgerMenu[0].style.display != "none") {
+    if (burgerMenu[0].style.display !== "none") {
         burgerMenu.hide(200)
     } else {
         burgerMenu.show(200)
@@ -26,7 +26,10 @@ function getEntityMap() {
 
     function getAnswer() {
         let answer = []
-        try { answer = JSON.parse(xhr.responseText) } catch (e) {}
+        try {
+            answer = JSON.parse(xhr.responseText)
+        } catch (e) {
+        }
         structure = answer
         entityHierarchy = answer
         drawBurgerMap(answer)
@@ -55,13 +58,13 @@ function getEntityMap() {
                 let sections = entityList[ws].childs
                 for (let s = 0; s < sections.length; s++) {
                     html += `
-    	              <li>
-        	             <a href="#">
-        	               <i class="fa fa-angle-down fa-lg  lineLevel"></i>
-        	             </a>
-        	             <span>
-        	               <a  stateName="section" entityId=${sections[s].id} entityType=${sections[s].entity_type}>${sections[s].name}</a>
-        	             </span>`
+                      <li>
+                         <a href="#">
+                           <i class="fa fa-angle-down fa-lg  lineLevel"></i>
+                         </a>
+                         <span>
+                           <a  stateName="section" entityId=${sections[s].id} entityType=${sections[s].entity_type}>${sections[s].name}</a>
+                         </span>`
 
                     if (sections[s].childs && !sections[s].childs.error && sections[s].childs.length > 0) {
 
@@ -116,13 +119,12 @@ function initialize() {
 
 let currentTimeInTB = ''
 let oldTime = null
-let realtime = ''
 let isChanged = true
 
 function syncingDates() {
     $(document).click((event) => {
         // если это canvas - то чистим интервал
-        if (event.target.nodeName == 'CANVAS') {
+        if (event.target.nodeName === 'CANVAS') {
             self.ctx.interval.clearAll()
             skipFirstCheck = 1
             // убрать блок с календаря, disable чекбокс, очистить localStorage
@@ -131,7 +133,7 @@ function syncingDates() {
             localStorage.removeItem('selectedRealTime')
         }
 
-        if (event.target.className == 'horizontalNavigation' && event.target.nodeName == 'A') {
+        if (event.target.className === 'horizontalNavigation' && event.target.nodeName === 'A') {
             self.ctx.interval.clearAll()
         }
     })
@@ -157,7 +159,8 @@ function syncingDates() {
             $('input[name="daterange"]').data('daterangepicker').setEndDate(to)
             $('i[name="daterange"]').data('daterangepicker').setStartDate(from)
             $('i[name="daterange"]').data('daterangepicker').setEndDate(to)
-        } catch (e) {}
+        } catch (e) {
+        }
     }
 
     // каждую секуду проверяем изменилась ли переменная
@@ -190,15 +193,12 @@ function syncingDates() {
     }, 1000)
 }
 
-let isAbleToSlide = false
-
 function jqueryActions() {
-
     $(function () {
         function getNowFromToTime() {
             let timeFrom
             let timeTo
-            if (typeof self.ctx !== 'undefined' && typeof self.ctx.dashboardTimewindow.realtime !== 'undefined') {
+            if (self.ctx && self.ctx.dashboardTimewindow.realtime) {
                 let timeShift = self.ctx.dashboardTimewindow.realtime.timewindowMs
                 timeFrom = Date.now() - timeShift
                 timeTo = Date.now()
@@ -888,10 +888,12 @@ function drawCheckboxForCalendar() {
                         }
                         localStorage.setItem('selectedRealTime', JSON.stringify(realtimeObj))
                         self.ctx.interval.clearAll()
+
                         function updateTime() {
                             let milliseconds = Date.now()
                             ctx.timewindowFunctions.onUpdateTimewindow(milliseconds - value, milliseconds)
                         }
+
                         updateTime()
                         self.ctx.interval.make(() => {
                             updateTime()
@@ -1049,7 +1051,8 @@ self.onResize = function () {
     $('#datepickerInput').css('top', $('#paginator').css('top'))
 }
 
-self.onDataUpdated = function () {}
+self.onDataUpdated = function () {
+}
 
 self.typeParameters = function () {
     return {
