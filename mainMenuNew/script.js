@@ -42,7 +42,7 @@ function getEntityMap() {
         for (let ws = 0; ws < entityList.length; ws++) {//
 
             html += `<li><a class="workshopsList" href="javascript:void(0);"><i class="fa fa-angle-down fa-lg " ></i></a><span><a class="workshopsList" stateName="workshop" entityId=${entityList[ws].id} entityType=${entityList[ws].entity_type}>${entityList[ws].name}</a></span>`
-            
+
             if (typeof entityList[ws].childs !== 'undefined' && typeof entityList[ws].childs.error == 'undefined' && entityList[ws].childs.length > 0) {
                 //Линия есть, тоже пушим
                 html += `<ul class="lineLevel">`
@@ -443,7 +443,6 @@ function jqueryActions() {
 
     });
 
-
     $('#toDashboardAdministration').click((e) => {
         e.preventDefault()
         let actionDescriptor = self.ctx.actionsApi.getActionDescriptors('elementClick')[2]
@@ -461,15 +460,15 @@ function jqueryActions() {
         self.ctx.actionsApi.handleWidgetAction(e, actionDescriptor, null, null);
     });
     $(document).delegate("#roleTologOut", 'click', function (e) {
-
         localStorage.removeItem('jwt_token')
         localStorage.removeItem('jwt_token_expiration')
         localStorage.removeItem('refresh_token')
         localStorage.removeItem('refresh_token_expiration')
         window.location.href = 'http://' + window.location.host + '/login';
+    })
 
-    });
     $(document).delegate("[entityid]", 'click', function (e) {
+
         const machineStatesMap = {
             "ОбандероливающаяCHRIST": 'christ',
             "СмешиваниеРМ1000-L.B.BOHLE": 'bohle',
@@ -480,7 +479,6 @@ function jqueryActions() {
         }
 
         function generateMachineState(name, state) {
-
             if (state == 'machine_alarms' ||
                 state.indexOf('machine') == -1 ||
                 typeof machineStatesMap[name] == 'undefined')
@@ -504,9 +502,8 @@ function jqueryActions() {
             id: thisClick.entityid.value,
             entityType: thisClick.entitytype.value
         }
-
-
         let actionDescriptor = self.ctx.actionsApi.getActionDescriptors('elementClick')[0]
+
         if (thisClick.entitytype.value.toLowerCase() !== 'device')
             actionDescriptor.targetDashboardStateId = thisClick.statename.value
         else {
@@ -517,10 +514,9 @@ function jqueryActions() {
             //actionDescriptor.targetDashboardStateId = thisClick.statename.value
         }
 
-
-        $(document).undelegate(".accordeon > li > a, .lineLevel > li > a", 'click')
-        $(document).undelegate("[entityid]", 'click')
-        $(document).undelegate("#paginatorNext, #paginatorPrev", 'click')
+        // $(document).undelegate(".accordeon > li > a, .lineLevel > li > a", 'click')
+        // $(document).undelegate("[entityid]", 'click')
+        // $(document).undelegate("#paginatorNext, #paginatorPrev", 'click')
         self.ctx.actionsApi.handleWidgetAction(e, actionDescriptor, entityDescriptor, entityName);
     });
 
@@ -1087,13 +1083,9 @@ function getCustomerRole() {
 self.onResize = function () {
     $('#burgerMenu').css('left', $('.logoIcon')[0].width + 10 + parseInt($('#mainHeadMenuButton').css('margin-left').replace('px', "")))
     $('#burgerMenu').css('top', $('.logoIcon')[0].width)
-    // $('#mainHeadMenuButton').css('top', $('.logoIcon')[0].height/2 - $('#mainHeadMenuButtonIcon')[0].offsetHeight/2)
-
-
     $('#horizontalNavigation').css('top', $('#mainHeadMenu')[0].offsetHeight / 2 - 12)
     $('#paginator').css('top', $('#mainHeadMenu')[0].offsetHeight / 2 - 12)
     $('#datepickerInput').css('top', $('#paginator').css('top'))
-
 }
 
 self.onDataUpdated = function () {
