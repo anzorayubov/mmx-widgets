@@ -126,7 +126,6 @@ function syncingDates() {
         // если это canvas - то чистим интервал
         if (event.target.nodeName === 'CANVAS') {
             self.ctx.interval.clearAll()
-            skipFirstCheck = 1
             // убрать блок с календаря, disable чекбокс, очистить localStorage
             $('#toggleForCalendar select').attr('disabled', 'disabled')
             $('.opacity_box').css({'display': 'none'})
