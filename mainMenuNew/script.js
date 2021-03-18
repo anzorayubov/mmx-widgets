@@ -573,14 +573,14 @@ function horizontalNavigation() {
 
     $('#horizontalNavigation').html(html.showHtml())
 
-    const machineNav = $('[statename="machine"].horizontalNavigation').html()?.toLowerCase().replace(/\s+/g, '');
-    const sectionNav = $('[statename="section"].horizontalNavigation').html()
-    const workshopNav = $('[statename="workshop"].horizontalNavigation').html()
+    const machinePage = $('[statename="machine"].horizontalNavigation').html()?.toLowerCase().replace(/\s+/g, '');
+    const sectionPage = $('[statename="section"].horizontalNavigation').html()
+    const workshopPage = $('[statename="workshop"].horizontalNavigation').html()
     const paginator_a = $('#paginator a')
 
     // ЦЕХ
-    if (!sectionNav && !machineNav) {
-        let goalEntityName = workshopNav.toLowerCase().replace(/\s+/g, '');
+    if (!sectionPage && !machinePage) {
+        let goalEntityName = workshopPage.toLowerCase().replace(/\s+/g, '');
 
         for (let j = 0; j < structure.length; j++) {
             const pageName = structure[j]?.name.toLowerCase().replace(/\s+/g, '')
@@ -595,8 +595,8 @@ function horizontalNavigation() {
             }
         }
         // ЛИНИЯ
-    } else if (!machineNav && sectionNav) {
-        let goalEntityName = sectionNav.toLowerCase().replace(/\s+/g, '');
+    } else if (!machinePage && sectionPage) {
+        let goalEntityName = sectionPage.toLowerCase().replace(/\s+/g, '');
 
         for (let j = 0; j < structure.length; j++) {
             let sections = structure[j].childs
@@ -615,7 +615,7 @@ function horizontalNavigation() {
             }
         }
         // ОБОРУДОВАНИЕ
-    } else if (machineNav) {
+    } else if (machinePage) {
         for (let j = 0; j < structure.length; j++) {
             let sections = structure[j].childs
             for (let h = 0; h < sections.length; h++) {
@@ -624,13 +624,13 @@ function horizontalNavigation() {
                 for (let f = 0; f < page.childs.length; f++) {
                     const pageName = page.childs[f].name.toLowerCase().replace(/\s+/g, '')
                     // если страница первая
-                    if (machineNav == pageName && f == 0 && page.childs.length > 1) {
+                    if (machinePage == pageName && f == 0 && page.childs.length > 1) {
                         paginator_a[1].classList.remove('disableLink')
-                    } else if (page.name && pageName == machineNav &&
+                    } else if (page.name && pageName == machinePage &&
                         f == page.childs.length - 1 && page.childs.length > 1) {
                         // если страница последняя
                         paginator_a[0].classList.remove('disableLink')
-                    } else if (pageName == machineNav && f !== page.childs.length - 1 && f !== 0) {
+                    } else if (pageName == machinePage && f !== page.childs.length - 1 && f !== 0) {
                         paginator_a.removeClass('disableLink')
                     }
                 }
