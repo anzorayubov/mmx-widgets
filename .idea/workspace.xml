@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f16758c5-e835-40eb-982c-d94bdb0a97aa" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/timeseries_flot/css.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/timeseries_flot/html.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/timeseries_flot/script.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mainMenuNew/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/mainMenuNew/script.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +39,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="liveEdit" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -70,7 +66,8 @@
       <workItem from="1615887273334" duration="1639000" />
       <workItem from="1615902694264" duration="817000" />
       <workItem from="1615915800816" duration="46000" />
-      <workItem from="1615993817471" duration="173000" />
+      <workItem from="1615993817471" duration="332000" />
+      <workItem from="1615994184872" duration="624000" />
     </task>
     <servers />
   </component>
@@ -88,5 +85,9 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

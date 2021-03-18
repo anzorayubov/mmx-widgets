@@ -58,13 +58,13 @@ function getEntityMap() {
                 let sections = entityList[ws].childs
                 for (let s = 0; s < sections.length; s++) {
                     html += `
-                      <li>
-                         <a href="#">
-                           <i class="fa fa-angle-down fa-lg  lineLevel"></i>
-                         </a>
-                         <span>
-                           <a  stateName="section" entityId=${sections[s].id} entityType=${sections[s].entity_type}>${sections[s].name}</a>
-                         </span>`
+    	              <li>
+        	             <a href="#">
+        	               <i class="fa fa-angle-down fa-lg  lineLevel"></i>
+        	             </a>
+        	             <span>
+        	               <a  stateName="section" entityId=${sections[s].id} entityType=${sections[s].entity_type}>${sections[s].name}</a>
+        	             </span>`
 
                     if (sections[s].childs && !sections[s].childs.error && sections[s].childs.length > 0) {
 
@@ -137,7 +137,7 @@ function syncingDates() {
         }
     })
 
-    let dateFromStorage = JSON.parse(sessionStorage.getItem('selectedDate'))
+    const dateFromStorage = JSON.parse(sessionStorage.getItem('selectedDate'))
 
     if (dateFromStorage) {
         // забить время в ТВ если оно есть в storage
@@ -188,7 +188,6 @@ function syncingDates() {
             setDateToDatePicker(from, to)
             isChanged = false
         }
-
     }, 1000)
 }
 
@@ -298,9 +297,7 @@ function jqueryActions() {
         $('.drp-calendar.right .calendar-time').css({'padding-left': '8px', 'padding-bottom': '8px',})
         $('.drp-calendar').css({'float': 'none',})
         $('.drp-calendar.left').css({'padding-bottom': '0',})
-
         $('.drp-selected').css({'display': 'none',})
-
         $('.btn-primary').css({
             'background-color': '#EAEAEA',
             'border': 'none',
@@ -321,17 +318,14 @@ function jqueryActions() {
             'display': 'inline-block',
             'font-size': '13px',
         })
-
         $('.daterangepicker .drp-buttons').css({
             'display': 'flex',
             'justify-content': 'space-around'
         })
-
         $('.daterangepicker').css({
             'border': '3px solid #EAEAEA',
             'border-radius': '10px'
         })
-
         $('#mainHeadMenuButton').click(() => {
             if ($('#checkbox3').is(':checked')) {
                 $('#checkbox3').prop('checked', false);
@@ -340,7 +334,6 @@ function jqueryActions() {
             }
             self.onResize()
         })
-
     });
 
     $(document).undelegate(".accordeon > li > a, .lineLevel > li > a", 'click')
@@ -580,68 +573,65 @@ function horizontalNavigation() {
 
     $('#horizontalNavigation').html(html.showHtml())
 
-    // ЦЕХ
-    if (typeof $('[statename="section"].horizontalNavigation').html() == 'undefined'
-        && typeof $('[statename="machine"].horizontalNavigation').html() == 'undefined') { // workshop, section, machine
+    const machineNav = $('[statename="machine"].horizontalNavigation').html()?.toLowerCase().replace(/\s+/g, '');
+    const sectionNav = $('[statename="section"].horizontalNavigation').html()
+    const workshopNav = $('[statename="workshop"].horizontalNavigation').html()
+    const paginator_a = $('#paginator a')
 
-        let goalEntityName = $('[statename="workshop"].horizontalNavigation').html().toLowerCase().replace(/\s+/g, '');
+    // ЦЕХ
+    if (!sectionNav && !machineNav) {
+        let goalEntityName = workshopNav.toLowerCase().replace(/\s+/g, '');
 
         for (let j = 0; j < structure.length; j++) {
-            let page = structure[j]
-            // если текущая страница первая
-            if (typeof page.name !== 'undefined' && page.name.toLowerCase().replace(/\s+/g, '') == goalEntityName && j == 0 && structure.length > 1) {
-                $('#paginator a')[1].classList.remove('disableLink')
-            } else if (typeof page.name !== 'undefined' && page.name.toLowerCase().replace(/\s+/g, '') == goalEntityName && j == structure.length - 1 && structure.length > 1) {
-                // если текущая страница последняя
-                $('#paginator a')[0].classList.remove('disableLink')
-            } else if (page.name.toLowerCase().replace(/\s+/g, '') == goalEntityName && j !== structure.length - 1 && j != 0) {
-                $('#paginator a').removeClass('disableLink')
+            const pageName = structure[j]?.name.toLowerCase().replace(/\s+/g, '')
+            // если страница первая
+            if (pageName && pageName == goalEntityName && j == 0 && structure.length > 1) {
+                paginator_a[1].classList.remove('disableLink')
+            } else if (pageName && pageName == goalEntityName && j == structure.length - 1 && structure.length > 1) {
+                // если страница последняя
+                paginator_a[0].classList.remove('disableLink')
+            } else if (pageName == goalEntityName && j !== structure.length - 1 && j != 0) {
+                paginator_a.removeClass('disableLink')
             }
         }
         // ЛИНИЯ
-    } else if (typeof $('[statename="machine"].horizontalNavigation').html() == 'undefined'
-        && typeof $('[statename="section"].horizontalNavigation').html() !== 'undefined') { // workshop, section, machine
-
-        let goalEntityName = $('[statename="section"].horizontalNavigation').html().toLowerCase().replace(/\s+/g, '');
+    } else if (!machineNav && sectionNav) {
+        let goalEntityName = sectionNav.toLowerCase().replace(/\s+/g, '');
 
         for (let j = 0; j < structure.length; j++) {
             let sections = structure[j].childs
+
             for (let h = 0; h < sections.length; h++) {
-                let page = sections[h]
-                // если текущая страница первая
-                if (typeof page.name !== 'undefined' && page.name.toLowerCase().replace(/\s+/g, '') == goalEntityName && h == 0 && sections.length > 1) {
-                    $('#paginator a')[1].classList.remove('disableLink')
-                } else if (typeof page.name !== 'undefined' && page.name.toLowerCase().replace(/\s+/g, '') == goalEntityName && h == sections.length - 1 && sections.length > 1) {
-                    // если текущая страница последняя
-                    $('#paginator a')[0].classList.remove('disableLink')
-                } else if (page.name.toLowerCase().replace(/\s+/g, '') == goalEntityName && h !== sections.length - 1 && h != 0) {
-                    $('#paginator a').removeClass('disableLink')
+                const pageName = sections[h]?.name.toLowerCase().replace(/\s+/g, '')
+                // если страница первая
+                if (pageName && pageName == goalEntityName && h == 0 && sections.length > 1) {
+                    paginator_a[1].classList.remove('disableLink')
+                } else if (pageName && pageName == goalEntityName && h == sections.length - 1 && sections.length > 1) {
+                    // если страница последняя
+                    paginator_a[0].classList.remove('disableLink')
+                } else if (pageName == goalEntityName && h !== sections.length - 1 && h != 0) {
+                    paginator_a.removeClass('disableLink')
                 }
             }
         }
         // ОБОРУДОВАНИЕ
-    } else if (typeof $('[statename="machine"].horizontalNavigation').html() !== 'undefined') { // workshop, section, machine
-        let goalEntityName = $('[statename="machine"].horizontalNavigation').html().toLowerCase().replace(/\s+/g, '');
-
+    } else if (machineNav) {
         for (let j = 0; j < structure.length; j++) {
             let sections = structure[j].childs
             for (let h = 0; h < sections.length; h++) {
                 let page = sections[h]
 
                 for (let f = 0; f < page.childs.length; f++) {
-                    // если текущая страница первая
-                    if ($('[stateName="machine"].horizontalNavigation').html()
-                        .toLowerCase()
-                        .replace(/\s+/g, '') == page.childs[f].name.toLowerCase().replace(/\s+/g, '') && f == 0 && page.childs.length > 1) {
-                        $('#paginator a')[1].classList.remove('disableLink')
-                    } else if (typeof page.name !== 'undefined' &&
-                        page.childs[f].name.toLowerCase().replace(/\s+/g, '') == goalEntityName &&
-                        f == page.childs.length - 1 &&
-                        page.childs.length > 1) {
-                        // если текущая страница последняя
-                        $('#paginator a')[0].classList.remove('disableLink')
-                    } else if (page.childs[f].name.toLowerCase().replace(/\s+/g, '') == goalEntityName && f !== page.childs.length - 1 && f !== 0) {
-                        $('#paginator a').removeClass('disableLink')
+                    const pageName = page.childs[f].name.toLowerCase().replace(/\s+/g, '')
+                    // если страница первая
+                    if (machineNav == pageName && f == 0 && page.childs.length > 1) {
+                        paginator_a[1].classList.remove('disableLink')
+                    } else if (page.name && pageName == machineNav &&
+                        f == page.childs.length - 1 && page.childs.length > 1) {
+                        // если страница последняя
+                        paginator_a[0].classList.remove('disableLink')
+                    } else if (pageName == machineNav && f !== page.childs.length - 1 && f !== 0) {
+                        paginator_a.removeClass('disableLink')
                     }
                 }
             }
