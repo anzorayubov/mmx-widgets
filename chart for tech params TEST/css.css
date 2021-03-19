@@ -4,7 +4,7 @@
 }
 
 .legend table {
-    border-spacing: 0px;
+    border-spacing: 0;
     border-collapse: separate;
 }
 
@@ -13,7 +13,31 @@
 }
 
 .tb-legend-keys td:first-child span {
-    height: 16px!important;
-    width: 33px!important;
+    height: 16px !important;
+    width: 33px !important;
     border-radius: 5px;
 }
+
+/* SCROLL */
+tb-legend::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: #fff;
+}
+
+tb-legend::-webkit-scrollbar {
+    height: 10px;
+    width: 8px;
+    background-color: #F5F5F5;
+}
+
+tb-legend::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #dadada;
+}
+
+tb-legend {
+    width: 23%;
+    border-right: 1px solid #eee;
+    margin-right: 4px;
+}
+
