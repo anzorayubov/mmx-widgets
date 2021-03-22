@@ -1,4 +1,4 @@
-var structure = {}
+let structure = {}
 
 function mainHeadMenuButtonClicked() {
     const burgerMenu = $('#burgerMenu')
@@ -104,7 +104,6 @@ function getEntityMap() {
 }
 
 function initialize() {
-    //$("MAT-FAB-TRIGGER")[0].hidden = true
     mainHeadMenuButtonClicked()
     $(document).undelegate("#paginatorNext, #paginatorPrev", 'click')
     $(document).undelegate(".accordeon > li > a, .lineLevel > li > a , .dropdownMenuList >li>a", 'click')
@@ -117,16 +116,16 @@ function initialize() {
     }
 }
 
-let currentTimeInTB = ''
 let oldTime = null
 let isChanged = true
 
 function syncingDates() {
+
     $(document).click(event => {
         const target = event.target
         if (target.nodeName === 'CANVAS') {
             self.ctx.interval.clearAll()
-            // убрать блок с календаря, disable чекбокс, очистить localStorage
+            // убираем блок с календаря, disable чекбокс, очистить localStorage
             $('#toggleForCalendar select').attr('disabled', 'disabled')
             $('.opacity_box').css({'display': 'none'})
             localStorage.removeItem('selectedRealTime')
@@ -144,51 +143,51 @@ function syncingDates() {
         ctx.timewindowFunctions.onUpdateTimewindow(dateFromStorage.from, dateFromStorage.to)
     }
 
-    // каждую секунду записываем время из ТВ в currentTimeInTB
+    let currentTimeInTB = ''
+
     setInterval(() => {
         if (self.ctx && self.ctx.dashboardTimewindow.history) {
-            currentTimeInTB = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs +
-                self.ctx.dashboardTimewindow.history.fixedTimewindow.endTimeMs
+            currentTimeInTB = updateCurrentTime()
         }
     }, 1000)
 
-    function setDateToDatePicker(from, to) {
-        try {
-            $('input[name="daterange"]').data('daterangepicker').setStartDate(from)
-            $('input[name="daterange"]').data('daterangepicker').setEndDate(to)
-            $('i[name="daterange"]').data('daterangepicker').setStartDate(from)
-            $('i[name="daterange"]').data('daterangepicker').setEndDate(to)
-        } catch (e) {
-        }
-    }
-
     // каждую секуду проверяем изменилась ли переменная
     setInterval(() => {
-        if (currentTimeInTB != oldTime) {
-            if (self.ctx && self.ctx.dashboardTimewindow.history) {
-                let timeFrom = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs,
-                    timeTo = self.ctx.dashboardTimewindow.history.fixedTimewindow.endTimeMs,
-                    from = new Date(timeFrom),
-                    to = new Date(timeTo)
-
+        const dashboardTime = self.ctx.dashboardTimewindow
+        if (currentTimeInTB !== oldTime) {
+            if (self.ctx && dashboardTime.history) {
+                const from = new Date(dashboardTime.history.fixedTimewindow.startTimeMs)
+                const to = new Date(dashboardTime.history.fixedTimewindow.endTimeMs)
                 setDateToDatePicker(from, to)
             }
-
             oldTime = currentTimeInTB;
             isChanged = true
         }
 
-        if (self.ctx && self.ctx.dashboardTimewindow.realtime && isChanged) {
-            let timeShift = self.ctx.dashboardTimewindow.realtime.timewindowMs,
-                timeFrom = Date.now() - timeShift,
-                timeTo = Date.now(),
-                from = new Date(timeFrom),
-                to = new Date(timeTo)
+        if (self.ctx && dashboardTime.realtime && isChanged) {
+            const timeShift = dashboardTime.realtime.timewindowMs
+            const from = new Date(Date.now() - timeShift)
+            const to = new Date(Date.now())
 
             setDateToDatePicker(from, to)
             isChanged = false
         }
     }, 1000)
+}
+
+function updateCurrentTime() {
+    return self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs +
+        self.ctx.dashboardTimewindow.history.fixedTimewindow.endTimeMs
+}
+
+function setDateToDatePicker(from, to) {
+    try {
+        $('input[name="daterange"]').data('daterangepicker').setStartDate(from)
+        $('input[name="daterange"]').data('daterangepicker').setEndDate(to)
+        $('i[name="daterange"]').data('daterangepicker').setStartDate(from)
+        $('i[name="daterange"]').data('daterangepicker').setEndDate(to)
+    } catch (e) {
+    }
 }
 
 function jqueryActions() {
@@ -492,10 +491,6 @@ function jqueryActions() {
                 thisClick.statename.value,
             )
         }
-
-        // $(document).undelegate(".accordeon > li > a, .lineLevel > li > a", 'click')
-        // $(document).undelegate("[entityid]", 'click')
-        // $(document).undelegate("#paginatorNext, #paginatorPrev", 'click')
         self.ctx.actionsApi.handleWidgetAction(e, actionDescriptor, entityDescriptor, entityName);
     });
 
@@ -657,11 +652,6 @@ function horizontalNavigation() {
 
         actionDescriptor.targetDashboardStateId = nowState
 
-        // ПОД ВОПРОСОМ!
-        // $(document).undelegate("#paginatorNext, #paginatorPrev",'click')
-        // $(document).undelegate(".accordeon > li > a, .lineLevel > li > a",'click')
-        // $(document).undelegate("[entityid]",'click')
-
         //  Для перехода между состояниями дашборда
         // self.ctx.stateController.openState(goalEntity.id, {}, false)
 
@@ -681,7 +671,6 @@ function disablePrevNextBtn(structure, currentPage) {
             paginator_a[1].classList.remove('disableLink')
         } else if (pageName === currentPage && length - 1 === index && length > 1) {
             paginator_a[0].classList.remove('disableLink')
-            console.log(structure)
         } else if (pageName === currentPage && index !== 0 && length - 1 !== index) {
             paginator_a.removeClass('disableLink')
         }
