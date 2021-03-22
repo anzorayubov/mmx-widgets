@@ -122,9 +122,10 @@ let oldTime = null
 let isChanged = true
 
 function syncingDates() {
-    $(document).click((event) => {
-        // если это canvas - то чистим интервал
-        if (event.target.nodeName === 'CANVAS') {
+    $(document).click(event => {
+        const target = event.target
+
+        if (target.nodeName === 'CANVAS') {
             self.ctx.interval.clearAll()
             // убрать блок с календаря, disable чекбокс, очистить localStorage
             $('#toggleForCalendar select').attr('disabled', 'disabled')
@@ -132,7 +133,7 @@ function syncingDates() {
             localStorage.removeItem('selectedRealTime')
         }
 
-        if (event.target.className === 'horizontalNavigation' && event.target.nodeName === 'A') {
+        if (target.className === 'horizontalNavigation' && target.nodeName === 'A') {
             self.ctx.interval.clearAll()
         }
     })
@@ -508,7 +509,7 @@ function horizontalNavigation() {
 
     class HtmlRow {
         constructor() {
-            this.arrow = `<i class="fa fa-angle-right fa-lg " style="color: #969CBA"></i>`//`<i class="fas fa-angle-right"></i>`
+            this.arrow = `<i class="fa fa-angle-right fa-lg " style="color: #969CBA"></i>`
             this.elements = []
         }
 
@@ -545,7 +546,6 @@ function horizontalNavigation() {
 
             let sections = entityList[ws].childs
 
-
             for (let s = 0; s < sections.length; s++) {
 
                 if (sections[s].id == entityId) {
@@ -573,43 +573,42 @@ function horizontalNavigation() {
 
     $('#horizontalNavigation').html(html.showHtml())
 
+
+    // БЛОКИРОВКА КНОПОК 'СЛЕД'-'ПРЕД'
+
     const machinePage = $('[statename="machine"].horizontalNavigation').html()?.toLowerCase().replace(/\s+/g, '');
-    const sectionPage = $('[statename="section"].horizontalNavigation').html()
-    const workshopPage = $('[statename="workshop"].horizontalNavigation').html()
+    const sectionPage = $('[statename="section"].horizontalNavigation').html()?.toLowerCase().replace(/\s+/g, '');
+    const workshopPage = $('[statename="workshop"].horizontalNavigation').html()?.toLowerCase().replace(/\s+/g, '');
     const paginator_a = $('#paginator a')
 
     // ЦЕХ
     if (!sectionPage && !machinePage) {
-        let goalEntityName = workshopPage.toLowerCase().replace(/\s+/g, '');
-
         for (let j = 0; j < structure.length; j++) {
             const pageName = structure[j]?.name.toLowerCase().replace(/\s+/g, '')
             // если страница первая
-            if (pageName && pageName == goalEntityName && j == 0 && structure.length > 1) {
+            if (pageName && pageName == workshopPage && j == 0 && structure.length > 1) {
                 paginator_a[1].classList.remove('disableLink')
-            } else if (pageName && pageName == goalEntityName && j == structure.length - 1 && structure.length > 1) {
+            } else if (pageName && pageName == workshopPage && j == structure.length - 1 && structure.length > 1) {
                 // если страница последняя
                 paginator_a[0].classList.remove('disableLink')
-            } else if (pageName == goalEntityName && j !== structure.length - 1 && j != 0) {
+            } else if (pageName == workshopPage && j !== structure.length - 1 && j != 0) {
                 paginator_a.removeClass('disableLink')
             }
         }
         // ЛИНИЯ
     } else if (!machinePage && sectionPage) {
-        let goalEntityName = sectionPage.toLowerCase().replace(/\s+/g, '');
-
         for (let j = 0; j < structure.length; j++) {
             let sections = structure[j].childs
 
             for (let h = 0; h < sections.length; h++) {
                 const pageName = sections[h]?.name.toLowerCase().replace(/\s+/g, '')
                 // если страница первая
-                if (pageName && pageName == goalEntityName && h == 0 && sections.length > 1) {
+                if (pageName && pageName == sectionPage && h == 0 && sections.length > 1) {
                     paginator_a[1].classList.remove('disableLink')
-                } else if (pageName && pageName == goalEntityName && h == sections.length - 1 && sections.length > 1) {
+                } else if (pageName && pageName == sectionPage && h == sections.length - 1 && sections.length > 1) {
                     // если страница последняя
                     paginator_a[0].classList.remove('disableLink')
-                } else if (pageName == goalEntityName && h !== sections.length - 1 && h != 0) {
+                } else if (pageName == sectionPage && h !== sections.length - 1 && h != 0) {
                     paginator_a.removeClass('disableLink')
                 }
             }
@@ -663,12 +662,10 @@ function horizontalNavigation() {
                 break
             }
 
-            if (typeof entityList[ws].childs !== 'undefined' && typeof entityList[ws].childs.error == 'undefined' && entityList[ws].childs.length > 0) {
+            if (entityList[ws].childs && !entityList[ws].childs.error && entityList[ws].childs.length > 0) {
                 //Линия есть, тоже пушим
-
                 let sections = entityList[ws].childs
                 for (let s = 0; s < sections.length; s++) {
-
                     if (sections[s].id === nowId) {
                         if (typeof sections[s + shift] == 'undefined')
                             return
@@ -676,9 +673,8 @@ function horizontalNavigation() {
                         break
                     }
 
-                    if (typeof sections[s].childs !== 'undefined' && typeof sections[s].childs.error == 'undefined' && sections[s].childs.length > 0) {
+                    if (sections[s].childs && !sections[s].childs.error && sections[s].childs.length > 0) {
                         //И оборудование есть, пушим финалочку
-
                         for (let m = 0; m < sections[s].childs.length; m++) {
                             let machine = sections[s].childs[m]
                             if (machine.id === nowId) {
@@ -755,8 +751,7 @@ function drawCheckboxForCalendar() {
         $(`.daterangepicker > #toggleForCalendar`).remove()
         $(`.daterangepicker > .opacity_box`).remove()
         $('.daterangepicker').append(`
-            <div class="opacity_box">
-            </div>
+            <div class="opacity_box"></div>
             
             <div id="toggleForCalendar" style="
                 position: fixed;
@@ -926,20 +921,16 @@ function drawCheckboxForCalendar() {
 self.onInit = function () {
 
     self.ctx.interval = {
-        // to keep a reference to all the intervals
         intervals: [],
-        // create another interval
         make(func, duration) {
             let newInterval = setInterval(func, duration)
             this.intervals.push(newInterval)
             return newInterval
         },
-        // clear a single interval
         clear(id) {
             this.intervals.splice(this.intervals.indexOf(id), 1)
             return clearInterval(id)
         },
-        // clear all intervals
         clearAll() {
             this.intervals.forEach((id) => {
                 this.clear(id)
@@ -977,12 +968,13 @@ self.onInit = function () {
         $(this).find('span.span_icon').toggleClass('active');
     })
 
-    $('#burgerMenu').click((event) => {
-        if (event.target.classList.contains('lineLevel') && !event.target.classList.contains('active')
-            || event.target.classList.contains('fa-angle-down') && !event.target.classList.contains('active')) {
-            event.target.classList.add('active')
+    $('#burgerMenu').click(event => {
+        const classList = event.target.classList
+        if (classList.contains('lineLevel') && !classList.contains('active')
+            || classList.contains('fa-angle-down') && !classList.contains('active')) {
+            classList.add('active')
         } else {
-            event.target.classList.remove('active')
+            classList.remove('active')
         }
     })
 
