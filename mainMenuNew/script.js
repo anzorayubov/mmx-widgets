@@ -229,13 +229,10 @@ function jqueryActions() {
         }
 
         $('input[name="daterange"], i[name="daterange"] ').daterangepicker({
-
             timePicker: true,
             timePicker24Hour: true,
-
             startDate: getNowFromToTime().timeFromString,
             endDate: getNowFromToTime().timeToString,
-
             "locale": {
                 "format": "DD.MM",
                 "separator": " - ",
@@ -245,32 +242,10 @@ function jqueryActions() {
                 "toLabel": "До",
                 "customRangeLabel": "Custom",
                 "weekLabel": "W",
-                "daysOfWeek": [
-                    "Вс",
-                    "Пн",
-                    "Вт",
-                    "Ср",
-                    "Чт",
-                    "Пт",
-                    "Сб"
-                ],
-                "monthNames": [
-                    "Январь",
-                    "Февраль",
-                    "Март",
-                    "Апрель",
-                    "Май",
-                    "Июнь",
-                    "Июль",
-                    "Август",
-                    "Сентябрь",
-                    "Октябрь",
-                    "Ноябрь",
-                    "Декабрь"
-                ],
+                "daysOfWeek": ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+                "monthNames": ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
                 "firstDay": 1
             },
-
             linkedCalendars: false,
 
         }, function (start, end, label) {
@@ -331,6 +306,7 @@ function jqueryActions() {
             }
             self.onResize()
         })
+
     });
 
     $(document).undelegate(".accordeon > li > a, .lineLevel > li > a", 'click')
