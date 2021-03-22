@@ -124,7 +124,6 @@ let isChanged = true
 function syncingDates() {
     $(document).click(event => {
         const target = event.target
-
         if (target.nodeName === 'CANVAS') {
             self.ctx.interval.clearAll()
             // убрать блок с календаря, disable чекбокс, очистить localStorage
@@ -290,8 +289,6 @@ function jqueryActions() {
             ctx.timewindowFunctions.onUpdateTimewindow(start.valueOf(), end.valueOf())
         })
 
-        let dateSettings = getNowFromToTime()
-
         // styles for datePicker
         $('.drp-calendar.right').css({'padding': '0',})
         $('.drp-calendar.right .calendar-table').css({'display': 'none',})
@@ -341,14 +338,14 @@ function jqueryActions() {
 
     $(document).delegate(".accordeon > li > a, .lineLevel > li > a", 'click', function (e) {
         e.preventDefault();
-        var menu = $(this).closest('.accordeon');
+        const menu = $(this).closest('.accordeon');
 
         if ($(this).next().is(':visible') === false) {
             menu.find('li').removeClass('slide active')
             menu.find('ul').slideUp()
         }
 
-        if ($(this).next()[0].localName == 'span') {
+        if ($(this).next()[0].localName === 'span') {
             $(this).next().next().slideToggle()
         } else {
             $(this).next().slideToggle()
@@ -542,7 +539,7 @@ function horizontalNavigation() {
             break;
         }
 
-        if (typeof entityList[ws].childs !== 'undefined' && typeof entityList[ws].childs.error == 'undefined' && entityList[ws].childs.length > 0) {
+        if (entityList[ws].childs && !entityList[ws].childs.error && entityList[ws].childs.length > 0) {
 
             let sections = entityList[ws].childs
 
@@ -554,7 +551,7 @@ function horizontalNavigation() {
                     break;
                 }
 
-                if (typeof sections[s].childs !== 'undefined' && typeof sections[s].childs.error == 'undefined' && sections[s].childs.length > 0) {
+                if (sections[s].childs && !sections[s].childs.error && sections[s].childs.length > 0) {
                     for (let m = 0; m < sections[s].childs.length; m++) {
                         let machine = sections[s].childs[m]
                         if (machine.id == entityId) {
@@ -566,75 +563,22 @@ function horizontalNavigation() {
                     }
                 }
             }
-
         }
-
     }
 
     $('#horizontalNavigation').html(html.showHtml())
 
-
     // БЛОКИРОВКА КНОПОК 'СЛЕД'-'ПРЕД'
-
     const machinePage = $('[statename="machine"].horizontalNavigation').html()?.toLowerCase().replace(/\s+/g, '');
     const sectionPage = $('[statename="section"].horizontalNavigation').html()?.toLowerCase().replace(/\s+/g, '');
     const workshopPage = $('[statename="workshop"].horizontalNavigation').html()?.toLowerCase().replace(/\s+/g, '');
-    const paginator_a = $('#paginator a')
 
-    // ЦЕХ
-    if (!sectionPage && !machinePage) {
-        for (let j = 0; j < structure.length; j++) {
-            const pageName = structure[j]?.name.toLowerCase().replace(/\s+/g, '')
-            // если страница первая
-            if (pageName && pageName == workshopPage && j == 0 && structure.length > 1) {
-                paginator_a[1].classList.remove('disableLink')
-            } else if (pageName && pageName == workshopPage && j == structure.length - 1 && structure.length > 1) {
-                // если страница последняя
-                paginator_a[0].classList.remove('disableLink')
-            } else if (pageName == workshopPage && j !== structure.length - 1 && j != 0) {
-                paginator_a.removeClass('disableLink')
-            }
-        }
-        // ЛИНИЯ
-    } else if (!machinePage && sectionPage) {
-        for (let j = 0; j < structure.length; j++) {
-            let sections = structure[j].childs
-
-            for (let h = 0; h < sections.length; h++) {
-                const pageName = sections[h]?.name.toLowerCase().replace(/\s+/g, '')
-                // если страница первая
-                if (pageName && pageName == sectionPage && h == 0 && sections.length > 1) {
-                    paginator_a[1].classList.remove('disableLink')
-                } else if (pageName && pageName == sectionPage && h == sections.length - 1 && sections.length > 1) {
-                    // если страница последняя
-                    paginator_a[0].classList.remove('disableLink')
-                } else if (pageName == sectionPage && h !== sections.length - 1 && h != 0) {
-                    paginator_a.removeClass('disableLink')
-                }
-            }
-        }
-        // ОБОРУДОВАНИЕ
-    } else if (machinePage) {
-        for (let j = 0; j < structure.length; j++) {
-            let sections = structure[j].childs
-            for (let h = 0; h < sections.length; h++) {
-                let page = sections[h]
-
-                for (let f = 0; f < page.childs.length; f++) {
-                    const pageName = page.childs[f].name.toLowerCase().replace(/\s+/g, '')
-                    // если страница первая
-                    if (machinePage == pageName && f == 0 && page.childs.length > 1) {
-                        paginator_a[1].classList.remove('disableLink')
-                    } else if (page.name && pageName == machinePage &&
-                        f == page.childs.length - 1 && page.childs.length > 1) {
-                        // если страница последняя
-                        paginator_a[0].classList.remove('disableLink')
-                    } else if (pageName == machinePage && f !== page.childs.length - 1 && f !== 0) {
-                        paginator_a.removeClass('disableLink')
-                    }
-                }
-            }
-        }
+    if (!sectionPage && !machinePage) {// ЦЕХ
+        disablePrevNextBtn(structure, workshopPage)
+    } else if (!machinePage && sectionPage) {// ЛИНИЯ
+        disablePrevNextBtn(structure, sectionPage)
+    } else if (machinePage) {// ОБОРУДОВАНИЕ
+        disablePrevNextBtn(structure, machinePage)
     }
 
     $(document).delegate("#paginatorNext, #paginatorPrev", 'click', function (e) {
@@ -724,6 +668,28 @@ function horizontalNavigation() {
         self.ctx.actionsApi.handleWidgetAction(e, actionDescriptor, entityDescriptor, entityName)
     })
     // end delegate paginator
+}
+
+function disablePrevNextBtn(structure, currentPage) {
+    structure.forEach((item, index) => {
+        const pageName = item.name.toLowerCase().replace(/\s+/g, '')
+        const haveChild = item.childs?.length || 0
+        const length = structure.length
+        const paginator_a = $('#paginator a')
+
+        if (currentPage === pageName && index === 0 && length > 1) {
+            paginator_a[1].classList.remove('disableLink')
+        } else if (pageName === currentPage && length - 1 === index && length > 1) {
+            paginator_a[0].classList.remove('disableLink')
+            console.log(structure)
+        } else if (pageName === currentPage && index !== 0 && length - 1 !== index) {
+            paginator_a.removeClass('disableLink')
+        }
+
+        if (haveChild) {
+            disablePrevNextBtn(item.childs, currentPage)
+        }
+    })
 }
 
 function drawCheckboxForCalendar() {
