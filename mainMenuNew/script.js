@@ -337,14 +337,12 @@ function jqueryActions() {
             constructor() {
                 this.rows = []
             }
-
             addElement(id, entityType, name, stateName, entityName) {
                 if (stateName === self.ctx.stateController.stateValue)
                     this.rows.push(`<li class="activeState"><a  entityName=${entityName} stateName="${stateName}" entityId=${id} entityType=${entityType}>${name} </a></li>`)
                 else
                     this.rows.push(`<li> <a entityName=${entityName} stateName="${stateName}" entityId=${id} entityType=${entityType}>${name}  </a>`)
             }
-
             showHtml() {
                 let html = `<ul class='dropdownMenuList'>`
                 for (let i = 0; i < this.rows.length; i++) {
@@ -355,30 +353,31 @@ function jqueryActions() {
             }
         }
 
-        let thisClick = event.currentTarget.attributes
-        let offsetLeft = event.currentTarget.offsetLeft
-        let customEntityType = thisClick.statename.value
-        let html = new HtmlRow()
-
+        const attributes = event.currentTarget.attributes
+        const entityId = attributes.entityid.value
+        const entityType = attributes.entitytype.value
+        const entityName = attributes.entityName.value
+        const offsetLeft = event.currentTarget.offsetLeft
+        const customEntityType = attributes.statename.value
+        const html = new HtmlRow()
 
         switch (customEntityType) {
             case 'machine': {
-                html.addElement(thisClick.entityid.value, thisClick.entitytype.value, 'Параметры работы', 'machine', thisClick.entityName.value)
-                html.addElement(thisClick.entityid.value, thisClick.entitytype.value, 'Технологические параметры', 'machine_parameters', thisClick.entityName.value)
-                html.addElement(thisClick.entityid.value, thisClick.entitytype.value, 'Архив событий', 'machine_alarms', thisClick.entityName.value)
-
+                html.addElement(entityId, entityType, 'Параметры работы', 'machine', entityName)
+                html.addElement(entityId, entityType, 'Технологические параметры', 'machine_parameters', entityName)
+                html.addElement(entityId, entityType, 'Архив событий', 'machine_alarms', entityName)
                 break;
             }
             case 'section': {
-                html.addElement(thisClick.entityid.value, thisClick.entitytype.value, 'Параметры работы', 'section')
-                html.addElement(thisClick.entityid.value, thisClick.entitytype.value, 'Архив событий', 'section_alarms')
-                html.addElement(thisClick.entityid.value, thisClick.entitytype.value, 'Отчет', 'section_report')
+                html.addElement(entityId, entityType, 'Параметры работы', 'section')
+                html.addElement(entityId, entityType, 'Архив событий', 'section_alarms')
+                html.addElement(entityId, entityType, 'Отчет', 'section_report')
                 break;
             }
             case 'workshop': {
-                html.addElement(thisClick.entityid.value, thisClick.entitytype.value, 'Параметры работы', 'workshop')
-                html.addElement(thisClick.entityid.value, thisClick.entitytype.value, 'Архив событий', 'workshop_alarms')
-                html.addElement(thisClick.entityid.value, thisClick.entitytype.value, 'Отчет', 'workshop_report')
+                html.addElement(entityId, entityType, 'Параметры работы', 'workshop')
+                html.addElement(entityId, entityType, 'Архив событий', 'workshop_alarms')
+                html.addElement(entityId, entityType, 'Отчет', 'workshop_report')
                 break;
             }
         }
@@ -395,24 +394,21 @@ function jqueryActions() {
                 $('#dropdownMenu').css('visibility', 'hidden')
             }
         }, 1000);
-
     });
+
+    const actionDescriptors = self.ctx.actionsApi.getActionDescriptors('elementClick')
 
     $('#toDashboardAdministration').click((e) => {
         e.preventDefault()
-        let actionDescriptor = self.ctx.actionsApi.getActionDescriptors('elementClick')[2]
-        self.ctx.actionsApi.handleWidgetAction(e, actionDescriptor, null, null);
+        self.ctx.actionsApi.handleWidgetAction(e, actionDescriptors[2], null, null);
     })
     $('#toDashboardSisRequirements').click((e) => {
         e.preventDefault()
-        let actionDescriptor = self.ctx.actionsApi.getActionDescriptors('elementClick')[3]
-        self.ctx.actionsApi.handleWidgetAction(e, actionDescriptor, null, null);
+        self.ctx.actionsApi.handleWidgetAction(e, actionDescriptors[3], null, null);
     })
-
     $(document).delegate("#toDashboardEdit", 'click', function (e) {
         e.preventDefault();
-        let actionDescriptor = self.ctx.actionsApi.getActionDescriptors('elementClick')[1]
-        self.ctx.actionsApi.handleWidgetAction(e, actionDescriptor, null, null);
+        self.ctx.actionsApi.handleWidgetAction(e, actionDescriptors[1], null, null);
     });
     $(document).delegate("#roleTologOut", 'click', function (e) {
         localStorage.removeItem('jwt_token')
@@ -421,7 +417,6 @@ function jqueryActions() {
         localStorage.removeItem('refresh_token_expiration')
         window.location.href = 'http://' + window.location.host + '/login';
     })
-
     $(document).delegate("[entityid]", 'click', function (e) {
 
         const machineStatesMap = {
@@ -434,43 +429,43 @@ function jqueryActions() {
         }
 
         function generateMachineState(name, state) {
-            if (state == 'machine_alarms' ||
-                state.indexOf('machine') == -1 ||
+            if (state === 'machine_alarms' ||
+                state.indexOf('machine') === -1 ||
                 typeof machineStatesMap[name] == 'undefined')
                 return state
-            if (state == 'machine')
+            if (state === 'machine')
                 return machineStatesMap[name] + '_main'
-            if (state == 'machine_parameters')
+            if (state === 'machine_parameters')
                 return machineStatesMap[name] + '_graph'
         }
 
         e.preventDefault();
-        let thisClick = e.currentTarget.attributes
-        let nowObj = self.ctx.actionsApi.getActiveEntityInfo()
-        let entityId = nowObj.entityId.id
+        const attributes = e.currentTarget.attributes
+        const nowObj = self.ctx.actionsApi.getActiveEntityInfo()
+        const entityId = nowObj.entityId.id
+        const stateName = attributes.statename.value
+        const entityType = attributes.entitytype.value
 
-        if (thisClick.entityid.value == entityId && self.ctx.stateController.stateValue == thisClick.statename.value)
+        if (attributes.entityid.value === entityId && self.ctx.stateController.stateValue === stateName)
             return
 
-        let entityName = e.currentTarget.innerHTML
-        let entityDescriptor = {
-            id: thisClick.entityid.value,
-            entityType: thisClick.entitytype.value
+        const entityName = e.currentTarget.innerHTML
+        const entityDescriptor = {
+            id: attributes.entityid.value,
+            entityType: entityType
         }
         let actionDescriptor = self.ctx.actionsApi.getActionDescriptors('elementClick')[0]
 
-        if (thisClick.entitytype.value.toLowerCase() !== 'device')
-            actionDescriptor.targetDashboardStateId = thisClick.statename.value
+        if (entityType.toLowerCase() !== 'device')
+            actionDescriptor.targetDashboardStateId = stateName
         else {
             actionDescriptor.targetDashboardStateId = generateMachineState(
-                thisClick.entityName.value,
-                thisClick.statename.value,
+                attributes.entityName.value,
+                stateName,
             )
         }
         self.ctx.actionsApi.handleWidgetAction(e, actionDescriptor, entityDescriptor, entityName);
     });
-
-
 }
 
 function horizontalNavigation() {
@@ -480,12 +475,9 @@ function horizontalNavigation() {
             this.arrow = `<i class="fa fa-angle-right fa-lg " style="color: #969CBA"></i>`
             this.elements = []
         }
-
         addElement(id, entityType, name, stateName) {
             this.elements.push(`style="padding-right:10px" class="horizontalNavigation" stateName="${stateName}" entityId=${id} entityName=${name.replace(/\s+/g, '')} entityType=${entityType}>${name}`)
-
         }
-
         showHtml() {
             let html = ``
             for (let i = 0; i < this.elements.length - 1; i++) {
@@ -504,28 +496,22 @@ function horizontalNavigation() {
     let html = new HtmlRow();
 
     for (let ws = 0; ws < entityList.length; ws++) {
-
-        if (entityList[ws].id == entityId) {
+        if (entityList[ws].id === entityId) {
             html.addElement(entityList[ws].id, entityList[ws].entity_type, entityList[ws].name, 'workshop')
             break;
         }
-
         if (entityList[ws].childs && !entityList[ws].childs.error && entityList[ws].childs.length > 0) {
-
             let sections = entityList[ws].childs
-
             for (let s = 0; s < sections.length; s++) {
-
-                if (sections[s].id == entityId) {
+                if (sections[s].id === entityId) {
                     html.addElement(entityList[ws].id, entityList[ws].entity_type, entityList[ws].name, 'workshop')
                     html.addElement(sections[s].id, sections[s].entity_type, sections[s].name, 'section')
                     break;
                 }
-
                 if (sections[s].childs && !sections[s].childs.error && sections[s].childs.length > 0) {
                     for (let m = 0; m < sections[s].childs.length; m++) {
                         let machine = sections[s].childs[m]
-                        if (machine.id == entityId) {
+                        if (machine.id === entityId) {
                             html.addElement(entityList[ws].id, entityList[ws].entity_type, entityList[ws].name, 'workshop')
                             html.addElement(sections[s].id, sections[s].entity_type, sections[s].name, 'section')
                             html.addElement(machine.id, machine.entity_type, machine.name, 'machine')
@@ -553,7 +539,6 @@ function horizontalNavigation() {
     }
 
     $(document).delegate("#paginatorNext, #paginatorPrev", 'click', function (e) {
-
         let shift = 0
         switch (e.target.id.toLowerCase()) {
             case "paginatornext":
@@ -659,10 +644,8 @@ function disablePrevNextBtn(structure, currentPage) {
 
 function drawCheckboxForCalendar() {
     self.ctx.interval.clearAll()
-
     // при подгрузке страницы
     let selectedRealTime = JSON.parse(localStorage.getItem('selectedRealTime'))
-    var intervalForRealTime
 
     if (selectedRealTime) {
         self.ctx.interval.clearAll()
@@ -674,26 +657,21 @@ function drawCheckboxForCalendar() {
     }
 
     $(`#datepicker`).click((event) => {
-        let daterangepicker = $('.daterangepicker')
-
-        let top = daterangepicker[daterangepicker.length - 1].getBoundingClientRect().top
-        let left = daterangepicker[daterangepicker.length - 1].getBoundingClientRect().left
+        let dateRangePicker = $('.daterangepicker')
+        let top = dateRangePicker[dateRangePicker.length - 1].getBoundingClientRect().top
 
         $(`.daterangepicker > #toggleForCalendar`).remove()
         $(`.daterangepicker > .opacity_box`).remove()
-        $('.daterangepicker').append(`
+        dateRangePicker.append(`
             <div class="opacity_box"></div>
-            
             <div id="toggleForCalendar" style="
                 position: fixed;
                 display: flex;
                 justify-content: space-around;
                 width: 242px;
                 top: ${top + 300}px;">
-                
                 <input id="toggleInp" style=" width: 20px; height: 20px;" type="checkbox">
                 <label style="display:flex; align-items:center; font-size: 12px; color:gray;">Последние:</label>
-                
                 <select disabled="disabled">
                     <option></option>
                     <option data-realTime="3600000">1 час</option>
@@ -703,7 +681,6 @@ function drawCheckboxForCalendar() {
                     <option data-realTime="86400000">1 день</option>
                 </select>
             </div>
-            
         `)
         $('.opacity_box').css({
             'position': 'fixed',
@@ -765,7 +742,7 @@ function drawCheckboxForCalendar() {
 
                 localStorage.removeItem('selectedRealTime')
                 Array.from($(`option[data-realTime]`)).forEach((opt) => {
-                    if (opt.innerHTML == '') {
+                    if (opt.innerHTML === '') {
                         $(opt).prop('selected', true)
                     }
                 })
@@ -774,7 +751,7 @@ function drawCheckboxForCalendar() {
 
         toggleForCalendarSelect.change((event) => {
             let value
-            if (event.target.value != '') {
+            if (event.target.value !== '') {
                 switch (event.target.value) {
                     case '1 час':
                         value = 3600000
@@ -795,7 +772,6 @@ function drawCheckboxForCalendar() {
 
                 $(`.applyBtn`).click(() => {
                     let checkboxes = $(`#toggleForCalendar input[type="checkbox"]`)
-
                     if (checkboxes[checkboxes.length - 1].checked) {
                         let realtimeObj = {
                             value: value,
