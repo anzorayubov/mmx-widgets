@@ -192,7 +192,6 @@ function getData() {
 }
 
 function drawTable(data) {
-
     for (let entity in data) {
         let tableForInfo = ``
         let tableForParameters = ``
@@ -200,47 +199,37 @@ function drawTable(data) {
         let name = data[entity]?.name
         let id = data[entity]?.id
         let entityNameID = entity.replace(/(\s|\.)/g, "")
+
         if (!$(`#${entityNameID}`).html()) {
-            $('#entitiesTables').append(`
-            <div id=${entityNameID} class="entityDiv">
-                <div id="${entityNameID}_entityName" class="sectionNameHeader"></div>
-                <div id="${entityNameID}_headerTableAttrs" class="headerTableAttrs">
-                    <div id="${entityNameID}_nowStatus" class="nowStatus">
-                        <div id="${entityNameID}_nowStatusImg"></div>
-                        <div id="${entityNameID}_nowStatusText" class="nowStatusText"></div>
-                    </div>
-                	<div class="qtyErrorsNow">
-                	    <div id="${entityNameID}_qtyErrorsNowImg">
-                	       <img style="width: 25px; margin:0 5px 0 0; " src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACXSURBVHgB7ZFbDYAwDEUbggAkIAEJSEACTpACDpAwHICD4WA4KCWMZBQWHun+dpKbPdrspBlAJBIcRGwoLYSCHs8oGneCivI3ItunthX+8CRidS0uYvdGXMTOo/3DTlqErsDpERedBD6RnbKmVF9F/Z3AIyqPPUjjiAyXJCCAnbKjTJTLxCnIUFCUryglWSgDu5shEgnOCpO8NEm2fgk/AAAAAElFTkSuQmCC">
-                	    </div>
-                        <div id="${entityNameID}_qtyErrorsNowText" class="qtyErrorsNowText"></div>
-                	</div>
-                </div>
-                <div class="box">
-                    <div id="${entityNameID}_info_center" class="oee_percent_div">
-                    </div>
-                    <canvas id="${entityNameID}_myChart" class="myChart" width="100" height="100"></canvas>
-                    <div class="column" id='${entityNameID}_oee'> </div>
-                </div>
-            </div>`)
+            $('#entitiesTables').append(tableTemplate(entityNameID))
+        }
+
+        const convertValues = {
+            'oee': 'ОЕЕ',
+            'oee_availability': 'Доступность',
+            'oee_productivity': 'Производительность',
+            'oee_quality': 'Качество',
+
+            'TP': 'Факт',
+            'DP': 'Брак',
+            'OT': 'Работа',
+            'NOT': 'Простой',
+            'TPP': 'План',
+            'GP': 'Норма',
+            'good': 'Норма',
+            'bad': 'Брак',
         }
 
         for (let key in data[entity]) {
-            let keyType = key;
             let value = data[entity][key]
 
             if (key === 'oee' || key === 'oee_availability' || key === 'oee_productivity' || key === 'oee_quality') {
-                if (value == undefined)
+                if (!value)
                     continue
 
                 tableForOEE += `
-              <span class="parameter_name">${
-                    key === 'oee' ? 'ОЕЕ' :
-                        key === 'oee_availability' ? 'Доступность' :
-                            key === 'oee_productivity' ? 'Производительность' :
-                                key === 'oee_quality' ? 'Качество' : key}
-                  <span>
-                        &nbsp;${value.value == null ?
+              <span class="parameter_name">${convertValues[key] || key}
+                  <span>&nbsp;${value.value == null ?
                     'н&nbsp;/&nbsp;д' : value.value == undefined ?
                         'н&nbsp;/&nbsp;д' : value.value.toFixed(1) + '%'}
                   </span>
@@ -253,16 +242,10 @@ function drawTable(data) {
                     if (value[key] == null)
                         value[key] = 0
                     tableForOEE += `
-                    <span style="font-size: 12px; color: #c1c0c0;">${
-                        key === 'TP' ? 'Факт' :
-                            key === 'DP' ? 'Брак' :
-                                key === 'OT' ? 'Работа' :
-                                    key === 'NOT' ? 'Простой' :
-                                        key === 'TPP' ? 'План' :
-                                            key === 'GP' ? 'Норма' :
-                                                key === 'good' ? 'Норма' :
-                                                    key === 'bad' ? 'Брак' :
-                                                        key} : ${(key === 'OT' || key === 'NOT') ? msToTime(value[key] * 60000) : value[key]}</span>`
+                    <span style="font-size: 12px; color: #c1c0c0;">
+                        ${convertValues[key]} : ${(key === 'OT' || key === 'NOT') ?
+                        msToTime(value[key] * 60000) : value[key]}
+                    </span>`
                 }
                 tableForOEE += `</span>`
             }
@@ -317,6 +300,32 @@ function drawTable(data) {
     }
 }
 
+function tableTemplate(entityNameID) {
+    return `
+        <div id=${entityNameID} class="entityDiv">
+            <div id="${entityNameID}_entityName" class="sectionNameHeader"></div>
+            <div id="${entityNameID}_headerTableAttrs" class="headerTableAttrs">
+                <div id="${entityNameID}_nowStatus" class="nowStatus">
+                    <div id="${entityNameID}_nowStatusImg"></div>
+                    <div id="${entityNameID}_nowStatusText" class="nowStatusText"></div>
+                </div>
+            	<div class="qtyErrorsNow">
+            	    <div id="${entityNameID}_qtyErrorsNowImg">
+            	       <img style="width: 25px; margin:0 5px 0 0; " src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACXSURBVHgB7ZFbDYAwDEUbggAkIAEJSEACTpACDpAwHICD4WA4KCWMZBQWHun+dpKbPdrspBlAJBIcRGwoLYSCHs8oGneCivI3ItunthX+8CRidS0uYvdGXMTOo/3DTlqErsDpERedBD6RnbKmVF9F/Z3AIyqPPUjjiAyXJCCAnbKjTJTLxCnIUFCUryglWSgDu5shEgnOCpO8NEm2fgk/AAAAAElFTkSuQmCC">
+            	    </div>
+                    <div id="${entityNameID}_qtyErrorsNowText" class="qtyErrorsNowText"></div>
+            	</div>
+            </div>
+            <div class="box">
+                <div id="${entityNameID}_info_center" class="oee_percent_div">
+                </div>
+                <canvas id="${entityNameID}_myChart" class="myChart" width="100" height="100"></canvas>
+                <div class="column" id='${entityNameID}_oee'> </div>
+            </div>
+        </div>
+    `
+}
+
 self.onDataUpdated = function () {
     if (!self.ctx)
         return
@@ -342,4 +351,3 @@ self.onDestroy = function () {
     } catch (e) {
     }
 }
-

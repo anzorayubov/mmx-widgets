@@ -48,7 +48,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="liveEdit" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -79,7 +79,7 @@
       <workItem from="1615994184872" duration="624000" />
       <workItem from="1616054384579" duration="1136000" />
       <workItem from="1616151554884" duration="645000" />
-      <workItem from="1616481696194" duration="3355000" />
+      <workItem from="1616481696194" duration="7410000" />
     </task>
     <servers />
   </component>
