@@ -201,7 +201,7 @@ function drawTable(data) {
         let entityNameID = entity.replace(/(\s|\.)/g, "")
 
         if (!$(`#${entityNameID}`).html()) {
-            $('#entitiesTables').append(tableTemplate(entityNameID))
+            $('#entitiesTables').append(createTemplate(entityNameID))
         }
 
         const convertValues = {
@@ -300,7 +300,7 @@ function drawTable(data) {
     }
 }
 
-function tableTemplate(entityNameID) {
+function createTemplate(entityNameID) {
     return `
         <div id=${entityNameID} class="entityDiv">
             <div id="${entityNameID}_entityName" class="sectionNameHeader"></div>
