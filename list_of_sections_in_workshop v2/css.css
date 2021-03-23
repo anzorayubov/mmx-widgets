@@ -1,0 +1,217 @@
+.parameter_name {
+    display: flex;
+    justify-content: space-between;
+}
+
+.parameter_name span {
+    font-size: 14px;
+    text-align: right;
+    color: #43C6C9
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    color: gray;
+    width: 50%;
+}
+
+.column span {
+    font-size: 14px;
+}
+
+.headerTableAttrs {
+    margin: 5px 20px 16px 20px;
+    height: 30px;
+    display: flex;
+    justify-content: space-around;
+    border-radius: 10px;
+}
+
+.entityImg {
+    /*padding-left: 10px;*/
+}
+
+.headerTableAttrs > div {
+    width: 50%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    /*padding-left: 22px;*/
+    border: 1px solid #eee;
+    transition: background-color 300ms;
+}
+
+.headerTableAttrs > div:nth-child(1) {
+    border-radius: 10px 0 0 10px;
+    border-right: 1px solid #816e6e;
+}
+
+.headerTableAttrs > div:nth-child(2) {
+    border-radius: 0 10px 10px 0;
+}
+
+.entityDiv {
+    background: #ffffff;
+    margin-bottom: 20px;
+    border-radius: 20px /*0 0 20px 20px;*/;
+    width: 98%;
+    padding-bottom: 8px;
+}
+
+.sectionNameHeader {
+    border-radius: 20px 20px 0 0;
+    background-color: #EAEAEA;
+    height: 35px;
+
+}
+
+.sectionNameHeader:hover {
+    background-color: rgb(208 209 234);
+}
+
+h4 {
+    margin: 0 auto;
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 30px;
+    text-transform: uppercase;
+    /*line-height: 2rem;*/
+}
+
+.oee_text {
+    margin-top: -13px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #43C6C9;
+}
+
+.oee_percent {
+    padding-left: 6px;
+    margin-top: 0px;
+    font-size: 18px;
+    font-weight: bold;
+    height: 0px;
+}
+
+.qtyErrorsNow {
+    background-color: #fff;
+    color: #fff;
+    border-left: none !important;
+}
+
+.nowStatus {
+    border-right: none !important;
+}
+
+.qtyErrorsNowText {
+    font-size: 12px;
+}
+
+.nowStatusImg img {
+    margin-left: 5px;
+}
+
+.analitycButton {
+    padding: 0;
+    border: none;
+    border-radius: 20px;
+    margin-left: 5%;
+    background-color: #ffe630;
+    width: 140px;
+    height: 30px;
+    font-size: 0.7em;
+    font-weight: 600;
+}
+
+.reportButton {
+    padding: 0;
+    border: none;
+    border-radius: 20px;
+    background-color: #ffe630;
+    width: 140px;
+    height: 30px;
+    font-size: 0.7em;
+    font-weight: 600;
+    position: absolute;
+    right: 5%;
+}
+
+.spacer {
+
+}
+
+.leftColumn {
+    font-weight: bold;
+    width: 50%;
+    font-size: 0.7em;
+}
+
+.rightColumn {
+    font-size: 0.7em;
+    text-align: right;
+    width: 50%;
+}
+
+.mainImg {
+    max-width: 90%;
+    /*margin-left: 5%;*/
+    height: 100px;
+    width: 120px;
+}
+
+table {
+    /*margin-left: 5%;*/
+    /*margin-right: 5%;*/
+    max-width: 90%;
+    border-collapse: collapse;
+    color: gray;
+}
+
+#oee {
+    /*width: 90%;*/
+}
+
+h5 {
+    margin: 5px 0;
+    text-align: center;
+}
+
+.box {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    padding: 0 22px;
+    padding-bottom: 10px;
+}
+
+.entityDiv > span {
+    color: gray;
+    font-weight: bold;
+    margin-left: 172px;
+    font-size: 15px;
+}
+
+.myChart {
+    width: 120px !important;
+    height: 120px !important;
+}
+
+.oee_percent_div {
+    font-size: 18px;
+    font-weight: bold;
+    color: #43C6C9;
+    position: absolute;
+    top: 39px;
+    left: 55px;
+    text-align: center;
+}
+
+#inWork {
+    display: flex;
+    flex-direction: column;
+}
+
+#inWork span:first-child {
+    margin-right: 4px;
+}

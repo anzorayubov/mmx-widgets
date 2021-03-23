@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f16758c5-e835-40eb-982c-d94bdb0a97aa" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/chart for tech params TEST/css.css" beforeDir="false" afterPath="$PROJECT_DIR$/chart for tech params TEST/css.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/list_of_sections_in_workshop v2/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/list_of_sections_in_workshop v2/css.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/list_of_sections_in_workshop v2/dependencies.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/list_of_sections_in_workshop v2/html.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/list_of_sections_in_workshop v2/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,6 +75,7 @@
       <workItem from="1615994184872" duration="624000" />
       <workItem from="1616054384579" duration="1136000" />
       <workItem from="1616151554884" duration="645000" />
+      <workItem from="1616481696194" duration="1164000" />
     </task>
     <servers />
   </component>
