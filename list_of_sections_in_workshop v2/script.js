@@ -1,15 +1,10 @@
-let answerJSON;
-let isFirstReq = true
-let statesInfo = {}
-var oldKeyValueJson = {}
-var myCharts = {}
+let myCharts = {}
 let entityNameForDestroy = ''
 const statesImgs = {
     "0": `<img style="width: 11px;  margin: 4px 7px 0 0; " src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAgCAYAAAASYli2AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC8SURBVHgB7ZbBDcIwDEWdTtIRMiIbABPACkzQbgIbhA2MLYIaIvu3h/bmL6WK7JenNocmRBJmzjImGYW/0flITiBfm79GG61lR+bz1e5lMoSQT/okkCTphJAfZLxB/2XUIK/CKwAeRm2dl6+4GPtx91YhPjXQ3970e2dITX6gnRPCEIYwhCFshPLzvfUNqZ29RZDXCThnT9ZCyMvjCYBiCCF/yEE/g/68sbb0eO/LUoVGXi5Bpc6z9xqI/wA78ekPPbVOHwAAAABJRU5ErkJggg==">`,
     "5": `<img style="width: 25px;  margin: 2px 5px 0 0; " src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAEaSURBVHgB7dfhDYIwEIbhbwRHYARHYARGYBQ30A1kA92AERyhIzhCbZMjNgqUwpXU+D1JE3+YO16VBAEiIiIiIiqMtfbgTuNOhV/lL94dY99a5CCfVu3OEcpGIrw7tLmh548lRitoIsK7QNNIxOC59bc8E9FBkyyas/pT2y1CljWREIMVdo2QhXUkpEei3SNk6TUS4u+TxTd9qRFJMSVFPOVCTGpMSRH+IqrgPaelMcVGpMQUH7EgpnfnIa/LjojETOmQy5YIpMV0yEUjIphlIiHqT83D4qtWhMwzkZAa2uz4E61ZGyEz+0jIAdrc0JtmhMycey7T/W8RLG01I4K5jf3+ieWJCJZWslj9K5dvp80xm4iIiIjoP7wALerdhix9EWYAAAAASUVORK5CYII=">`,
     "6": `<img style="width: 11px;  margin: 4px 7px 0 0; " src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAgCAYAAAASYli2AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC8SURBVHgB7ZbBDcIwDEWdTtIRMiIbABPACkzQbgIbhA2MLYIaIvu3h/bmL6WK7JenNocmRBJmzjImGYW/0flITiBfm79GG61lR+bz1e5lMoSQT/okkCTphJAfZLxB/2XUIK/CKwAeRm2dl6+4GPtx91YhPjXQ3970e2dITX6gnRPCEIYwhCFshPLzvfUNqZ29RZDXCThnT9ZCyMvjCYBiCCF/yEE/g/68sbb0eO/LUoVGXi5Bpc6z9xqI/wA78ekPPbVOHwAAAABJRU5ErkJggg==">`
 }
-let accessRequest = [];
 
 function drawChart(entityName, oee) {
     if (!oee)
@@ -17,42 +12,39 @@ function drawChart(entityName, oee) {
 
     let entityNameID = entityName.replace(' ', "")
     entityNameForDestroy = entityName
-    if (!myCharts[entityName]) {
-        let thisctx = $(`#${entityNameID}_myChart`)[0].getContext('2d')
-        myCharts[entityName] = new Chart(thisctx, {
-                type: 'doughnut',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: '',
-                        data: [],
-                        backgroundColor: [],
-                        borderColor: [],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    legend: {
-                        display: false
+    try {
+        if (!myCharts[entityName]) {
+            let thisctx = $(`#${entityNameID}_myChart`)[0].getContext('2d')
+            myCharts[entityName] = new Chart(thisctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: '',
+                            data: [],
+                            backgroundColor: [],
+                            borderColor: [],
+                            borderWidth: 1
+                        }]
                     },
-                    tooltips: {
-                        enabled: false,
-                        bodyFontSize: 30,
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                        tooltips: {
+                            enabled: false,
+                            bodyFontSize: 30,
+                        },
                     },
                 },
-
-
-            },
-        );
+            );
+        }
+    } catch (e) {
+        console.log('error:', e)
     }
-    const oldDataset = myCharts[entityName].config.data.datasets[0].data[0]
-    console.log(myCharts)
 
-    //  oee = {value: 10, trend: 0}
-
-    let result = oee.value;
-
+    let result = oee.value
     let inIdle = 100 - result
     let inWork = result
 
@@ -78,20 +70,14 @@ function drawChart(entityName, oee) {
             borderWidth: 1
         }]
     }
-    console.log(newDatasets)
+
     myCharts[entityName].options.animation.animateRotate = false
     myCharts[entityName].config.data = newDatasets
-    //if(oldDataset != inWork)
     myCharts[entityName].update();
 
-
-    console.log($(`#${entityNameID}_info_center`))
-
-    //if(typeof oee.value !== 'undefined')
     $(`#${entityNameID}_info_center`).html(`
                                 <p class="oee_percent">${result.toFixed(1)}%</p>
                                 <p class='oee_text'>OEE</p>`)
-
     if (result < 10)
         $(`#${entityNameID}_info_center`).css({'left': '58px'})
 }
@@ -102,13 +88,13 @@ function jqueryActions() {
     $(document).delegate(".sectionNameHeader", 'click', function (e) {
         $(document).undelegate("[entityid]", 'click')
         e.preventDefault();
-        let thisClick = e.currentTarget.attributes
-        let entityName = e.currentTarget.innerHTML
+        const attributes = e.currentTarget.attributes
+        const entityName = e.currentTarget.innerHTML
         let entityDescriptor
         try {
             entityDescriptor = {
-                id: thisClick.entity_id.value,
-                entityType: thisClick.entitytype.value
+                id: attributes.entity_id.value,
+                entityType: attributes.entitytype.value
             }
         } catch (e) {
             console.log('error click section', e)
@@ -124,11 +110,9 @@ function jqueryActions() {
             $(document).undelegate(".sectionNameHeader", 'click')
             $(document).undelegate(".entityNameHeader", 'click')
         } catch (e) {
-
         }
         self.ctx.actionsApi.handleWidgetAction(e, actionDescriptor, entityDescriptor, entityName);
-
-    });
+    })
 }
 
 function declOfNum(number, titles) {
@@ -137,7 +121,6 @@ function declOfNum(number, titles) {
 }
 
 function msToTime(duration) {
-    // console.log(duration)
     let seconds = Math.floor((duration / 1000) % 60),
         minutes = Math.floor((duration / (1000 * 60)) % 60),
         hours = Math.floor((duration / (1000 * 60 * 60)) % 24),
@@ -158,7 +141,6 @@ function msToTime(duration) {
     }
 }
 
-
 self.onInit = function () {
     jqueryActions()
     self.ctx.datasourceTitleCells = [];
@@ -177,6 +159,7 @@ function getData() {
         try {
             value = JSON.parse(value)
         } catch (e) {
+            console.log('error getData:', e)
         }
 
         if (!entities[name]) {
@@ -187,7 +170,6 @@ function getData() {
 
     for (let asset in entities) {
         ctx.assetService.findByName(asset).subscribe(asset => {
-            //  console.log('device', device)
             ctx.attributeService.getEntityAttributes({
                 id: asset.id.id,
                 entityType: 'ASSET'
@@ -201,18 +183,15 @@ function getData() {
                 })
                 drawTable(entities)
 
+                for (let a in entities) {
+                    drawChart(a, entities[a].oee)
+                }
             })
         })
     }
-    for (let asset in entities) {
-        drawChart(asset, entities[asset].oee)
-    }
-
 }
 
 function drawTable(data) {
-
-    //$('#entitiesTables').empty()
 
     for (let entity in data) {
         let tableForInfo = ``
@@ -237,7 +216,6 @@ function drawTable(data) {
                         <div id="${entityNameID}_qtyErrorsNowText" class="qtyErrorsNowText"></div>
                 	</div>
                 </div>
-                
                 <div class="box">
                     <div id="${entityNameID}_info_center" class="oee_percent_div">
                     </div>
@@ -257,43 +235,40 @@ function drawTable(data) {
 
                 tableForOEE += `
               <span class="parameter_name">${
-                    key == 'oee' ? 'ОЕЕ' :
-                        key == 'oee_availability' ? 'Доступность' :
-                            key == 'oee_productivity' ? 'Производительность' :
-                                key == 'oee_quality' ? 'Качество' : key}
+                    key === 'oee' ? 'ОЕЕ' :
+                        key === 'oee_availability' ? 'Доступность' :
+                            key === 'oee_productivity' ? 'Производительность' :
+                                key === 'oee_quality' ? 'Качество' : key}
                   <span>
                         &nbsp;${value.value == null ?
                     'н&nbsp;/&nbsp;д' : value.value == undefined ?
                         'н&nbsp;/&nbsp;д' : value.value.toFixed(1) + '%'}
                   </span>
               </span>
-               
-              <span id="inWork">
-              `
+              <span id="inWork">`
+
                 for (let key in value) {
-                    if (key == 'value' || key == 'trend')
+                    if (key === 'value' || key === 'trend')
                         continue;
                     if (value[key] == null)
                         value[key] = 0
                     tableForOEE += `
                     <span style="font-size: 12px; color: #c1c0c0;">${
-                        key == 'TP' ? 'Факт' :
-                            key == 'DP' ? 'Брак' :
-                                key == 'OT' ? 'Работа' :
-                                    key == 'NOT' ? 'Простой' :
-                                        key == 'TPP' ? 'План' :
-                                            key == 'GP' ? 'Норма' :
-                                                key == 'good' ? 'Норма' :
-                                                    key == 'bad' ? 'Брак' :
+                        key === 'TP' ? 'Факт' :
+                            key === 'DP' ? 'Брак' :
+                                key === 'OT' ? 'Работа' :
+                                    key === 'NOT' ? 'Простой' :
+                                        key === 'TPP' ? 'План' :
+                                            key === 'GP' ? 'Норма' :
+                                                key === 'good' ? 'Норма' :
+                                                    key === 'bad' ? 'Брак' :
                                                         key} : ${(key === 'OT' || key === 'NOT') ? msToTime(value[key] * 60000) : value[key]}</span>`
                 }
-
                 tableForOEE += `</span>`
-
             }
 
             if (key === 'imgBase64') {
-                let nowImg = `<img class="mainImg" src="${value}"/>`;
+                let nowImg = `<img class="mainImg" src="${value}"/>`
                 $(`#${entityNameID}_img`).html(nowImg)
                 continue;
             }
@@ -315,8 +290,7 @@ function drawTable(data) {
                 if (typeof value == 'undefined')
                     value = '6'
                 statesList?.forEach(state => {
-                    if (state.universalState.toString() == value.toString()) {
-                        let img = '<img>'
+                    if (state.universalState.toString() === value.toString()) {
                         $(`#${entityNameID}_nowStatus`).css({"background-color": state.color})
                         $(`#${entityNameID}_nowStatusImg`).html(statesImgs[value.toString()])
                         $(`#${entityNameID}_nowStatusText`).html(state.name)
@@ -328,13 +302,11 @@ function drawTable(data) {
                 if (value % 1 !== 0)
                     value = value.toFixed(2)
             }
-
             if (key === 'productLabel') {
                 $(`#${entityNameID} span.productLabel`).html(`
                     Продукт: ${!value ? 'н/д' : value}
                 `)
             }
-
         }
         $(`#${entityNameID}_entityName`).html(`<h4><i class="fa fa-angle-right fa-1x"></i>${name}</h4>`)
         $(`#${entityNameID}_entityName`).attr('entity_id', id)
@@ -346,12 +318,10 @@ function drawTable(data) {
 }
 
 self.onDataUpdated = function () {
-
     if (!self.ctx)
         return
 
     getData()
-
 }
 
 self.onResize = function () {
@@ -368,9 +338,8 @@ self.actionSources = function () {
 
 self.onDestroy = function () {
     try {
-        myCharts[entityNameForDestroy].destroy()
+        myCharts[entityNameForDestroy]?.destroy()
     } catch (e) {
     }
 }
-
 
