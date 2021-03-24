@@ -48,17 +48,17 @@ function changeChartColors(flot) {
 function translateDate() {
     const locale = returnLocale()
     const dates = $('.flot-x-axis div')
-    const regexp = /[а-яё]/i;
+    const hasRussianWords = /[а-яё]/i;
 
     Array.from(dates).forEach(date => {
         const value = date.innerHTML
-        console.log('value', value)
+        const isOnlyNumber = str => /^\d+$/.test(str.trim());
         let number
-        const numberValidator = str => /^\d+$/.test(str.trim());
 
-        if (!regexp.test(value)) {
+        console.log('value', value)
 
-            if (numberValidator(value)) { // если в строке только цифры
+        if (!hasRussianWords.test(value)) { // содержит ли русские буквы( уже переведен )
+            if (isOnlyNumber(value)) {
                 number = value
             } else {
                 number = value.slice(value.indexOf(" "))
@@ -70,13 +70,6 @@ function translateDate() {
             // date.innerHTML = `${locale[month] || ''} ${number}`
 
         }
-
-        // const month = date.innerHTML.replace(/[0-9]/g, '').trim()
-        // const number = date.innerHTML.replace(/\D+/g, "")
-
-        // console.log('month ', [month])
-        // console.log('number ', [number])
-
     })
 }
 
