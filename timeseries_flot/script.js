@@ -1,38 +1,14 @@
 self.onInit = function () {
-    self.ctx.flot = new TbFlot(self.ctx, 'state');
+    self.ctx.flot = new TbFlot(ctx, 'state');
+    const flot = self.ctx.flot
 
-    const deviceName = self.ctx.datasources[0].name
+    changeChartColors(flot)
 
-    // ctx.deviceService.findByName(deviceName).subscribe(device => {
-    //     const deviceId = device.id.id
-
-    //     ctx.attributeService.getEntityAttributes({id: deviceId, entityType: 'DEVICE'}, 'SERVER_SCOPE', ['color'])
-    //         .subscribe(attributes => {
-    //             // console.log(attributes[0])
-
-    //         })
-    // })
-
-    // console.log($('.flot-text .flot-x-axis')) // ДАТЫ!
-
-
-    const fistKey = self.ctx.widgetConfig.datasources[0].dataKeys[0]
-
-    self.ctx.flot.options.colors[0] = '#dd22aa'
-
-    self.ctx.flot.update()
-
-    console.log('flot', self.ctx.flot.options)
-
-    setTimeout(() => {
-
-
-    }, 1000);
-
+    translateDate()
 }
 
 self.onDataUpdated = function () {
-    if (typeof self.ctx.flot == 'undefined')
+    if (!self.ctx.flot)
         return
 
     try {
@@ -42,10 +18,96 @@ self.onDataUpdated = function () {
     } catch (e) {
         console.log(e)
     }
+}
 
+function changeChartColors(flot) {
+    const deviceName = self.ctx.datasources[0].name
 
-    // ctx.widgetConfig.datasources[0].dataKeys[0].settings.fillLines = true
+    self.ctx.deviceService.findByName(deviceName).subscribe(device => {
+        const deviceId = device.id.id
+        self.ctx.attributeService.getEntityAttributes({
+            id: deviceId, entityType: 'DEVICE'
+        }, 'SERVER_SCOPE', ['color']).subscribe(attributes => {
+            // console.log(attributes[0])
+            const colors = attributes[0]
+            let ind = 0
+            for (let c in colors) {
+                flot.options.colors[ind] = colors[c]
+                ind++
+            }
+            flot.update()
+        })
+    })
+}
 
+function translateDate() {
+    const locale = returnLocale()
+    const dates = $('.flot-x-axis div')
+
+    Array.from(dates).forEach(date => {
+        const month = date.innerHTML.replace(/[0-9]/g, '').trim()
+        const number = date.innerHTML.replace(/\D+/g, "")
+
+        date.innerHTML = `${locale[month] || ''} ${number}`
+    })
+}
+
+function returnLocale() {
+    return {
+        "Sun": "Вс",
+        "Mon": "Пн",
+        "Tue": "Вт",
+        "Wed": "Ср",
+        "Thu": "Чт",
+        "Fri": "Пт",
+        "Sat": "Сб",
+        "Jan": "Янв.",
+        "Feb": "Февр.",
+        "Mar": "Март",
+        "Apr": "Апр.",
+        "May": "Май",
+        "Jun": "Июнь",
+        "Jul": "Июль",
+        "Aug": "Авг.",
+        "Sep": "Сент.",
+        "Oct": "Окт.",
+        "Nov": "Нояб.",
+        "Dec": "Дек.",
+        "January": "Январь",
+        "February": "Февраль",
+        "March": "Март",
+        "April": "Апрель",
+        "June": "Июнь",
+        "July": "Июль",
+        "August": "Август",
+        "September": "Сентябрь",
+        "October": "Октября",
+        "November": "Ноябрь",
+        "December": "Декабрь",
+        "Custom Date Range": "Пользовательский диапазон дат",
+        "Date Range Template": "Шаблон диапазона дат",
+        "Today": "Сегодня",
+        "Yesterday": "Вчера",
+        "This Week": "На этой неделе",
+        "Last Week": "Прошлая неделя",
+        "This Month": "Этот месяц",
+        "Last Month": "Прошлый месяц",
+        "Year": "Год",
+        "This Year": "В этом году",
+        "Last Year": "Прошлый год",
+        "Date picker": "Выбор даты",
+        "Hour": "Час",
+        "Day": "День",
+        "Week": "Неделю",
+        "2 weeks": "2 Недели",
+        "Month": "Месяц",
+        "3 months": "3 Месяца",
+        "6 months": "6 Месяцев",
+        "Custom interval": "Пользовательский интервал",
+        "Interval": "Интервал",
+        "Step size": "Размер шага",
+        "Ok": "Ok"
+    }
 }
 
 self.onResize = function () {
