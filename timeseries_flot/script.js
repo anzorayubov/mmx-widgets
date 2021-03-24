@@ -1,5 +1,5 @@
 self.onInit = function () {
-    self.ctx.flot = new TbFlot(ctx, 'state');
+    self.ctx.flot = new TbFlot(self.ctx, 'state');
     const flot = self.ctx.flot
 
     changeChartColors(flot)
@@ -28,14 +28,14 @@ function changeChartColors(flot) {
         self.ctx.attributeService.getEntityAttributes({
             id: deviceId, entityType: 'DEVICE'
         }, 'SERVER_SCOPE', ['color']).subscribe(attributes => {
-            // console.log(attributes[0])
             const colors = attributes[0]
+            console.log(colors)
             let ind = 0
-            for (let c in colors) {
-                flot.options.colors[ind] = colors[c]
-                ind++
-            }
-            flot.update()
+            // for (let c in colors) {
+            //     flot.options.colors[ind] = colors[c]
+            //     ind++
+            // }
+            // flot.update()
         })
     })
 }
