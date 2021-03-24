@@ -3,8 +3,6 @@ self.onInit = function () {
     const flot = self.ctx.flot
 
     changeChartColors(flot)
-
-    translateDate()
 }
 
 self.onDataUpdated = function () {
@@ -26,10 +24,8 @@ function changeChartColors(flot) {
     const dataKeys = self.ctx.datasources[0].dataKeys
 
     self.ctx.deviceService.findByName(deviceName).subscribe(device => {
-        const deviceId = device.id.id
-
         self.ctx.attributeService.getEntityAttributes({
-            id: deviceId, entityType: 'DEVICE'
+            id: device.id.id, entityType: 'DEVICE'
         }, 'SERVER_SCOPE', ['color']).subscribe(attributes => {
             const colors = attributes[0].value.split(' ')
 
@@ -48,27 +44,18 @@ function changeChartColors(flot) {
 function translateDate() {
     const locale = returnLocale()
     const dates = $('.flot-x-axis div')
-    const hasRussianWords = /[а-яё]/i;
+    const russianWords = /[а-яё]/i;
+    const isOnlyNumbers = str => /^\d+$/.test(str.trim())
 
     Array.from(dates).forEach(date => {
         const value = date.innerHTML
-        const isOnlyNumber = str => /^\d+$/.test(str.trim());
-        let number
+        const number = isOnlyNumbers(value) ? value : value.slice(value.indexOf(" "))
 
-        console.log('value', value)
-
-        if (!hasRussianWords.test(value)) { // содержит ли русские буквы( уже переведен )
-            if (isOnlyNumber(value)) {
-                number = value
-            } else {
-                number = value.slice(value.indexOf(" "))
-            }
-
-            const month = value.slice(0, value.indexOf(" "));
+        if (!russianWords.test(value)) {
+            const month = value.slice(0, value.indexOf(" "))
             console.log('date-> ', [`${locale[month] || ''} ${number}`])
 
             // date.innerHTML = `${locale[month] || ''} ${number}`
-
         }
     })
 }
