@@ -4,7 +4,7 @@
 }
 
 .legend table {
-    border-spacing: 0px;
+    border-spacing: 0;
     border-collapse: separate;
 }
 
@@ -12,30 +12,3 @@
     cursor: crosshair;
 }
 
-.tb-legend {
-    /*display: none;*/
-}
-
-tbody {
-    display: flex;
-    justify-content: flex-end;
-}
-
-.tb-hidden-label {
-    color: gray !important;
-    border-color: gray !important;
-}
-
-.tb-legend-keys td {
-    font-size: 16px !important;
-    border-bottom: 3px solid gray;
-    border-radius: 1px;
-}
-
-.tb-legend-keys td:first-child {
-    display: none;
-}
-
-tb-legend {
-    padding-bottom: 0 !important;
-}
