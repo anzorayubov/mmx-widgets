@@ -222,7 +222,7 @@ function drawTable(data) {
 
         for (let key in data[entity]) {
             let value = data[entity][key]
-
+            const noData = 'н&nbsp;/&nbsp;д'
             if (key === 'oee' || key === 'oee_availability' || key === 'oee_productivity' || key === 'oee_quality') {
                 if (!value)
                     continue
@@ -230,8 +230,8 @@ function drawTable(data) {
                 tableForOEE += `
               <span class="parameter_name">${convertValues[key] || key}
                   <span>&nbsp;${value.value == null ?
-                    'н&nbsp;/&nbsp;д' : value.value == undefined ?
-                        'н&nbsp;/&nbsp;д' : value.value.toFixed(1) + '%'}
+                        noData: value.value == undefined ?
+                        noData: value.value.toFixed(1) + '%'}
                   </span>
               </span>
               <span id="inWork">`
