@@ -38,7 +38,7 @@ function changeChartColors(flot) {
 }
 
 function translateDate() {
-    const locale = returnLocale()
+    const locale = getLocale()
     const dates = self.ctx.$container[0].querySelectorAll('.flot-x-axis div')
     const russianWords = /[а-яё]/i;
     const isOnlyNumbers = str => /^\d+$/.test(
@@ -55,7 +55,7 @@ function translateDate() {
     })
 }
 
-function returnLocale() {
+function getLocale() {
     return {
         "Sun": "Вс",
         "Mon": "Пн",
