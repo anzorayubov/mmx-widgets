@@ -8,13 +8,9 @@ self.onInit = function () {
 self.onDataUpdated = function () {
     if (!self.ctx.flot)
         return
-    try {
-        self.ctx.flot.update()
-        $(`.tb-widget-loading`).hide()
-        // mat-spinner - дефолтный лоадер
-    } catch (e) {
-        console.log(e)
-    }
+
+    self.ctx.flot.update()
+    $(`.tb-widget-loading`).hide()
 
     translateDate()
 }
@@ -43,9 +39,10 @@ function changeChartColors(flot) {
 
 function translateDate() {
     const locale = returnLocale()
-    const dates = $('.flot-x-axis div')
+    const dates = self.ctx.$container[0].querySelectorAll('.flot-x-axis div')
     const russianWords = /[а-яё]/i;
-    const isOnlyNumbers = str => /^\d+$/.test(str.trim())
+    const isOnlyNumbers = str => /^\d+$/.test(
+        str.replace(/[^a-zа-яё0-9\s]/gi, ' ').replace(/\s/g, ''))
 
     Array.from(dates).forEach(date => {
         const value = date.innerHTML
@@ -53,9 +50,7 @@ function translateDate() {
 
         if (!russianWords.test(value)) {
             const month = value.slice(0, value.indexOf(" "))
-            console.log('date-> ', [`${locale[month] || ''} ${number}`])
-
-            // date.innerHTML = `${locale[month] || ''} ${number}`
+            date.innerHTML = `${locale[month] || ''} ${number}`
         }
     })
 }
