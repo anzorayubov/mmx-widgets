@@ -1,8 +1,7 @@
 self.onInit = function () {
     self.ctx.flot = new TbFlot(self.ctx, 'state');
-    const flot = self.ctx.flot
 
-    changeChartColors(flot)
+    // changeChartColors(self.ctx.flot)
 }
 
 self.onDataUpdated = function () {
@@ -22,23 +21,35 @@ function changeChartColors(flot) {
     self.ctx.deviceService.findByName(deviceName).subscribe(device => {
         self.ctx.attributeService.getEntityAttributes({
             id: device.id.id, entityType: 'DEVICE'
-        }, 'SERVER_SCOPE', ['color']).subscribe(attributes => {
-            const colors = attributes[0].value.split(' ')
+        }, 'SERVER_SCOPE', ['productList']).subscribe(attributes => {
+            const productList = JSON.parse(attributes[0].value)
 
-            colors.forEach((color, ind) => {
-                flot.options.colors[ind] = color
-                dataKeys[ind].color = color
-                dataKeys[ind].backgroundColor = color
-                self.ctx.data[ind].highlightColor = color
+
+            productList.forEach((item) => {
+                dataKeys.forEach((key, ind) => {
+                    if (key.name === item.key && item.color) {
+
+                        flot.options.colors[ind] = item.color
+                        dataKeys[ind].color = item.color
+                        dataKeys[ind].backgroundColor = item.color
+                        self.ctx.data[ind].highlightColor = item.color
+
+                        self.ctx.widgetConfig.datasources[0].dataKeys[ind].color = item.color
+
+                        // self.ctx.widgetConfig.datasources[0].dataKeys[0].settings.fillLines
+                    }
+                })
             })
 
             flot.update()
+            // self.ctx.updateWidgetParams()
+            // self.ctx.detectChanges()
         })
     })
 }
 
 function translateDate() {
-    const locale = getLocale()
+    const locale = returnLocale()
     const dates = self.ctx.$container[0].querySelectorAll('.flot-x-axis div')
     const russianWords = /[а-яё]/i;
     const isOnlyNumbers = str => /^\d+$/.test(
@@ -55,7 +66,7 @@ function translateDate() {
     })
 }
 
-function getLocale() {
+function returnLocale() {
     return {
         "Sun": "Вс",
         "Mon": "Пн",
