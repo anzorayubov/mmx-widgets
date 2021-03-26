@@ -99,7 +99,7 @@ function tooltipFormatter() {
         hour: "numeric",
         minute: "numeric"
     }
-
+    const stateTransalate = {"On": 'Вкл', 'Off': 'Выкл'}
     const observer = new MutationObserver(tooltip => {
         tooltip.forEach(date => {
             const oldDate = date.target.firstChild.innerHTML
@@ -108,11 +108,25 @@ function tooltipFormatter() {
             if (Date.parse(oldDate) && oldDate !== newDate) {
                 date.target.firstChild.innerHTML = newDate
             }
+
+            translateOnOff(date.target.childNodes)
         })
     })
 
     observer.observe(target, config)
     // observer.disconnect()
+}
+
+function translateOnOff(node) {
+    Array.from(node).forEach(item => {
+        item.innerHTML = item.innerHTML === 'On' ?
+            'Вкл' : item.innerHTML === 'Off' ?
+            'Выкл' : item.innerHTML
+
+        if (item.childNodes) {
+            translateOnOff(item.childNodes)
+        }
+    })
 }
 
 self.onResize = function () {
