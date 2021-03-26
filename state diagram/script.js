@@ -1,7 +1,7 @@
 self.onInit = function () {
     self.ctx.flot = new TbFlot(self.ctx, 'state');
 
-    // changeChartColors(self.ctx.flot)
+    tooltipFormatter()
 }
 
 self.onDataUpdated = function () {
@@ -14,42 +14,8 @@ self.onDataUpdated = function () {
     translateDate()
 }
 
-function changeChartColors(flot) {
-    const deviceName = self.ctx.datasources[0].name
-    const dataKeys = self.ctx.datasources[0].dataKeys
-
-    self.ctx.deviceService.findByName(deviceName).subscribe(device => {
-        self.ctx.attributeService.getEntityAttributes({
-            id: device.id.id, entityType: 'DEVICE'
-        }, 'SERVER_SCOPE', ['productList']).subscribe(attributes => {
-            const productList = JSON.parse(attributes[0].value)
-
-
-            productList.forEach((item) => {
-                dataKeys.forEach((key, ind) => {
-                    if (key.name === item.key && item.color) {
-
-                        flot.options.colors[ind] = item.color
-                        dataKeys[ind].color = item.color
-                        dataKeys[ind].backgroundColor = item.color
-                        self.ctx.data[ind].highlightColor = item.color
-
-                        self.ctx.widgetConfig.datasources[0].dataKeys[ind].color = item.color
-
-                        // self.ctx.widgetConfig.datasources[0].dataKeys[0].settings.fillLines
-                    }
-                })
-            })
-
-            flot.update()
-            // self.ctx.updateWidgetParams()
-            // self.ctx.detectChanges()
-        })
-    })
-}
-
 function translateDate() {
-    const locale = returnLocale()
+    const locale = getLocale()
     const dates = self.ctx.$container[0].querySelectorAll('.flot-x-axis div')
     const russianWords = /[а-яё]/i;
     const isOnlyNumbers = str => /^\d+$/.test(
@@ -66,7 +32,7 @@ function translateDate() {
     })
 }
 
-function returnLocale() {
+function getLocale() {
     return {
         "Sun": "Вс",
         "Mon": "Пн",
@@ -122,6 +88,31 @@ function returnLocale() {
         "Step size": "Размер шага",
         "Ok": "Ok"
     }
+}
+
+function tooltipFormatter() {
+    const target = document.querySelector('.flot-mouse-value')
+    const config = {attributes: true, childList: true, characterData: true}
+    const options = {
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric"
+    }
+
+    const observer = new MutationObserver(tooltip => {
+        tooltip.forEach(date => {
+            const oldDate = date.target.firstChild.innerHTML
+            const newDate = new Date(Date.parse(oldDate)).toLocaleString("ru", options)
+
+            if (Date.parse(oldDate) && oldDate !== newDate) {
+                date.target.firstChild.innerHTML = newDate
+            }
+        })
+    })
+
+    observer.observe(target, config)
+    // observer.disconnect()
 }
 
 self.onResize = function () {
