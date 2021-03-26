@@ -99,7 +99,7 @@ function tooltipFormatter() {
         hour: "numeric",
         minute: "numeric"
     }
-    const stateTransalate = {"On": 'Вкл', 'Off': 'Выкл'}
+    
     const observer = new MutationObserver(tooltip => {
         tooltip.forEach(date => {
             const oldDate = date.target.firstChild.innerHTML
