@@ -1,0 +1,142 @@
+#headerTableAttrs {
+    margin: 5px 20px 20px 20px;
+    height: 38px;
+    display: flex;
+    justify-content: space-around;
+    border-radius: 10px;
+}
+
+#headerTableAttrs > div {
+    width: 50%;
+    align-items: center;
+    display: flex;
+    padding-left: 22px;
+}
+
+#headerTableAttrs > div:nth-child(1) {
+    border-radius: 10px 0 0 10px;
+    border-right: 1px solid #816e6e;
+}
+
+#headerTableAttrs > div:nth-child(2) {
+    border-radius: 0 10px 10px 0;
+}
+
+#qtyErrorsNowText, #nowStatusText {
+    margin-left: 10px;
+}
+
+.qtyErrorsNow {
+    background-color: #c26770;
+    color: #fff;
+}
+
+.nowStatusImg img {
+    margin-left: 5px;
+}
+
+.analitycButton {
+    padding: 0;
+    border: none;
+    border-radius: 20px;
+    margin-left: 5%;
+    background-color: #ffe630;
+    width: 140px;
+    height: 30px;
+    font-size: 0.7em;
+    font-weight: 600;
+}
+
+.reportButton {
+    padding: 0;
+    border: none;
+    border-radius: 20px;
+    background-color: #ffe630;
+    width: 140px;
+    height: 30px;
+    font-size: 0.7em;
+    font-weight: 600;
+    position: absolute;
+    right: 5%;
+}
+
+.spacer {
+
+}
+
+.leftColumn {
+    font-weight: bold;
+    width: 50%;
+    font-size: 0.7em;
+}
+
+.rightColumn {
+    font-size: 0.7em;
+    text-align: right;
+    width: 50%;
+}
+
+.mainImg {
+    max-width: 90%;
+    margin-left: 5%;
+    height: 100px;
+    width: 120px;
+}
+
+table {
+    margin-left: 5%;
+    /*margin-right: 5%;*/
+    max-width: 90%;
+    border-collapse: collapse;
+    color: #43434C;
+}
+
+h5 {
+    margin: 5px 0;
+    text-align: center;
+}
+
+.mouse-events .flot-overlay {
+    cursor: crosshair;
+}
+
+.box {
+    display: flex;
+    align-items: center;
+}
+
+#myChart_small {
+    width: 120px !important;
+    height: 120px !important;
+}
+
+tb-legend {
+    display: none;
+}
+
+#info_in_bottom {
+    margin: 10px 0 0 4px;
+
+}
+
+.trendValue {
+    color: green;
+    font-size: 25px;
+}
+
+.trendText {
+    color: gray;
+    padding-left: 5px;
+}
+
+#info_center {
+    font-size: 20px;
+    font-weight: bold;
+    color: #43C6C9;
+    position: absolute;
+    left: 32px;
+    width: 58px;
+    text-align: center;
+}
+
+

@@ -39,7 +39,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/dounat_with_small_legend" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -55,6 +55,8 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/dounat_with_small_legend" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="C:\Users\AyubovAI\Documents\GitHub\mmx-widgets" />
       <recent name="C:\Users\AyubovAI\Documents\GitHub\mmx-widgets\chart for tech params TEST" />
     </key>
@@ -87,6 +89,7 @@
       <workItem from="1616697461225" duration="23000" />
       <workItem from="1617001942880" duration="4282000" />
       <workItem from="1617024104892" duration="1470000" />
+      <workItem from="1617107076426" duration="277000" />
     </task>
     <servers />
   </component>

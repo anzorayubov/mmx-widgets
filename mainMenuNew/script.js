@@ -1,4 +1,3 @@
-const PORT = '1880'
 let structure = {}
 
 function mainHeadMenuButtonClicked() {
@@ -21,10 +20,9 @@ function mainHeadMenuButtonClicked() {
 
 function getEntityMap() {
     let xhr = new XMLHttpRequest();
-
-    xhr.open('GET', `http://${window.location.hostname}:${PORT}/mainMenu`, true)
-    xhr.send()
-    xhr.onload = getAnswer
+    xhr.open('GET', 'http://' + window.location.hostname + ':1880/mainMenu', true);
+    xhr.send();
+    xhr.onload = getAnswer;
 
     function getAnswer() {
         let answer = []
@@ -122,14 +120,13 @@ let oldTime = null
 let isChanged = true
 
 function syncingDates() {
-
     $(document).click(event => {
         const target = event.target
         if (target.nodeName === 'CANVAS') {
             self.ctx.interval.clearAll()
             // убираем блок с календаря, disable чекбокс, очистить localStorage
-            $('#realtimeSelect select').attr('disabled', 'disabled')
-            $('.blur_box').css({'display': 'none'})
+            $('#toggleForCalendar select').attr('disabled', 'disabled')
+            $('.opacity_box').css({'display': 'none'})
             localStorage.removeItem('selectedRealTime')
         }
 
@@ -648,40 +645,38 @@ function disablePrevNextBtn(structure, currentPage) {
     })
 }
 
-function drawRealtimeCheckbox() {
+function drawCheckboxForCalendar() {
     self.ctx.interval.clearAll()
     // при подгрузке страницы
-    const selectedRealTime = JSON.parse(localStorage.getItem('selectedRealTime'))
+    let selectedRealTime = JSON.parse(localStorage.getItem('selectedRealTime'))
 
     if (selectedRealTime) {
         self.ctx.interval.clearAll()
+
         self.ctx.interval.make(() => {
-            const now = Date.now()
-            ctx.timewindowFunctions.onUpdateTimewindow(now - selectedRealTime.value, now)
+            let milliseconds = Date.now()
+            ctx.timewindowFunctions.onUpdateTimewindow(milliseconds - selectedRealTime.value, milliseconds)
         }, 15000)
     }
 
     $(`#datepicker`).click((event) => {
-        const dateRangePicker = $('.daterangepicker')
-        const top = dateRangePicker[dateRangePicker.length - 1].getBoundingClientRect().top
-        const realtimeSelect = $('#realtimeSelect select')
-        // const selectedRealTime = JSON.parse(localStorage.getItem('selectedRealTime'))
+        let dateRangePicker = $('.daterangepicker')
+        let top = dateRangePicker[dateRangePicker.length - 1].getBoundingClientRect().top
 
-        $(`.daterangepicker > #realtimeSelect`).remove()
-        $(`.daterangepicker > .blur_box`).remove()
-
+        $(`.daterangepicker > #toggleForCalendar`).remove()
+        $(`.daterangepicker > .opacity_box`).remove()
         dateRangePicker.append(`
-            <div class="blur_box"></div>
-            <div id="realtimeSelect" style="
+            <div class="opacity_box"></div>
+            <div id="toggleForCalendar" style="
                 position: fixed;
                 display: flex;
                 justify-content: space-around;
                 width: 242px;
                 top: ${top + 300}px;">
-                <input id="checkbox" style="width: 20px; height: 20px;" type="checkbox">
+                <input id="toggleInp" style=" width: 20px; height: 20px;" type="checkbox">
                 <label style="display:flex; align-items:center; font-size: 12px; color:gray;">Последние:</label>
                 <select disabled="disabled">
-                    <option data-realTime="3600000" selected>1 час</option>
+                    <option data-realTime="3600000">1 час</option>
                     <option data-realTime="7200000">2 часа</option>
                     <option data-realTime="18000000">5 часов</option>
                     <option data-realTime="36000000">10 часов</option>
@@ -689,15 +684,38 @@ function drawRealtimeCheckbox() {
                 </select>
             </div>
         `)
+        $('.opacity_box').css({
+            'position': 'fixed',
+            'top': `${top + 5}px`,
+            'width': '244px',
+            'height': '290px',
+            'background': '#eee',
+            'opacity': '0.6',
+            'filter': 'blur(3px)',
+            'display': 'none'
+        })
+        let toggleForCalendarSelect = $('#toggleForCalendar select')
+        $(`.daterangepicker .drp-calendar.right`).css({'padding-bottom': '26px'})
+        $(`.daterangepicker #toggleForCalendar select`).css({
+            'border-color': '#d6d5d5', 'border-radius': '7px',
+            'font-size': '12px',
+            'font-weight': 'bold',
+        })
+        $(`.daterangepicker #toggleForCalendar select option`).css({'font-size': '12px', 'font-weight': 'bold'})
+
+        // при подгрузке страницы
+        let selectedRealTime = JSON.parse(localStorage.getItem('selectedRealTime'))
+        let value = 3600000
+
 
         if (selectedRealTime) { // если localStorage не пустой
             if (selectedRealTime.checked) {
                 $(`.daterangepicker input[type="checkbox"]`).prop('checked', true)
-                realtimeSelect.removeAttr('disabled')
-                $('.blur_box').css({'display': 'block'})
+                toggleForCalendarSelect.removeAttr('disabled')
+                $('.opacity_box').css({'display': 'block'})
             } else {
-                realtimeSelect.attr('disabled', 'disabled')
-                $('.blur_box').css({'display': 'none'})
+                toggleForCalendarSelect.attr('disabled', 'disabled')
+                $('.opacity_box').css({'display': 'none'})
                 self.ctx.interval.clearAll()
             }
 
@@ -708,51 +726,46 @@ function drawRealtimeCheckbox() {
             })
         }
 
-        if ($(`#realtimeSelect #checkbox`)[1].checked) {
-            realtimeSelect.removeAttr('disabled')
+        if ($(`#toggleForCalendar input[type="checkbox"]`)[1].checked) {
+            toggleForCalendarSelect.removeAttr('disabled')
         } else if (!event.target.checked) {
-            realtimeSelect.attr('disabled', 'disabled')
+            toggleForCalendarSelect.attr('disabled', 'disabled')
         }
 
-        let selectedTime = 3600000
+        $(`#toggleForCalendar input[type="checkbox"]`).click((toggle) => {
+            if (toggle.target.checked) {
+                toggleForCalendarSelect.removeAttr('disabled')
+                $('.opacity_box').css({'display': 'block'})
+                $(`#toggleForCalendar input[type="checkbox"]`).css({'background-color': ''})
 
-        $(`#realtimeSelect #checkbox`).click((toggle) => {
-            const checked = toggle.target.checked
-            if (checked) {
-                realtimeSelect.removeAttr('disabled')
-                $('.blur_box').css({'display': 'block'})
-                $(`#realtimeSelect #checkbox`).css({'background-color': ''})
 
-                function applyBtnClicked() {
-                    $(`.applyBtn`).click(() => {
-                        const checkbox = $(`#realtimeSelect #checkbox`)
-                        if (checkbox[checkbox.length - 1].checked) {
-                            localStorage.setItem('selectedRealTime',
-                                JSON.stringify({value: selectedTime, checked: true}))
-
-                            self.ctx.interval.clearAll()
-
-                            function updateTime() {
-                                const now = Date.now()
-                                ctx.timewindowFunctions.onUpdateTimewindow(now - selectedTime, now)
-                            }
-
-                            updateTime()
-                            self.ctx.interval.make(() => {
-                                updateTime()
-                            }, 5000)
-                        } else {
-                            self.ctx.interval.clearAll()
+                $(`.applyBtn`).click(() => {
+                    let checkboxes = $(`#toggleForCalendar input[type="checkbox"]`)
+                    if (checkboxes[checkboxes.length - 1].checked) {
+                        let realtimeObj = {
+                            value: value,
+                            checked: true
                         }
-                    })
-                }
+                        localStorage.setItem('selectedRealTime', JSON.stringify(realtimeObj))
+                        self.ctx.interval.clearAll()
 
-                applyBtnClicked()
+                        function updateTime() {
+                            let milliseconds = Date.now()
+                            ctx.timewindowFunctions.onUpdateTimewindow(milliseconds - value, milliseconds)
+                        }
 
+                        updateTime()
+                        self.ctx.interval.make(() => {
+                            updateTime()
+                        }, 5000)
+                    } else {
+                        self.ctx.interval.clearAll()
+                    }
+                })
 
-            } else if (!checked) {
-                realtimeSelect.attr('disabled', 'disabled')
-                $('.blur_box').css({'display': 'none'})
+            } else if (!toggle.target.checked) {
+                toggleForCalendarSelect.attr('disabled', 'disabled')
+                $('.opacity_box').css({'display': 'none'})
 
                 self.ctx.interval.clearAll()
 
@@ -765,22 +778,35 @@ function drawRealtimeCheckbox() {
             }
         })
 
-        realtimeSelect.change((event) => {
-            const value = event.target.value
-            const times = {
-                '1 час': 3600000,
-                '2 часа': 7200000,
-                '5 часов': 18000000,
-                '10 часов': 36000000,
-                '1 день': 86400000,
-            }
-            if (value) {
-                selectedTime = times[value]
+        toggleForCalendarSelect.change((event) => {
+
+            if (event.target.value !== '') {
+
+                // NEED REFACTOR: вывести в объект
+                switch (event.target.value) {
+                    case '1 час':
+                        value = 3600000
+                        break;
+                    case '2 часа':
+                        value = 7200000
+                        break;
+                    case '5 часов':
+                        value = 18000000
+                        break;
+                    case '10 часов':
+                        value = 36000000
+                        break;
+                    case '1 день':
+                        value = 86400000
+                        break;
+                }
+
+
             }
         })
 
         // clear all listeners
-        $('.applyBtn').off()
+        $(".applyBtn").off()
 
         $(`.applyBtn`).click(() => {
             if (self.ctx && self.ctx.dashboardTimewindow.history) {
@@ -804,32 +830,6 @@ function drawRealtimeCheckbox() {
                     }
                 }, 1000)
             }
-        })
-
-        $('.blur_box').css({
-            'position': 'fixed',
-            'top': `${top + 5}px`,
-            'width': '244px',
-            'height': '290px',
-            'background': '#eee',
-            'opacity': '0.6',
-            'filter': 'blur(3px)',
-            'display': 'none'
-        })
-
-        $(`.daterangepicker .drp-calendar.right`).css({
-            'padding-bottom': '26px'
-        })
-
-        $(`.daterangepicker #realtimeSelect select`).css({
-            'border-color': '#d6d5d5',
-            'border-radius': '7px',
-            'font-size': '12px',
-            'font-weight': 'bold',
-        })
-        $(`.daterangepicker #realtimeSelect select option`).css({
-            'font-size': '12px',
-            'font-weight': 'bold'
         })
     })
 }
@@ -856,7 +856,7 @@ self.onInit = function () {
 
     self.ctx.interval.clearAll()
 
-    drawRealtimeCheckbox()
+    drawCheckboxForCalendar()
     getEntityMap()
     initialize()
     jqueryActions()
