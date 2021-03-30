@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f16758c5-e835-40eb-982c-d94bdb0a97aa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/state diagram/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/state diagram/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mainMenuNew/css.css" beforeDir="false" afterPath="$PROJECT_DIR$/mainMenuNew/css.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mainMenuNew/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/mainMenuNew/script.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +49,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -83,6 +85,8 @@
       <workItem from="1616607371889" duration="165000" />
       <workItem from="1616654800528" duration="1349000" />
       <workItem from="1616697461225" duration="23000" />
+      <workItem from="1617001942880" duration="4282000" />
+      <workItem from="1617024104892" duration="1470000" />
     </task>
     <servers />
   </component>

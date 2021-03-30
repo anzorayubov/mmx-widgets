@@ -1,10 +1,10 @@
-#toggleForCalendar {
+#realtimeSelect {
     width: 100%;
     margin: 15px auto;
     position: relative;
     display: block;
 }
-#toggleForCalendar label {
+#realtimeSelect label {
     position: relative;
     min-height: 34px;
     display: block;
@@ -13,12 +13,12 @@
     font-weight: normal;
     cursor: pointer;
 }
-#toggleForCalendar label span {
+#realtimeSelect label span {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
 }
-#toggleForCalendar label:before {
+#realtimeSelect label:before {
     content: '';
     position: absolute;
     left: 0;
@@ -30,7 +30,7 @@
     border-radius: 3px;
     border: 2px solid #357ebd;
 }
-#toggleForCalendar label:after {
+#realtimeSelect label:after {
     content: '';
     display: block;
     width: 10px;
@@ -43,20 +43,20 @@
     top: 12px;
     left: 10px;
 }
-#toggleForCalendar input[type="checkbox"] {
+#realtimeSelect input[type="checkbox"] {
     width: auto;
     opacity: 0.00000001;
     position: absolute;
     left: 0;
     margin-left: -20px;
 }
-#toggleForCalendar input[type="checkbox"]:checked ~ label:before {
+#realtimeSelect input[type="checkbox"]:checked ~ label:before {
     background-color: #357ebd;
 }
-#toggleForCalendar input[type="checkbox"]:checked ~ label:after {
+#realtimeSelect input[type="checkbox"]:checked ~ label:after {
     transform: rotate(-45deg) scale(1);
 }
-#toggleForCalendar input[type="checkbox"]:focus + label::before {
+#realtimeSelect input[type="checkbox"]:focus + label::before {
     outline: 0;
 }
 
