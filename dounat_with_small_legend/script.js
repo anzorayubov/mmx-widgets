@@ -1,26 +1,69 @@
-let answerJSON;
-let isFirstReq = true
 let statesInfo = {}
 var oldKeyValueJson = {}
 var uuid = uuidv4()
 
-function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
+const datasourceSchema = {
+    0: {key: 'oeeDounat', type: 'json'},
+    1: {key: 'firstRawLegend', type: 'json'},
+    2: {key: 'secondRawLegend', type: 'json'},
+    3: {key: 'trendLegend'},
 }
 
-function declOfNum(number, titles) {
-    cases = [2, 0, 1, 1, 1, 2];
-    return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+const dataSchema = {}
+
+for (let index in datasourceSchema) {
+    const {key} = datasourceSchema[index]
+    let label, value, values
+    dataSchema[key] = {
+        label,
+        value,
+        values
+    }
+}
+
+function validateType(element, type) {
+    switch (type) {
+        case 'number':
+            return parseInt(element)
+        case 'float':
+            return parseFloat(element)
+        case 'json':
+            try {
+                return JSON.parse(element)
+            } catch (e) {
+                return element
+            }
+        default:
+            return element;
+    }
+}
+
+/*
+* data = self.ctx.data
+* Each element of data - element of datasourceSchema
+* Inside data[index] - needed data for this key (label, value, etc...)
+*/
+
+function parsingSelfDataToSchema(data) {
+    data.forEach((element, index) => {
+        const {key: schemaKey, type: dataType} = datasourceSchema[index]
+        const {label} = element.dataKey
+        dataSchema[schemaKey] = {
+            ...dataSchema[schemaKey],
+            label,
+            values: element.data.map(value => value ? validateType(value[1], dataType) : undefined),
+            value: (element.data && element.data[element.data.length - 1])
+                ? validateType(element.data[element.data.length - 1][1], dataType)
+                : undefined
+        }
+    })
 }
 
 let accessRequest = true;
 
 function getKeys(entityName, entityType, keys, jsonKeys) {
 
-    if (typeof entityName == 'undefined' || keys == '' || typeof keys == 'undefined')
+    if (!entityName || !keys)
         return
 
     if (accessRequest) {
@@ -43,46 +86,8 @@ function getKeys(entityName, entityType, keys, jsonKeys) {
 
 }
 
-function msToTime(duration) {
-    let seconds = Math.floor((duration / 1000) % 60),
-        minutes = Math.floor((duration / (1000 * 60)) % 60),
-        hours = Math.floor((duration / (1000 * 60 * 60)) % 24),
-        days = (duration / (1000 * 60 * 60 * 24)).toFixed(1) < 1 ? '' : (duration / (1000 * 60 * 60 * 24)).toFixed(0)
-
-    hours = (hours < 10) ? "0" + hours : hours;
-    minutes = (minutes < 10) ? "0" + minutes : minutes;
-    seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-    hours = hours == '00' ? 0 : hours
-
-    if (days === '' && hours != 0) {
-        return `${hours.toString().substr(0, 1) == '0' ? hours.toString().slice(1) : hours}<span style="font-size:12px">ч:</span>${minutes}<span style="font-size:12px">м</span>`
-    } else if (hours == '0') {
-        return `${minutes.toString().substr(0, 1) == 0 ? minutes.toString().slice(1) : minutes}<span style="font-size:12px">м</span>`
-    } else {
-        return `${days}<span style="font-size:12px">д:</span>${hours.toString().substr(0, 1) == '0' ? hours.toString().slice(1) : hours}<span style="font-size:12px">ч:</span>${minutes.toString().substr(0, 1) == 0 ? minutes.toString().slice(1) : minutes}<span style="font-size:12px">м</span>`
-    }
-}
-
-function formatter(number) {
-    return Math.abs(Number(number)) >= 1.0e+9
-        ? (Math.abs(Number(number)) / 1.0e+9).toFixed(3) + `<span style="font-size:12px">млд.шт</span>`
-        : Math.abs(Number(number)) >= 1.0e+6
-            ? (Math.abs(Number(number)) / 1.0e+6).toFixed(3) + `<span style="font-size:12px">млн.шт</span>`
-            : Math.abs(Number(number)) >= 1.0e+3
-                ? (Math.abs(Number(number)) / 1.0e+3).toFixed(3) + `<span style="font-size:12px">тыс.шт</span>`
-                : Math.abs(Number(number)) + `<span style="font-size:12px">шт</span>`
-}
-
 function drawTable(keyValueJson, jsonKeys) {
-
-    let tableHTML;
-    let isImg = false;
     let isAnyChanges = false
-
-    var tableForInfo = ``
-    var tableForParameters = ``
-    let tableForOEE = ``
 
     let labels = {
         inWork: {backgroundColor: 'green', label: 'В работе'},
@@ -93,14 +98,12 @@ function drawTable(keyValueJson, jsonKeys) {
 
     for (let i = 0; i < jsonKeys.length; i++) {
         let key = jsonKeys[i].key;
-        ;
         let value = keyValueJson[key];
         if (oldKeyValueJson[key] === value)
             continue;
         oldKeyValueJson[key] = value;
         isAnyChanges = true
     }
-
 }
 
 var ctx = false
@@ -143,12 +146,10 @@ self.onInit = function () {
     );
 
     $(document).click((event) => {
-        if (event.target.className == 'horizontalNavigation' && event.target.nodeName == 'A' ||
-            event.target.nodeName == 'H4')
+        if (event.target.className === 'horizontalNavigation' && event.target.nodeName === 'A' ||
+            event.target.nodeName === 'H4')
             myChart.destroy()
     })
-
-    console.log('ctx.data:', self.ctx.data)
 
 }
 
@@ -156,21 +157,22 @@ function arrayToElement(array = "[1604656800291,{'trend':0,'value':0}]") {
     let template = {}
     let oneElement = JSON.parse(array[1]) // объект
 
+    let mockArray = [[1604656877870, '{"value":0,"OT":0,"NOT":0,"trend":0}']]
+
     for (let key in oneElement) {
         template[key] = {
             percent: oneElement[key],
             ts: 0
         }
     }
-    let mockArray = [[1604656877870, '{"value":0,"OT":0,"NOT":0,"trend":0}']]
 
     let dataArray = self.ctx.data[0].data.length > 1 ? self.ctx.data[0].data : mockArray // если ничего не прилетело - mock
+
     let myObj = JSON.parse(dataArray[dataArray.length - 1][1]) // экземпляр объекта
 
     for (let key in myObj) {
         myObj[key] = 0 // Обнуляем для корректной суммы в дальнейшем
     }
-
 
     const i = dataArray.length - 1
 
@@ -187,37 +189,75 @@ function arrayToElement(array = "[1604656800291,{'trend':0,'value':0}]") {
         }
     }
 
+
     function isAN(value) {
         if (value instanceof Number)
-            value = value.valueOf();
-        return isFinite(value) && value === parseFloat(value, 10);
+            value = value.valueOf()
+        return isFinite(value) && value === parseFloat(value, 10)
     }
 
     myObj.value = isAN(myObj.value) ? parseFloat((myObj.value).toFixed(1)) : 'н/д'
     myObj.trend = (myObj.trend).toFixed(1)
 
+    const oeeDounatValue = dataSchema.oeeDounat.value.value.toFixed(1)
+    // $(`#${uuid} > .box > #info_center`).html(`${myObj.value.toFixed(1)}%`)
 
-    $(`#${uuid} > .box > #info_center`).html(`${myObj.value.toFixed(1)}%`)
+    $(`#${uuid} > .box > #info_center`).html(`${oeeDounatValue}%`)
 
     let tableForOEE = ``
 
-    for (let key in myObj) {
-        if (key == 'value' || key == 'trend')
-            continue
+    // console.log('dataSchema', dataSchema)
 
-        tableForOEE += `
-            <tr> <td style="font-size: 14px;">${
-            key == 'TP' ? 'Факт' :
-                key == 'DP' ? 'Брак' :
-                    key == 'OT' ? 'Работа' :
-                        key == 'NOT' ? 'Простой' :
-                            key == 'TPP' ? 'План' :
-                                key == 'GP' ? 'Норма' :
-                                    key}:</td> </tr>
-            <tr> <td style="font-size: 22px; font-weight: bold;">
-                ${(key === 'OT' || key === 'NOT') ? msToTime(myObj[key] * 60000) : formatter(myObj[key])}</td></tr>
-           `
+
+    for (let key in dataSchema.firstRawLegend.value) {
+
     }
+
+    for (let key in dataSchema.secondRawLegend.value) {
+
+    }
+
+
+    for (let key in dataSchema) {
+        if (key === 'firstRawLegend') {
+            const label = dataSchema[key].label || ''
+            const value = dataSchema[key].value
+
+            tableForOEE += `
+                <tr> <td style="font-size: 14px;">${label}:</td> </tr>
+                 <tr> 
+                    <td style="font-size: 22px; font-weight: bold;">
+                     ${value}
+                     </td></tr>
+               `
+            //   ${(key === 'OT' || key === 'NOT') ? msToTime(value * 60000) : formatter(myObj[key])}
+
+        } else if (key === 'secondRawLegend') {
+
+        }
+    }
+
+
+    // for (let key in myObj) {
+    //     if (key == 'value' || key == 'trend')
+    //         continue
+    //         // ${
+    //         // key == 'TP' ? 'Факт' :
+    //         // key == 'DP' ? 'Брак' :
+    //         // key == 'OT' ? 'Работа' :
+    //         // key == 'NOT' ? 'Простой' :
+    //         // key == 'TPP' ? 'План' :
+    //         // key == 'GP' ? 'Норма' :
+    //         // key}
+    //     const text = self.ctx.data[objIndex].dataKey.label
+
+    //     tableForOEE += `
+    //         <tr> <td style="font-size: 14px;">${text}:</td> </tr>
+    //         <tr> <td style="font-size: 22px; font-weight: bold;">
+    //             ${(key === 'OT' || key === 'NOT') ? msToTime(myObj[key] * 60000) : formatter(myObj[key])}</td></tr>
+    //       `
+    //     objIndex++
+    // }
 
     let iconTrend = `<i class="fa fa-arrow-up"></i>`
     if (parseFloat(myObj.trend) < 0) {
@@ -272,7 +312,6 @@ function toListOfElements(states) {
 
     const level = 'allStates'  //ToDo кастомизация уровня объекта (простои или работы, etc...) на уровне настройки виджета
     let resultList = {}
-    let listStates = {}
     let labels = {
         inIdle: {label: 'Простой'},
         good: {label: 'Норма', backgroundColor: 'green'},
@@ -318,7 +357,7 @@ function toChartDataset(states) {
         template.datasets[0].data.push(states[key].percent.toFixed(2))
     }
 
-    if (template.labels.length == 2) {
+    if (template.labels.length === 2) {
         template.datasets[0].backgroundColor[1] = '#43434c'
     }
 
@@ -349,7 +388,7 @@ function checkAndUpdate(data) {
 self.onDataUpdated = function () {
 
     $(`.tb-widget-loading`).hide() // скрыть лоадер
-
+    parsingSelfDataToSchema(self.ctx.data)
     for (let i = 0; i < self.ctx.data.length; i++) {
 
         let data = self.ctx.data[i]
@@ -376,7 +415,7 @@ self.onDataUpdated = function () {
 
     let dataArray;
 
-    for (var i = 0; i < self.ctx.data.length; i++) {
+    for (let i = 0; i < self.ctx.data.length; i++) {
         dataArray = self.ctx.data[i].data[0]
     }
 
@@ -428,6 +467,49 @@ self.onDataUpdated = function () {
 
     //getKeys(entityName,entityType,keys, jsonKeys)
 
+}
+
+function msToTime(duration) {
+    let seconds = Math.floor((duration / 1000) % 60),
+        minutes = Math.floor((duration / (1000 * 60)) % 60),
+        hours = Math.floor((duration / (1000 * 60 * 60)) % 24),
+        days = (duration / (1000 * 60 * 60 * 24)).toFixed(1) < 1 ? '' : (duration / (1000 * 60 * 60 * 24)).toFixed(0)
+
+    hours = (hours < 10) ? "0" + hours : hours;
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+    hours = hours == '00' ? 0 : hours
+
+    if (days === '' && hours != 0) {
+        return `${hours.toString().substr(0, 1) == '0' ? hours.toString().slice(1) : hours}<span style="font-size:12px">ч:</span>${minutes}<span style="font-size:12px">м</span>`
+    } else if (hours == '0') {
+        return `${minutes.toString().substr(0, 1) == 0 ? minutes.toString().slice(1) : minutes}<span style="font-size:12px">м</span>`
+    } else {
+        return `${days}<span style="font-size:12px">д:</span>${hours.toString().substr(0, 1) == '0' ? hours.toString().slice(1) : hours}<span style="font-size:12px">ч:</span>${minutes.toString().substr(0, 1) == 0 ? minutes.toString().slice(1) : minutes}<span style="font-size:12px">м</span>`
+    }
+}
+
+function formatter(number) {
+    return Math.abs(Number(number)) >= 1.0e+9
+        ? (Math.abs(Number(number)) / 1.0e+9).toFixed(3) + `<span style="font-size:12px">млд.шт</span>`
+        : Math.abs(Number(number)) >= 1.0e+6
+            ? (Math.abs(Number(number)) / 1.0e+6).toFixed(3) + `<span style="font-size:12px">млн.шт</span>`
+            : Math.abs(Number(number)) >= 1.0e+3
+                ? (Math.abs(Number(number)) / 1.0e+3).toFixed(3) + `<span style="font-size:12px">тыс.шт</span>`
+                : Math.abs(Number(number)) + `<span style="font-size:12px">шт</span>`
+}
+
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+function declOfNum(number, titles) {
+    cases = [2, 0, 1, 1, 1, 2];
+    return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
 }
 
 self.onResize = function () {
