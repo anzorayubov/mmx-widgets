@@ -85,7 +85,6 @@ self.onInit = function () {
             event.target.nodeName === 'H4')
             myChart.destroy()
     })
-
 }
 
 function initChart(ctx) {
@@ -124,47 +123,53 @@ function htmlTableForming() {
         trendLegend,
         oeeDounat: {value: oeeDounatValue}
     } = dataSchema;
+
     let tableForOEE = ``
 
     $(`#${uuid} > .box > #info_center`).html(`${oeeDounatValue}%`)
+
     if (firstRawLegend.label !== 'hide') {
+        const value = firstRawLegend.value
+        const keyType = firstRawLegend.keyType
+        const result = `${keyType === 'minutes' ?
+            msToTime(value * 60000) : keyType === 'units' ?
+                formatter(value) : value
+        }`
+
         tableForOEE += `
             <tr> <td style="font-size: 14px;">${firstRawLegend.label}:</td> </tr>
-            <tr> <td style="font-size: 22px; font-weight: bold;">
-                ${
-            (firstRawLegend.keyType === 'minutes')
-                ? msToTime(firstRawLegend.value * 60000)
-                : (firstRawLegend.keyType === 'units')
-                ? formatter(firstRawLegend.value) : firstRawLegend.value
-        }
-            </td></tr>
+            <tr> <td style="font-size: 22px; font-weight: bold;">${result}</td></tr>
         `
     }
+
     if (secondRawLegend.label !== 'hide') {
+        const value = secondRawLegend.value
+        const keyType = secondRawLegend.keyType
+        const result = `${(keyType === 'minutes') ?
+            msToTime(value * 60000) : keyType === 'units' ?
+                formatter(value) : value}`
+
         tableForOEE += `
             <tr> <td style="font-size: 14px;">${secondRawLegend.label}:</td> </tr>
-            <tr> <td style="font-size: 22px; font-weight: bold;">
-               ${
-            (secondRawLegend.keyType === 'minutes')
-                ? msToTime(secondRawLegend.value * 60000)
-                : (secondRawLegend.keyType === 'units')
-                ? formatter(secondRawLegend.value) : secondRawLegend.value
-        }
-            </td></tr>
+            <tr> <td style="font-size: 22px; font-weight: bold;">${result} </td></tr>
         `
     }
 
+    const iconTrend = `<i class="fa fa-arrow-up"></i>`
+    const iconArrowDown = `<i class="fa fa-arrow-down"></i>`
+    const infoInBottom = $(`#${uuid} > #info_in_bottom`)
 
     $(`#${uuid} > .box > #oee_small`).html(tableForOEE)
-    console.log(dataSchema)
     $(`#${uuid} > .trendText`).html(trendLegend.label)
-    let iconTrend = `<i class="fa fa-arrow-up"></i>`
+
     if (parseFloat(trendLegend.value) < 0) {
-        iconTrend = `<i class="fa fa-arrow-down"></i>`
-        $(`#${uuid} > #info_in_bottom`).css('color', 'red')
-    } else
-        $(`#${uuid} > #info_in_bottom`).css('color', '#43C6C9')
-    $(`#${uuid} > #info_in_bottom`).html(`${iconTrend} ${(typeof trendLegend.value == 'undefined') ? 'н/д' : trendLegend.value}%`)
+        iconTrend = iconArrowDown
+        infoInBottom.css('color', 'red')
+    } else {
+        infoInBottom.css('color', '#43C6C9')
+    }
+
+    infoInBottom.html(`${iconTrend} ${(typeof trendLegend.value == 'undefined') ? 'н/д' : trendLegend.value}%`)
 
 }
 
@@ -176,7 +181,6 @@ function toChartDataset() {
         datasets: [{
             label: '',
             data: [oeeDounatValue, 100 - oeeDounatValue],
-            //  green     green     black     green     black
             backgroundColor: ['#43C6C9', '#43434c'],
             borderColor: [],
             borderWidth: 1
@@ -186,7 +190,6 @@ function toChartDataset() {
 }
 
 function checkAndUpdateChart(data) {
-
     const oldDatasets = myChart.config.data.datasets[0].data
     const newDatasets = data.datasets[0].data
     let changed = false
@@ -197,15 +200,15 @@ function checkAndUpdateChart(data) {
 
     if (changed) {
         myChart.config.data = data
-        myChart.update();
+        myChart.update()
     }
 }
 
 self.onDataUpdated = function () {
-
-    $(`.tb-widget-loading`).hide() // скрыть лоадер
+    $(`.tb-widget-loading`).hide()
 
     parsingSelfDataToSchema(self.ctx.data)
+
     try {
         htmlTableForming() // Получаем один элемент
     } catch (e) {
@@ -213,8 +216,6 @@ self.onDataUpdated = function () {
     }
     const chartTemplate = toChartDataset()
     checkAndUpdateChart(chartTemplate)
-
-
 }
 
 function msToTime(duration) {
