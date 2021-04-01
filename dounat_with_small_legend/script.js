@@ -70,13 +70,13 @@ function parsingSelfDataToSchema(data) {
 
 
 self.onInit = function () {
-    self.ctx.datasourceTitleCells = [];
-    self.ctx.valueCells = [];
-    self.ctx.labelCells = [];
-    self.onResize();
+    self.ctx.datasourceTitleCells = []
+    self.ctx.valueCells = []
+    self.ctx.labelCells = []
+    self.onResize()
     $('#nouuid').attr('id', uuid)
 
-    ctx = $(`#${uuid} > .box > #myChart_small`)[0].getContext('2d');
+    ctx = $(`#${uuid} > .box > #myChart_small`)[0].getContext('2d')
 
     initChart(ctx)
 
@@ -138,8 +138,7 @@ function htmlTableForming() {
 
         tableForOEE += `
             <tr> <td style="font-size: 14px;">${firstRawLegend.label}:</td> </tr>
-            <tr> <td style="font-size: 22px; font-weight: bold;">${result}</td></tr>
-        `
+            <tr> <td style="font-size: 22px; font-weight: bold;">${result}</td></tr>`
     }
 
     if (secondRawLegend.label !== 'hide') {
@@ -151,8 +150,7 @@ function htmlTableForming() {
 
         tableForOEE += `
             <tr> <td style="font-size: 14px;">${secondRawLegend.label}:</td> </tr>
-            <tr> <td style="font-size: 22px; font-weight: bold;">${result} </td></tr>
-        `
+            <tr> <td style="font-size: 22px; font-weight: bold;">${result}</td></tr>`
     }
 
     const iconTrend = `<i class="fa fa-arrow-up"></i>`
@@ -169,10 +167,11 @@ function htmlTableForming() {
         infoInBottom.css('color', '#43C6C9')
     }
 
-    infoInBottom.html(`${iconTrend} ${(typeof trendLegend.value == 'undefined') ? 'н/д' : trendLegend.value}%`)
+    infoInBottom.html(`
+        ${iconTrend} 
+        ${(typeof trendLegend.value == 'undefined') ? 'н/д' : trendLegend.value}%`)
 
 }
-
 
 function toChartDataset() {
     const {oeeDounat: {value: oeeDounatValue}} = dataSchema;
@@ -222,7 +221,8 @@ function msToTime(duration) {
     let seconds = Math.floor((duration / 1000) % 60),
         minutes = Math.floor((duration / (1000 * 60)) % 60),
         hours = Math.floor((duration / (1000 * 60 * 60)) % 24),
-        days = (duration / (1000 * 60 * 60 * 24)).toFixed(1) < 1 ? '' : (duration / (1000 * 60 * 60 * 24)).toFixed(0)
+        days = (duration / (1000 * 60 * 60 * 24)).toFixed(1) < 1 ? '' :
+            (duration / (1000 * 60 * 60 * 24)).toFixed(0)
 
     hours = (hours < 10) ? "0" + hours : hours;
     minutes = (minutes < 10) ? "0" + minutes : minutes;
@@ -230,12 +230,26 @@ function msToTime(duration) {
 
     hours = hours == '00' ? 0 : hours
 
+    const spanHours = '<span style="font-size:12px">ч:</span>'
+    const spanMinutes = '<span style="font-size:12px">м</span>'
+    const spanDays = '<span style="font-size:12px">д:</span>'
+
+    function slice(str) {
+        return str.toString().slice(1)
+    }
+
+    function substr(str) {
+        return str.toString().substr(0, 1)
+    }
+
     if (days === '' && hours != 0) {
-        return `${hours.toString().substr(0, 1) == '0' ? hours.toString().slice(1) : hours}<span style="font-size:12px">ч:</span>${minutes}<span style="font-size:12px">м</span>`
+        return `${substr(hours) == '0' ? slice(hours) : hours}${spanHours}${minutes}${spanMinutes}`
     } else if (hours == '0') {
-        return `${minutes.toString().substr(0, 1) == 0 ? minutes.toString().slice(1) : minutes}<span style="font-size:12px">м</span>`
+        return `${substr(minutes) == 0 ? slice(minutes) : minutes}${spanMinutes}`
     } else {
-        return `${days}<span style="font-size:12px">д:</span>${hours.toString().substr(0, 1) == '0' ? hours.toString().slice(1) : hours}<span style="font-size:12px">ч:</span>${minutes.toString().substr(0, 1) == 0 ? minutes.toString().slice(1) : minutes}<span style="font-size:12px">м</span>`
+        return `${days}${spanDays}${substr(hours) == '0' ? slice(hours) :
+            hours}${spanHours}${substr(minutes) == 0 ?
+            slice(minutes) : minutes}${spanMinutes}`
     }
 }
 
