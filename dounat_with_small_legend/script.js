@@ -117,6 +117,7 @@ function initChart(ctx) {
 }
 
 function htmlTableForming() {
+
     const {
         firstRawLegend,
         secondRawLegend,
@@ -126,15 +127,14 @@ function htmlTableForming() {
 
     let tableForOEE = ``
 
-    $(`#${uuid} > .box > #info_center`).html(`${oeeDounatValue}%`)
+    $(`#${uuid} > .box > #info_center`).html(`${oeeDounatValue || ''}%`)
 
     if (firstRawLegend.label !== 'hide') {
         const value = firstRawLegend.value
         const keyType = firstRawLegend.keyType
         const result = `${keyType === 'minutes' ?
             msToTime(value * 60000) : keyType === 'units' ?
-                formatter(value) : value
-        }`
+                formatter(value) : value || ''}`
 
         tableForOEE += `
             <tr> <td style="font-size: 14px;">${firstRawLegend.label}:</td> </tr>
@@ -146,7 +146,7 @@ function htmlTableForming() {
         const keyType = secondRawLegend.keyType
         const result = `${(keyType === 'minutes') ?
             msToTime(value * 60000) : keyType === 'units' ?
-                formatter(value) : value}`
+                formatter(value) : value || ''}`
 
         tableForOEE += `
             <tr> <td style="font-size: 14px;">${secondRawLegend.label}:</td> </tr>
