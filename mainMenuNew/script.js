@@ -185,6 +185,7 @@ function setDateToDatePicker(from, to) {
         $('input[name="daterange"]').data('daterangepicker').setEndDate(to)
         $('i[name="daterange"]').data('daterangepicker').setStartDate(from)
         $('i[name="daterange"]').data('daterangepicker').setEndDate(to)
+        // debugger
     } catch (e) {
     }
 }
@@ -213,20 +214,6 @@ function jqueryActions() {
             }
         }
 
-        $('input[name="datefilter"],i[name="datefilter"] ').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('DD.MM') + '-' + picker.endDate.format('DD.MM'));
-        });
-
-        try {
-            self.ctx.$scope.$on('dashboardTimewindowChanged', function () {
-                $scope = self.ctx.$scope;
-                $scope.ctx = self.ctx;
-                $('input[name="daterange"]').data('daterangepicker').setStartDate($scope.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs);
-                $('input[name="daterange"]').data('daterangepicker').setEndDate($scope.ctx.dashboardTimewindow.history.fixedTimewindow.endTimeMs);
-            })
-        } catch (e) {
-        }
-
         $('input[name="daterange"], i[name="daterange"] ').daterangepicker({
             timePicker: true,
             timePicker24Hour: true,
@@ -245,19 +232,18 @@ function jqueryActions() {
                 "monthNames": ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
                 "firstDay": 1
             },
-            linkedCalendars: false,
-
+            linkedCalendars: false
         }, function (start, end, label) {
-            let dateObjStart = new Date(start);
-            let monthStart = dateObjStart.getMonth() + 1; //months from 1-12
-            let dayStart = dateObjStart.getDate();
-            let dateObj = new Date(end);
-            let month = dateObj.getMonth() + 1; //months from 1-12
-            let day = dateObj.getDate();
+            const options = {
+                month: "numeric",
+                day: "numeric"
+            }
 
-            newdate = `${dayStart}.${monthStart} - ${day}.${month}`
+            const dayStart = new Date(Date.parse(new Date(start))).toLocaleString("ru", options)
+            const dayEnd = new Date(Date.parse(new Date(end))).toLocaleString("ru", options)
+            const currentDate = `${dayStart} - ${dayEnd}`
 
-            $('#datepickerInput').val(newdate)
+            $('#datepickerInput').val(currentDate)
 
             ctx.timewindowFunctions.onUpdateTimewindow(start.valueOf(), end.valueOf())
         })
@@ -305,7 +291,6 @@ function jqueryActions() {
             }
             self.onResize()
         })
-
     });
 
     $(document).undelegate(".accordeon > li > a, .lineLevel > li > a", 'click')
