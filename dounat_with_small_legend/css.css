@@ -130,11 +130,11 @@ tb-legend {
 }
 
 #info_center {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     color: #43C6C9;
     position: absolute;
-    left: 32px;
+    left: 31px;
     width: 58px;
     text-align: center;
 }

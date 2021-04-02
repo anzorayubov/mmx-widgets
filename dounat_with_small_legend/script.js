@@ -68,7 +68,6 @@ function parsingSelfDataToSchema(data) {
     return dataSchema;
 }
 
-
 self.onInit = function () {
     self.ctx.datasourceTitleCells = []
     self.ctx.valueCells = []
@@ -127,7 +126,8 @@ function htmlTableForming() {
 
     let tableForOEE = ``
 
-    $(`#${uuid} > .box > #info_center`).html(`${oeeDounatValue || ''}%`)
+    $(`#${uuid} > .box > #info_center`).html(`
+        ${oeeDounatValue == 100.00 ? 100 : oeeDounatValue.toFixed(1) || ''}%`)
 
     if (firstRawLegend.label !== 'hide') {
         const value = firstRawLegend.value
@@ -153,7 +153,7 @@ function htmlTableForming() {
             <tr> <td style="font-size: 22px; font-weight: bold;">${result}</td></tr>`
     }
 
-    const iconTrend = `<i class="fa fa-arrow-up"></i>`
+    let iconTrend = `<i class="fa fa-arrow-up"></i>`
     const iconArrowDown = `<i class="fa fa-arrow-down"></i>`
     const infoInBottom = $(`#${uuid} > #info_in_bottom`)
 
