@@ -1,18 +1,48 @@
-self.onInit = function() {
+self.onInit = function () {
     self.ctx.flot = new TbFlot(self.ctx);
     self.ctx.updateWidgetParams();
+
+    addCheckboxes()
 }
 
-self.onDataUpdated = function() {
+self.onDataUpdated = function () {
     self.ctx.flot.update();
 
-    const tbKeys = document.querySelectorAll('.tb-legend-keys td:last-child')
+    showLastValuesInLegend()
+}
+
+function addCheckboxes() {
+    const labels = $('.tb-legend-keys td:first-child')
+
+    labels.css({'display': 'flex', 'align-items': 'center'})
+    labels.append(`
+        <input style="width: 14px; height: 14px;" type="checkbox" checked/>`)
+
+    $('.tb-legend-keys td').click(debounce(event => {
+        const input = event.target.closest('tr').querySelector('input')
+
+        if (event.target.className.includes('tb-legend-label')) {
+            input.checked = !input.checked
+        }
+    }, 100))
+
+    $('.tb-legend-keys td:first-child input').click(event => {
+        const label = event.target.closest('tr').querySelector('.tb-legend-label')
+        const clickEvent = new Event('click')
+
+        label.dispatchEvent(clickEvent)
+    })
+
+    $('.tb-legend-keys td').css({'text-decoration': 'none', 'opacity': 1})
+
+}
+
+function showLastValuesInLegend() {
     const lastValues = []
     const arrayLabels = document.querySelectorAll('.tb-legend-keys td:nth-child(2)')
-    const array = self.ctx.data
 
-    array.forEach((obj, index) => {
-        const lastValue = obj.data[obj.data.length-1]
+    self.ctx.data.forEach((obj, index) => {
+        const lastValue = obj.data[obj.data.length - 1]
         const label = obj.dataKey.label.trim()
 
         if (lastValue) {
@@ -21,7 +51,7 @@ self.onDataUpdated = function() {
                 name: label,
                 value: +lastValue[1].toFixed(2)
             })
-        } else if(obj.data.length < 1) {
+        } else if (obj.data.length < 1) {
             lastValues.push({
                 name: '',
                 value: ''
@@ -41,26 +71,38 @@ self.onDataUpdated = function() {
 
 }
 
-self.onResize = function() {
+function debounce(fn, wait) {
+    let timeout
+    return function (...args) {
+        const later = () => {
+            clearTimeout(timeout)
+            fn.apply(this, args)
+        }
+        clearTimeout(timeout)
+        timeout = setTimeout(later, wait)
+    }
+}
+
+self.onResize = function () {
     self.ctx.flot.resize();
 }
 
-self.onEditModeChanged = function() {
+self.onEditModeChanged = function () {
     self.ctx.flot.checkMouseEvents();
 }
 
-self.onMobileModeChanged = function() {
+self.onMobileModeChanged = function () {
     self.ctx.flot.checkMouseEvents();
 }
 
-self.getSettingsSchema = function() {
+self.getSettingsSchema = function () {
     return TbFlot.settingsSchema('graph');
 }
 
-self.getDataKeySettingsSchema = function() {
+self.getDataKeySettingsSchema = function () {
     return TbFlot.datakeySettingsSchema(true, 'graph');
 }
 
-self.onDestroy = function() {
+self.onDestroy = function () {
     self.ctx.flot.destroy();
 }
