@@ -157,7 +157,6 @@ function syncingDates() {
         const dashboardTime = self.ctx.dashboardTimewindow
         if (currentTimeInTB !== oldTime) {
             if (self.ctx && dashboardTime.history) {
-
                 const from = new Date(dashboardTime.history.fixedTimewindow.startTimeMs)
                 const to = new Date(dashboardTime.history.fixedTimewindow.endTimeMs)
                 setDateToDatePicker(from, to)
@@ -749,12 +748,16 @@ function drawCheckboxForCalendar() {
             toggleForCalendarSelect.attr('disabled', 'disabled')
         }
 
+
+        // applyBtn надо сделать одной функцией, просто в начале проверять
+        // if( checked ?) логику applyBtn после тоггла
+
+
         $(`#toggleForCalendar input[type="checkbox"]`).click((toggle) => {
             if (toggle.target.checked) {
                 toggleForCalendarSelect.removeAttr('disabled')
                 $('.opacity_box').css({'display': 'block'})
                 $(`#toggleForCalendar input[type="checkbox"]`).css({'background-color': ''})
-
 
                 $(`.applyBtn`).click(() => {
                     let checkboxes = $(`#toggleForCalendar input[type="checkbox"]`)
@@ -767,8 +770,13 @@ function drawCheckboxForCalendar() {
                         self.ctx.interval.clearAll()
 
                         function updateTime() {
-                            let milliseconds = Date.now()
+                            const milliseconds = Date.now()
                             ctx.timewindowFunctions.onUpdateTimewindow(milliseconds - value, milliseconds)
+
+                            const from = new Date(milliseconds - value)
+                            const to = new Date(milliseconds)
+
+                            setDateToDatePicker(from, to)
                         }
 
                         updateTime()
@@ -797,10 +805,7 @@ function drawCheckboxForCalendar() {
         })
 
         toggleForCalendarSelect.change((event) => {
-
             if (event.target.value !== '') {
-
-                // NEED REFACTOR: вывести в объект
                 switch (event.target.value) {
                     case '1 час':
                         value = 3600000
@@ -818,8 +823,6 @@ function drawCheckboxForCalendar() {
                         value = 86400000
                         break;
                 }
-
-
             }
         })
 
@@ -830,15 +833,12 @@ function drawCheckboxForCalendar() {
             if (self.ctx && self.ctx.dashboardTimewindow.history) {
                 const oldDate = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs
 
-                let interval = setInterval(() => {
+                const interval = setInterval(() => {
                     const timeFrom = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs
 
                     if (oldDate != timeFrom) {
-                        let timeFrom = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs,
-                            timeTo = self.ctx.dashboardTimewindow.history.fixedTimewindow.endTimeMs,
-
-                            from = new Date(timeFrom),
-                            to = new Date(timeTo)
+                        const timeFrom = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs,
+                            timeTo = self.ctx.dashboardTimewindow.history.fixedTimewindow.endTimeMs
 
                         sessionStorage.setItem('selectedDate', JSON.stringify({
                             from: timeFrom,
