@@ -135,6 +135,8 @@ function syncingDates() {
         }
     })
 
+    const selectedRealTime = JSON.parse(localStorage.getItem('selectedRealTime'))
+
     const dateFromStorage = JSON.parse(sessionStorage.getItem('selectedDate'))
 
     if (dateFromStorage) {
@@ -155,10 +157,12 @@ function syncingDates() {
         const dashboardTime = self.ctx.dashboardTimewindow
         if (currentTimeInTB !== oldTime) {
             if (self.ctx && dashboardTime.history) {
+
                 const from = new Date(dashboardTime.history.fixedTimewindow.startTimeMs)
                 const to = new Date(dashboardTime.history.fixedTimewindow.endTimeMs)
                 setDateToDatePicker(from, to)
             }
+
             oldTime = currentTimeInTB;
             isChanged = true
         }
@@ -206,12 +210,28 @@ function jqueryActions() {
             let timeToString = new Date(timeTo).toLocaleDateString()
             let timeFromString = new Date(timeFrom).toLocaleDateString()
 
-            return {
-                timeFrom: timeFrom,
-                timeTo: timeTo,
-                timeFromString: timeFromString,
-                timeToString: timeToString,
+            const selectedRealTime = JSON.parse(localStorage.getItem('selectedRealTime'))
+
+            if (selectedRealTime) {
+                const milliseconds = Date.now()
+                const from = new Date(milliseconds - selectedRealTime.value)
+                const to = new Date(milliseconds)
+
+                ctx.timewindowFunctions.onUpdateTimewindow(milliseconds - selectedRealTime.value, milliseconds)
+
+                return {
+                    timeFromString: from,
+                    timeToString: to,
+                }
+            } else {
+                return {
+                    timeFrom: timeFrom,
+                    timeTo: timeTo,
+                    timeFromString: timeFromString,
+                    timeToString: timeToString,
+                }
             }
+
         }
 
         $('input[name="daterange"], i[name="daterange"] ').daterangepicker({
@@ -636,12 +656,25 @@ function drawCheckboxForCalendar() {
     let selectedRealTime = JSON.parse(localStorage.getItem('selectedRealTime'))
 
     if (selectedRealTime) {
-        self.ctx.interval.clearAll()
-
-        self.ctx.interval.make(() => {
+        const setTime = () => {
             let milliseconds = Date.now()
             ctx.timewindowFunctions.onUpdateTimewindow(milliseconds - selectedRealTime.value, milliseconds)
+
+            const from = new Date(milliseconds - selectedRealTime.value)
+            const to = new Date(milliseconds)
+
+            setDateToDatePicker(from, to)
+
+        }
+        self.ctx.interval.clearAll()
+
+        setTime()
+
+        self.ctx.interval.make(() => {
+            setTime()
+
         }, 15000)
+
     }
 
     $(`#datepicker`).click((event) => {
@@ -692,7 +725,6 @@ function drawCheckboxForCalendar() {
         let selectedRealTime = JSON.parse(localStorage.getItem('selectedRealTime'))
         let value = 3600000
 
-
         if (selectedRealTime) { // если localStorage не пустой
             if (selectedRealTime.checked) {
                 $(`.daterangepicker input[type="checkbox"]`).prop('checked', true)
@@ -740,9 +772,10 @@ function drawCheckboxForCalendar() {
                         }
 
                         updateTime()
+
                         self.ctx.interval.make(() => {
                             updateTime()
-                        }, 5000)
+                        }, 15000)
                     } else {
                         self.ctx.interval.clearAll()
                     }
@@ -803,6 +836,7 @@ function drawCheckboxForCalendar() {
                     if (oldDate != timeFrom) {
                         let timeFrom = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs,
                             timeTo = self.ctx.dashboardTimewindow.history.fixedTimewindow.endTimeMs,
+
                             from = new Date(timeFrom),
                             to = new Date(timeTo)
 
