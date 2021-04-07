@@ -2,39 +2,83 @@ self.onInit = function () {
     self.ctx.flot = new TbFlot(self.ctx);
     self.ctx.updateWidgetParams();
 
+    updateParamsStatus()
+
     addCheckboxes()
 }
 
 self.onDataUpdated = function () {
-    self.ctx.flot.update();
+    self.ctx.flot.update()
 
     showLastValuesInLegend()
 }
 
+const selectedParams = JSON.parse(sessionStorage.getItem('selected_tech_params')) || []
+const clickEvent = new Event('click')
+
+function updateParamsStatus() {
+    const list = self.ctx.$container[0].closest('tb-widget').querySelector('tbody')
+    const items = list.childNodes
+    const itemsArr = []
+    const labels = Array.from($('.tb-legend-keys td:nth-child(2)'))
+
+    labels.forEach((item, inx) => {
+        const label = removeSpacesAndNums(item.innerHTML)
+
+        if (selectedParams.includes(label)) {
+            item.dispatchEvent(clickEvent)
+        }
+    })
+}
+
 function addCheckboxes() {
     const labels = $('.tb-legend-keys td:first-child')
+    const keys = Array.from($('.tb-legend-keys td:nth-child(2)'))
 
     labels.css({'display': 'flex', 'align-items': 'center'})
     labels.append(`
         <input style="width: 14px; height: 14px;" type="checkbox" checked/>`)
 
-    $('.tb-legend-keys td').click(debounce(event => {
-        const input = event.target.closest('tr').querySelector('input')
+    const checkboxes = $('.tb-legend-keys td:first-child input')
 
-        if (event.target.className.includes('tb-legend-label')) {
-            input.checked = !input.checked
+    keys.forEach((key, index) => {
+        const text = removeSpacesAndNums(key.innerHTML)
+        if (selectedParams.includes(text)) {
+            checkboxes[index].checked = false
+        }
+    })
+
+    $('.tb-legend-keys td').click(debounce(event => {
+        const target = event.target
+        const checkbox = target.closest('tr').querySelector('input')
+
+        if (target.className.includes('tb-legend-label')) {
+            checkbox.checked = !checkbox.checked
+            const value = removeSpacesAndNums(target.innerText)
+
+            saveParamsToStorage(value)
         }
     }, 100))
 
     $('.tb-legend-keys td:first-child input').click(event => {
         const label = event.target.closest('tr').querySelector('.tb-legend-label')
-        const clickEvent = new Event('click')
-
         label.dispatchEvent(clickEvent)
+
+        const value = removeSpacesAndNums(label.innerText)
+        saveParamsToStorage(value)
     })
 
-    $('.tb-legend-keys td').css({'text-decoration': 'none', 'opacity': 1})
+    function saveParamsToStorage(value) {
+        if (selectedParams.includes(value)) {
+            const index = selectedParams.indexOf(value)
+            selectedParams.splice(index, 1)
+        } else if (!selectedParams.includes(value)) {
+            selectedParams.push(value)
+        }
+        sessionStorage.setItem('selected_tech_params', JSON.stringify(selectedParams))
+    }
 
+    $('.tb-legend-keys td').css({'text-decoration': 'none', 'opacity': 1})
 }
 
 function showLastValuesInLegend() {
@@ -69,6 +113,10 @@ function showLastValuesInLegend() {
         })
     })
 
+}
+
+function removeSpacesAndNums(str) {
+    return str.replace(/[^a-zA-ZА-Яа-яЁё]/gi, '').replace(/\s+/gi, ', ')
 }
 
 function debounce(fn, wait) {
