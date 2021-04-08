@@ -656,14 +656,13 @@ function drawCheckboxForCalendar() {
 
     if (selectedRealTime) {
         const setTime = () => {
-            let milliseconds = Date.now()
-            ctx.timewindowFunctions.onUpdateTimewindow(milliseconds - selectedRealTime.value, milliseconds)
-
+            const milliseconds = Date.now()
             const from = new Date(milliseconds - selectedRealTime.value)
             const to = new Date(milliseconds)
 
-            setDateToDatePicker(from, to)
+            ctx.timewindowFunctions.onUpdateTimewindow(milliseconds - selectedRealTime.value, milliseconds)
 
+            setDateToDatePicker(from, to)
         }
         self.ctx.interval.clearAll()
 
@@ -671,9 +670,7 @@ function drawCheckboxForCalendar() {
 
         self.ctx.interval.make(() => {
             setTime()
-
         }, 15000)
-
     }
 
     $(`#datepicker`).click((event) => {
@@ -748,46 +745,11 @@ function drawCheckboxForCalendar() {
             toggleForCalendarSelect.attr('disabled', 'disabled')
         }
 
-
-        // applyBtn надо сделать одной функцией, просто в начале проверять
-        // if( checked ?) логику applyBtn после тоггла
-
-
         $(`#toggleForCalendar input[type="checkbox"]`).click((toggle) => {
             if (toggle.target.checked) {
                 toggleForCalendarSelect.removeAttr('disabled')
                 $('.opacity_box').css({'display': 'block'})
                 $(`#toggleForCalendar input[type="checkbox"]`).css({'background-color': ''})
-
-                $(`.applyBtn`).click(() => {
-                    let checkboxes = $(`#toggleForCalendar input[type="checkbox"]`)
-                    if (checkboxes[checkboxes.length - 1].checked) {
-                        let realtimeObj = {
-                            value: value,
-                            checked: true
-                        }
-                        localStorage.setItem('selectedRealTime', JSON.stringify(realtimeObj))
-                        self.ctx.interval.clearAll()
-
-                        function updateTime() {
-                            const milliseconds = Date.now()
-                            ctx.timewindowFunctions.onUpdateTimewindow(milliseconds - value, milliseconds)
-
-                            const from = new Date(milliseconds - value)
-                            const to = new Date(milliseconds)
-
-                            setDateToDatePicker(from, to)
-                        }
-
-                        updateTime()
-
-                        self.ctx.interval.make(() => {
-                            updateTime()
-                        }, 15000)
-                    } else {
-                        self.ctx.interval.clearAll()
-                    }
-                })
 
             } else if (!toggle.target.checked) {
                 toggleForCalendarSelect.attr('disabled', 'disabled')
@@ -830,24 +792,46 @@ function drawCheckboxForCalendar() {
         $(".applyBtn").off()
 
         $(`.applyBtn`).click(() => {
-            if (self.ctx && self.ctx.dashboardTimewindow.history) {
-                const oldDate = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs
+            const checkboxes = $(`#toggleForCalendar input[type="checkbox"]`)
+            self.ctx.interval.clearAll()
 
-                const interval = setInterval(() => {
-                    const timeFrom = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs
+            if (checkboxes[checkboxes.length - 1].checked) {
+                localStorage.setItem('selectedRealTime', JSON.stringify({value: value, checked: true}))
 
-                    if (oldDate != timeFrom) {
-                        const timeFrom = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs,
-                            timeTo = self.ctx.dashboardTimewindow.history.fixedTimewindow.endTimeMs
+                function updateTime() {
+                    const milliseconds = Date.now()
+                    const from = new Date(milliseconds - value)
+                    const to = new Date(milliseconds)
 
-                        sessionStorage.setItem('selectedDate', JSON.stringify({
-                            from: timeFrom,
-                            to: timeTo
-                        }))
+                    ctx.timewindowFunctions.onUpdateTimewindow(milliseconds - value, milliseconds)
+                    setDateToDatePicker(from, to)
+                }
 
-                        clearInterval(interval)
-                    }
-                }, 1000)
+                updateTime()
+
+                self.ctx.interval.make(() => {
+                    updateTime()
+                }, 15000)
+
+            } else {
+                if (self.ctx && self.ctx.dashboardTimewindow.history) {
+                    const oldDate = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs
+
+                    const interval = setInterval(() => {
+                        const timeFrom = self.ctx.dashboardTimewindow.history.fixedTimewindow.startTimeMs
+
+                        if (oldDate != timeFrom) {
+                            const timeTo = self.ctx.dashboardTimewindow.history.fixedTimewindow.endTimeMs
+
+                            sessionStorage.setItem('selectedDate', JSON.stringify({
+                                from: timeFrom,
+                                to: timeTo
+                            }))
+
+                            clearInterval(interval)
+                        }
+                    }, 500)
+                }
             }
         })
     })
