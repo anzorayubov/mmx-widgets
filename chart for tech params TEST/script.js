@@ -110,7 +110,7 @@ function showLastValuesInLegend() {
             const html = label.innerHTML.slice(0, label.innerHTML.lastIndexOf('|')).trim()
 
             if (val.name.trim() === html) {
-                label.innerHTML = `${html} | ${val.value}`
+                label.innerHTML = `<span>${html} |</span><span>${val.value}</span>`
             }
         })
     })

@@ -1,3 +1,18 @@
+.tb-legend-keys {
+    flex-wrap: nowrap;
+    display: flex;
+}
+
+.tb-legend-label {
+    justify-content: space-between;
+    display: flex;
+    width: 100%;
+}
+
+.tb-legend-label span:nth-child(2) {
+    margin-left: 4px;
+}
+
 .legend {
     font-size: 13px;
     line-height: 10px;
@@ -40,4 +55,3 @@ tb-legend {
     border-right: 1px solid #eee;
     margin-right: 4px;
 }
-
