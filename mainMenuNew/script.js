@@ -20,7 +20,7 @@ function mainHeadMenuButtonClicked() {
 
 function getEntityMap() {
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://' + window.location.hostname + ':1880/mainMenu', true);
+    xhr.open('GET', 'http://' + window.location.hostname + ':1803/mainMenu', true);
     xhr.send();
     xhr.onload = getAnswer;
 
@@ -39,7 +39,6 @@ function getEntityMap() {
         let html = '<ul class="accordeon">'
         //Создаём цеха
         for (let ws = 0; ws < entityList.length; ws++) {
-
             html += `
                 <li><a class="workshopsList" href="javascript:void(0);">
                         <i class="fa fa-angle-down fa-lg"></i>
@@ -67,7 +66,6 @@ function getEntityMap() {
         	             </span>`
 
                     if (sections[s].childs && !sections[s].childs.error && sections[s].childs.length > 0) {
-
                         //И оборудование есть, пушим финалочку
                         html += `<ul>`
                         for (let m = 0; m < sections[s].childs.length; m++) {
@@ -94,7 +92,6 @@ function getEntityMap() {
             //Закрываем цеха
             html += '</li>'
         }
-
         //Закрываем accordeon
         html += '</ul>'
 
@@ -136,12 +133,18 @@ function syncingDates() {
     })
 
     const selectedRealTime = JSON.parse(localStorage.getItem('selectedRealTime'))
-
     const dateFromStorage = JSON.parse(sessionStorage.getItem('selectedDate'))
 
     if (dateFromStorage) {
         // забить время в ТВ если оно есть в storage
         ctx.timewindowFunctions.onUpdateTimewindow(dateFromStorage.from, dateFromStorage.to)
+    } else {
+        // если в storage нет времени - то последний 1 день
+        const millesecondsPerDay = 86400000
+        const to = Date.now()
+        const from = to - millesecondsPerDay
+
+        ctx.timewindowFunctions.onUpdateTimewindow(from, to)
     }
 
     let currentTimeInTB = ''
@@ -190,6 +193,7 @@ function setDateToDatePicker(from, to) {
         $('i[name="daterange"]').data('daterangepicker').setEndDate(to)
         // debugger
     } catch (e) {
+        console.log('setDateToDatePicker', e)
     }
 }
 
