@@ -11,7 +11,7 @@ self.onDataUpdated = function () {
     self.ctx.flot.update()
 
     showLastValuesInLegend()
-
+    
     translateDate()
 }
 
@@ -19,9 +19,6 @@ const selectedParams = JSON.parse(sessionStorage.getItem('selected_tech_params')
 const clickEvent = new Event('click')
 
 function updateParamsStatus() {
-    const list = self.ctx.$container[0].closest('tb-widget').querySelector('tbody')
-    const items = list.childNodes
-    const itemsArr = []
     const labels = Array.from($('.tb-legend-keys td:nth-child(2)'))
 
     labels.forEach((item, inx) => {
@@ -53,15 +50,15 @@ function addCheckboxes() {
     $('.tb-legend-keys td').click(debounce(event => {
         const target = event.target
         const checkbox = target.closest('tr').querySelector('input')
-
-        if (target.className.includes('tb-legend-label')) {
+        const parent = target.parentNode
+        
+        if (parent.className.includes('tb-legend-label') || target.className.includes('tb-legend-label')) {
             checkbox.checked = !checkbox.checked
             const value = removeSpacesAndNums(target.innerText)
-
             saveParamsToStorage(value)
         }
     }, 100))
-
+    
     checkboxes.click(event => {
         const label = event.target.closest('tr').querySelector('.tb-legend-label')
         label.dispatchEvent(clickEvent)
@@ -70,17 +67,17 @@ function addCheckboxes() {
         saveParamsToStorage(value)
     })
 
-    function saveParamsToStorage(value) {
-        if (selectedParams.includes(value)) {
-            const index = selectedParams.indexOf(value)
-            selectedParams.splice(index, 1)
-        } else if (!selectedParams.includes(value)) {
-            selectedParams.push(value)
-        }
-        sessionStorage.setItem('selected_tech_params', JSON.stringify(selectedParams))
-    }
-
     $('.tb-legend-keys td').css({'text-decoration': 'none', 'opacity': 1})
+}
+
+function saveParamsToStorage(value) {
+    if (selectedParams.includes(value)) {
+        const index = selectedParams.indexOf(value)
+        selectedParams.splice(index, 1)
+    } else if (!selectedParams.includes(value)) {
+        selectedParams.push(value)
+    }
+    sessionStorage.setItem('selected_tech_params', JSON.stringify(selectedParams))
 }
 
 function showLastValuesInLegend() {
