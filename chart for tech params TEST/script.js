@@ -89,7 +89,6 @@ function showLastValuesInLegend() {
         const label = obj.dataKey.label.trim()
 
         if (lastValue) {
-            let innerHTML = arrayLabels[index].innerHTML
             lastValues.push({
                 name: label,
                 value: +lastValue[1].toFixed(2)
