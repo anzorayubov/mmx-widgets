@@ -237,7 +237,6 @@ function toChartDataset(states) {
 }
 
 function checkAndUpdate(data) {
-
     const oldDatasets = myChart.config.data.datasets[0].data
     const newDatasets = data.datasets[0].data
     let changed = false
