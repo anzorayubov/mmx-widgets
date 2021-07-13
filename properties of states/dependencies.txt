@@ -1,0 +1,3 @@
+https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.3.3/jscolor.min.js
+https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js
+https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap.min.css
