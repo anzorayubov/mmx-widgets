@@ -1,19 +1,16 @@
-let currentUser = JSON.parse(localStorage.getItem('currentUser'))
-let inputEvent = new Event('input')
+const currentUser = JSON.parse(localStorage.getItem('currentUser'))
+const inputEvent = new Event('input')
 
 function drawInputs(keyName, className, optionsArray, quantityInputs) {
-    let matLabel = $('.layout-wrap.vertical-alignment mat-label')
-    let parentNode
-    if (typeof $('.layout-wrap.vertical-alignment')[0] != 'undefined')
-        parentNode = $('.layout-wrap.vertical-alignment')[0].childNodes
+    const matLabel = $('.layout-wrap.vertical-alignment mat-label')
+    const parentNode = $('.layout-wrap.vertical-alignment')?.[0]
+    const arrayForProductList = getDataOf('productList')
+    const arrayForParametersList = getDataOf('parametersList')
 
     for (let label = 0; label < matLabel.length; label++) {
-
-        if (matLabel[label].innerHTML.toLowerCase().replace(/\s+/g, '').includes(keyName.toLowerCase().replace(/\s+/g, ''))) {
-
+        if (removeSpaces(matLabel[label].innerHTML).includes(removeSpaces(keyName))) {
             let arrayWithSelectedParams = [];
             let uniqueArray = [];
-
             let inputOriginal = matLabel[label].closest('div').firstChild
             let container = document.createElement('div');
             container.className = `container_${className}`
@@ -22,11 +19,11 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
             let select = document.createElement('select')
             select.classList.add(`event_select_${className}`)
 
-            for (let opt = 0; opt < optionsArray.length; opt++) {
-                select.innerHTML += `<option>${optionsArray[opt]}</option>`
-            }
+            optionsArray.forEach(option => {
+                select.innerHTML += `<option>${option}</option>`
+            })
 
-            let boxForDelete = document.createElement('div');
+            const boxForDelete = document.createElement('div');
             boxForDelete.className = `boxForDelete_${className}`
             if (className == 'configuration') {
                 container.append(div)
@@ -34,79 +31,48 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                 container.append(div, select, boxForDelete)
             }
 
-            let arrayForProductList = []
-            self.ctx.data.forEach((data) => {
-                if (data.dataKey.name == 'productList') {
-                    try {
-                        arrayForProductList = JSON.parse(data.data[0][1]) || []
-                    } catch (e) {
-                        //   console.log(e) 
-                        arrayForProductList = arrayForProductList
-                    }
-                }
-            })
-
-            let arrayForParametersList = []
-            self.ctx.data.forEach((data) => {
-                if (data.dataKey.name == 'parametersList') {
-                    try {
-                        arrayForParametersList = JSON.parse(data.data[0][1])
-                    } catch (e) {
-                        //   console.log(e)
-                        arrayForParametersList = arrayForParametersList
-                    }
-                }
-            })
-
             matLabel[label].closest('mat-form-field').append(container)
-            // скрыть нативный инпут 
-            // matLabel[label].offsetParent.offsetParent.offsetParent.offsetParent.parentNode.firstChild.style.display = 'none';
-
+            // скрыть нативный инпут
+            matLabel[label].offsetParent.offsetParent.offsetParent.offsetParent.parentNode.firstChild.style.display = 'none';
 
             // подгрузка и отрисовка инпутов
-
             for (let i = 0; i < self.ctx.data.length; i++) {
-                if (self.ctx.data[i].dataKey.label.toLowerCase().replace(/\s+/g, '') == keyName.toLowerCase().replace(/\s+/g, '')) {
-
+                if (removeSpaces(self.ctx.data[i].dataKey.label) == removeSpaces(keyName)) {
                     if (keyName == 'Расчет ОЕЕ') {
-                        let obj = {}
+                        let inputLabels = {}
 
                         if (self.ctx.data[i].data[0][1] == '') {
-
-                            for (let q = 0; q < optionsArray.length; q++) {
-                                if (optionsArray[q] == '')
-                                    continue;
-                                obj[`${optionsArray[q].includes('Q') ?
-                                    'Q_plan' : optionsArray[q].includes('DP') ?
-                                        'DP' : optionsArray[q] == 'PP - Плановая производств' ?
-                                            'PP' : optionsArray[q] == 'PPT - Общее доступное время, мин' ?
-                                                'PPT' : optionsArray[q] == 'P - Плановое значение производительности' ?
-                                                    'P_plan' : optionsArray[q].includes('A') ?
-                                                        'A_plan' : optionsArray[q].includes('OEE') ?
-                                                            'OEE_plan' : optionsArray[q] == 'GP - Выпуск качественной продукции' ?
-                                                                'GP' : optionsArray[q]
-                                    }`] = ''
-                            }
-
+                            optionsArray.forEach(option => {
+                                if (option) {
+                                    inputLabels[`${optionsArray[q].includes('Q') ?
+                                        'Q_plan' : optionsArray[q].includes('DP') ?
+                                            'DP' : optionsArray[q] == 'PP - Плановая производств' ?
+                                                'PP' : optionsArray[q] == 'PPT - Общее доступное время, мин' ?
+                                                    'PPT' : optionsArray[q] == 'P - Плановое значение производительности' ?
+                                                        'P_plan' : optionsArray[q].includes('A') ?
+                                                            'A_plan' : optionsArray[q].includes('OEE') ?
+                                                                'OEE_plan' : optionsArray[q] == 'GP - Выпуск качественной продукции' ?
+                                                                    'GP' : optionsArray[q]
+                                        }`] = ''
+                                }
+                            })
                         } else {
                             try {
-                                obj = JSON.parse(self.ctx.data[i].data[0][1])
+                                inputLabels = JSON.parse(self.ctx.data[i].data[0][1])
                             } catch (e) {
                                 // console.log(e)
                             }
-
                         }
 
                         let count = 1
                         let validity = []
 
-                        for (let key in obj) {
-                            uniqueArray.push(obj[key])
+                        for (let key in inputLabels) {
+                            uniqueArray.push(inputLabels[key])
                             let div = document.createElement('div')
                             let input = document.createElement('input')
                             input.className = `${key}`
-                            input.value = obj[key]
-
+                            input.value = inputLabels[key]
                             input.type = "number";
                             input.min = "1";
                             input.max = "100";
@@ -123,13 +89,13 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                             // редактирование инпутов
                             $(input).change((event) => {
                                 let currentInput = event.target.className;
-                                for (let item in obj) {
+                                for (let item in inputLabels) {
                                     if (item == currentInput) {
-                                        obj[item] = event.target.value
+                                        inputLabels[item] = event.target.value
                                     }
                                 }
 
-                                inputOriginal.value = JSON.stringify(obj) // вставка объекта в нативный инпут
+                                inputOriginal.value = JSON.stringify(inputLabels) // вставка объекта в нативный инпут
                                 inputOriginal.dispatchEvent(inputEvent)
                             })
 
@@ -161,24 +127,19 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                     }
 
                     if (self.ctx.data[i].data[0][1] !== ' ' && self.ctx.data[i].data[0][1]) {
-
                         let array = JSON.parse(self.ctx.data[i].data[0][1]);
 
                         for (let ii = 0; ii < array.length; ii++) {
                             arrayWithSelectedParams.push(array[ii])
                             uniqueArray.push(array[ii])
 
-                            $(`.container_for_${className}`).append(`
-                            <div> <span>${array[ii].name}</span> </div>`)
+                            $(`.container_for_${className}`).append(`<div> <span>${array[ii].name}</span> </div>`)
 
                             for (let key in array[ii]) {
                                 if (key.toLowerCase().indexOf('input') != -1) {
                                     $(`.container_for_${className} div:nth-child(${ii + 1})`).append(`
                                     <input placeholder="Адрес в контроллере" class="${key}" value="${array[ii][key]}">
                                 `)
-
-                                    // редактирование инпутов
-                                    let selectedParam = {}
                                     $(`.container_for_${className} div:nth-child(${ii + 1}) .${key}`).change((event) => {
 
                                         let key = event.target.closest('div').querySelector('span').innerHTML;
@@ -197,12 +158,11 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                 .then(response => response.json())
                                                 .then(recipes => {
                                                     Array.from(matLabel).forEach((item) => {
-                                                        if (item.innerHTML.toLowerCase().replace(/\s+/g, '').includes('productlist')) {
+                                                        if (removeSpaces(item.innerHTML).includes('productlist')) {
                                                             let inputOriginal = item.closest('div').firstChild
 
                                                             for (let v = 0; v < recipes.length; v++) {
                                                                 if (recipes[v].name == event.target.parentElement.firstChild.innerHTML) {
-
                                                                     switch (currentInput) {
                                                                         case 'input-1':
                                                                             recipes[v].address = event.target.value
@@ -222,7 +182,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                                     if (recipes[v].name == span.innerHTML && !checkArray.includes(span.innerHTML)) {
                                                                         arrayForProductList.push(recipes[v])
                                                                     } else if (recipes[v].name == span.innerHTML && arrayForProductList.length !== 0) {
-                                                                        arrayForProductList.forEach((i, ind) => {
+                                                                        arrayForProductList.forEach((i) => {
                                                                             if (i.name == event.target.parentElement.firstChild.innerHTML) {
                                                                                 switch (currentInput) {
                                                                                     case 'input-1':
@@ -241,7 +201,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                                 })
                                                             }
 
-                                                            inputOriginal.value = JSON.stringify(arrayForProductList)// вставка в нативный инпут
+                                                            inputOriginal.value = JSON.stringify(arrayForProductList) // вставка в нативный инпут
                                                             inputOriginal.dispatchEvent(inputEvent)
                                                         }
                                                     })
@@ -253,10 +213,10 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                 .then(response => response.json())
                                                 .then(recipes => {
                                                     Array.from(matLabel).forEach((item) => {
-                                                        if (item.innerHTML.toLowerCase().replace(/\s+/g, '').includes('parameterslist')) {
+                                                        if (removeSpaces(item.innerHTML).includes('parameterslist')) {
                                                             let inputOriginal = item.closest('div').firstChild
 
-                                                            recipes.forEach((recip, index) => {
+                                                            recipes.forEach((recip) => {
                                                                 if (recip.name == event.target.previousElementSibling.innerHTML) {
                                                                     recip.address = event.target.value
                                                                 }
@@ -264,7 +224,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                                     if (recip.name == span.innerHTML && arrayForParametersList == []) {
                                                                         arrayForParametersList.push(recip)
                                                                     } else {
-                                                                        arrayForParametersList.forEach((i, ind) => {
+                                                                        arrayForParametersList.forEach((i) => {
                                                                             if (i.name == event.target.previousElementSibling.innerHTML) {
                                                                                 i.address = event.target.value
                                                                             }
@@ -274,7 +234,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                                 })
                                                             })
 
-                                                            inputOriginal.value = JSON.stringify(arrayForParametersList)// вставка в нативный инпут
+                                                            inputOriginal.value = JSON.stringify(arrayForParametersList) // вставка в нативный инпут
                                                             inputOriginal.dispatchEvent(inputEvent)
                                                         }
                                                     })
@@ -290,19 +250,14 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                     }
 
                                 } else if (key == 'inInformation') {
-
                                     $(`.container_for_${className} div:nth-child(${ii + 1})`).append(`
-                                    <input type="checkbox" class="${key}" >
-                                `)
+                                    <input type="checkbox" class="${key}" >`)
 
-                                    // редактирование checkbox
-                                    let selectedParam = {}
                                     let checkbox = $(`.container_for_${className} div:nth-child(${ii + 1}) .${key}`)
 
                                     $(checkbox).prop('checked', array[ii][key] == 'false' ? '' : array[ii][key])
 
                                     checkbox.change((event) => {
-
                                         let key = event.target.closest('div').querySelector('span').innerHTML;
                                         let currentInput = event.target.className;
 
@@ -324,7 +279,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                         })
 
                                         Array.from(matLabel).forEach((item) => {
-                                            if (item.innerHTML.toLowerCase().replace(/\s+/g, '').includes('parameterslist')) {
+                                            if (removeSpaces(item.innerHTML).includes('parameterslist')) {
                                                 let inputParamList = item.closest('div').firstChild
 
                                                 inputParamList.value = JSON.stringify(arrayForParametersList)
@@ -347,10 +302,9 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                 }
             }
 
-            // логика удаления
+            // код удаления 
             $(`.container_${className} .deleteBtn`).click((event) => {
-
-                let elementID = event.target.dataset.id.replace(/\s+/g, '')
+                const elementID = event.target.dataset.id.replace(/\s+/g, '')
 
                 Array.from($(`.container_${className} > div > div`)).forEach(div => {
                     if (div.querySelector('.deleteBtn').dataset.id.replace(/\s+/g, '') === elementID) {
@@ -360,7 +314,6 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
 
                 for (let i = 0; i < uniqueArray.length; i++) {
                     if (uniqueArray[i].name.replace(/\s+/g, '') === elementID) {
-
                         uniqueArray.splice(i, 1)
 
                         inputOriginal.value = JSON.stringify(uniqueArray)
@@ -369,9 +322,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                 }
             })
 
-
             $(`.event_select_${className}`).on('change', (e) => {
-
                 let valueSelected = $(`.event_select_${className}`).val()
                 let selectedParam = {}
                 let divWithParams = document.createElement('div')
@@ -430,8 +381,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                     }`] = e.target.value
 
                             } else if (keyName == 'Набор технологических  параметров' && i == quantityInputs - 1) {
-                                if ($(input).is(':checked')) { $(input).attr('value', true) }
-                                else { $(input).attr('value', false) }
+                                if ($(input).is(':checked')) { $(input).attr('value', true) } else { $(input).attr('value', false) }
 
                                 selectedParam[`inInformation`] = e.target.value == false ? '' : e.target.value
 
@@ -442,7 +392,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                 })
 
                                 Array.from(matLabel).forEach((item) => {
-                                    if (item.innerHTML.toLowerCase().replace(/\s+/g, '').includes('parameterslist')) {
+                                    if (removeSpaces(item.innerHTML).includes('parameterslist')) {
                                         let inputParamList = item.closest('div').firstChild
 
                                         inputParamList.value = JSON.stringify(arrayForParametersList)
@@ -481,7 +431,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                     .then(response => response.json())
                                     .then(recipes => {
                                         Array.from(matLabel).forEach((item) => {
-                                            if (item.innerHTML.toLowerCase().replace(/\s+/g, '').includes('productlist')) {
+                                            if (removeSpaces(item.innerHTML).includes('productlist')) {
                                                 let inputOriginal = item.closest('div').firstChild
 
                                                 for (let v = 0; v < recipes.length; v++) {
@@ -526,7 +476,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                     })
                                                 }
 
-                                                inputOriginal.value = JSON.stringify(arrayForProductList)// вставка в нативный инпут
+                                                inputOriginal.value = JSON.stringify(arrayForProductList) // вставка в нативный инпут
                                                 inputOriginal.dispatchEvent(inputEvent)
                                             }
                                         })
@@ -538,7 +488,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                     .then(response => response.json())
                                     .then(recipes => {
                                         Array.from(matLabel).forEach((item) => {
-                                            if (item.innerHTML.toLowerCase().replace(/\s+/g, '').includes('parameterslist')) {
+                                            if (removeSpaces(item.innerHTML).includes('parameterslist')) {
                                                 let inputOriginal = item.closest('div').firstChild
 
                                                 recipes.forEach((recip, index) => {
@@ -559,7 +509,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                         }
                                                     })
                                                 })
-                                                inputOriginal.value = JSON.stringify(arrayForParametersList)// вставка в нативный инпут
+                                                inputOriginal.value = JSON.stringify(arrayForParametersList) // вставка в нативный инпут
                                                 inputOriginal.dispatchEvent(inputEvent)
                                             }
                                         })
@@ -680,12 +630,7 @@ function drawSelect(keyName, className, arrayWihtSections) {
     let assetService = $injector.get(self.ctx.servicesMap.get('assetService'));
 
     for (let label = 0; label < matLabel.length; label++) {
-
-        if (matLabel[label].innerHTML.toLowerCase().replace(/\s+/g, '').includes(keyName.toLowerCase().replace(/\s+/g, ''))) {
-
-            let arrayWithSelectedParams = [];
-            let uniqueArray = [];
-
+        if (removeSpaces(matLabel[label].innerHTML).includes(removeSpaces(keyName))) {
             let inputOriginal = matLabel[label].closest('div').firstChild
             let container = document.createElement('div');
             container.className = `container_${className}`
@@ -708,8 +653,7 @@ function drawSelect(keyName, className, arrayWihtSections) {
 
             // подгрузка и отрисовка
             for (let i = 0; i < self.ctx.data.length; i++) {
-                if (self.ctx.data[i].dataKey.label.toLowerCase().replace(/\s+/g, '') == keyName.toLowerCase().replace(/\s+/g, '')) {
-
+                if (removeSpaces(self.ctx.data[i].dataKey.label) == removeSpaces(keyName)) {
                     let array
                     try {
                         array = JSON.parse(self.ctx.data[i].data[0][1])
@@ -777,7 +721,6 @@ function drawSelect(keyName, className, arrayWihtSections) {
                             }
                         })
                     }
-
                 }
             }
 
@@ -842,9 +785,6 @@ function drawSelect(keyName, className, arrayWihtSections) {
                                 case 'Принадлежность к цеху':
                                     xhr.open('GET', `http://${window.location.hostname}:1803/assignEntity?from=${response.id.id}&typeFrom=asset&to=${self.ctx.datasources[0].entityId}&typeTo=asset`, true)
                                     xhr.send()
-                                    // xhr.onload = function() {
-                                    //   if (xhr.status != 200) {console.log(`Ошибка ${xhr.status}: ${xhr.statusText}`) } else { console.log(`respone: ${xhr.response}`) }
-                                    // }
                                     break;
                                 case 'Принадлежность к линии':
                                     xhr.open('GET', `http://${window.location.hostname}:1803/assignEntity?from=${response.id.id}&typeFrom=asset&to=${self.ctx.datasources[0].entityId}&typeTo=device`, true)
@@ -867,27 +807,23 @@ function drawSelect(keyName, className, arrayWihtSections) {
                 'border': '1px solid #cacaca',
                 'border-radius': '5px',
             })
-
-
             $(`.container_${className}`).css({ 'display': 'flex', 'flex-direction': 'column' })
             $(`.event_span_${className}`).css({ 'font-size': '0.9em', 'margin-bottom': '5px', 'color': '#8e8e8e' })
 
         }
-
     }
-
 }
 
 // оборачивает input в аккордеон
-function drawOnlyAccordeon(keyName, className, label) {
+function wrapToAccordeon(keyName, className, label) {
     let matLabel = $('.layout-wrap.vertical-alignment mat-label')
     let parentNode
-    let key = keyName.toLowerCase().replace(/\s+/g, '')
-    if (typeof $('.layout-wrap.vertical-alignment')[0] != 'undefined')
+    let key = removeSpaces(keyName)
+    if ($('.layout-wrap.vertical-alignment')[0])
         parentNode = $('.layout-wrap.vertical-alignment')[0].childNodes
 
     for (let i = 0; i < matLabel.length; i++) {
-        if (matLabel[i].innerHTML.toLowerCase().replace(/\s+/g, '').includes(key)) {
+        if (removeSpaces(matLabel[i].innerHTML).includes(key)) {
             $(parentNode[i]).before(`<details id="details_links" close><summary>${label}</summary></details>`)
 
             for (let ii = 0; ii < parentNode.length - 1; ii++) {
@@ -895,7 +831,7 @@ function drawOnlyAccordeon(keyName, className, label) {
                     continue;
 
                 if (parentNode[ii].querySelector("mat-label")) {
-                    let item = parentNode[ii].querySelector("mat-label").innerHTML.toLowerCase().replace(/\s+/g, '')
+                    let item = removeSpaces(parentNode[ii].querySelector("mat-label").innerHTML)
                     if (item.includes(key)) {
                         $(parentNode[ii]).appendTo(`#details_${className}`)
                     }
@@ -923,10 +859,9 @@ self.onInit = function () {
     let activeID = self.ctx.data[0].datasource.entityId
     let tenantId = self.ctx.dashboard.authUser.tenantId
     let entityType = self.ctx.data[0].datasource.entityType
-    let $injector = self.ctx.$scope.$injector;
-    let assetService = $injector.get(self.ctx.servicesMap.get('assetService'));
-    let attributeService = $injector.get(self.ctx.servicesMap.get('attributeService'));
-    let deviceService = $injector.get(self.ctx.servicesMap.get('deviceService'));
+    let $injector = self.ctx.$scope.$injector
+    let assetService = $injector.get(self.ctx.servicesMap.get('assetService'))
+    let deviceService = $injector.get(self.ctx.servicesMap.get('deviceService'))
 
     let asset = {
         additionalInfo: null,
@@ -979,9 +914,6 @@ self.onInit = function () {
     hideInput('shiftPositionInRelation')
     hideInput('Набор состояний*')
 
-
-    // вставка инпутов
-
     drawInputs('Набор событий', 'events', ['+', 'событие 1', 'событие 2', 'событие 3'], 3)
 
     if (self.ctx.datasources[0].entityType == 'DEVICE') {
@@ -1000,7 +932,7 @@ self.onInit = function () {
         drawInputs('Расчет ОЕЕ', 'configuration', ['', 'Q - Плановое значение качества', 'P - Плановое значение производительности', 'A - Плановое значение достуности', 'OEE - Плановое значение ОЕЕ'], 1)
     }
 
-    drawOnlyAccordeon('Адрес коммуникационного контроллера', 'links', 'Параметры связи')
+    wrapToAccordeon('Адрес коммуникационного контроллера', 'links', 'Параметры связи')
 
     drawSelect('Тип', 'type', ['Работа', 'Простой'])
 
@@ -1052,7 +984,6 @@ self.onInit = function () {
             let p = document.createElement('p');
             p.className = "color_picker_p";
             p.innerHTML = 'Цвет:'
-            let ev = new Event('input');
 
             div.append(p, input)
 
@@ -1063,7 +994,6 @@ self.onInit = function () {
             jscolor.init()
 
             $('.jscolor').click(() => {
-
                 let top = $('.jscolor-picker-wrap')[0].getBoundingClientRect().top + 181
                 let left = $('.jscolor-picker-wrap')[0].getBoundingClientRect().left
                 // let inputTB = matLabel[i].parentElement.parentElement.parentElement.firstChild;
@@ -1109,7 +1039,7 @@ self.onInit = function () {
                         document.querySelector('.jscolor').jscolor.fromString(color)
 
                         inputTB.value = `#${color}`
-                        inputTB.dispatchEvent(ev);
+                        inputTB.dispatchEvent(inputEvent);
 
                     })
                 }
@@ -1128,34 +1058,19 @@ self.onInit = function () {
 
     $(`input[data-jscolor]`).change(() => {
         let input = matLabel[ii].parentElement.parentElement.parentElement.firstChild;
-        let ev = new Event('input');
         input.value = $(`input[data-jscolor]`).val()
-        input.dispatchEvent(ev);
+        input.dispatchEvent(inputEvent)
     });
 
     let accessClick = true;
-    let originallyName = ''
-
-    for (let i = 0; i < $('mat-label').length; i++) {
-        if ($('mat-label')[i].innerHTML.toLowerCase() == 'название' && i != 1) {
-            setTimeout(() => {
-                originallyName = $('mat-label')[i].offsetParent.offsetParent.offsetParent.firstElementChild.value;
-            }, 1000);
-        }
-    }
 
     $('form').click((event) => {
-
         if (event.target.innerText.toLowerCase() === 'сохранить' && accessClick && event.target.parentNode.disabled !== true) {
             event.preventDefault()
             if (asset.id.entityType == 'DEVICE')
                 saveVisibleAttributes()
             $('.modal').fadeIn(200)
             $('.blur').fadeIn(200)
-            // поправить тут затемнение фона
-            // $('.modal').parent('.tb-noselect').css({'background-color': 'rgb(136 136 136 / 0.5)'})
-
-            // $('.modal p').html(`Вы действительно хотетите изменить </br><span>${originallyName}</span> на <span>${name}</span> ?`)
             $('.modal p').html(`Вы действительно хотите произвести изменение?`)
             accessClick = false;
 
@@ -1163,9 +1078,7 @@ self.onInit = function () {
 
             $('#submit').click(() => {
                 $('.modal').removeClass("show")
-
                 $('button[type="submit"].mat-primary').prop('disabled', false)
-
                 $('button[type="submit"].mat-primary').click()
                 accessClick = true
 
@@ -1187,10 +1100,8 @@ self.onInit = function () {
                     deviceService.saveDevice(asset).subscribe(() => {
                         self.ctx.updateAliases();
                         fetch(`http://${window.location.hostname}:1803/updateMachineConfiguration?id=${asset.id.id}`)
-                    }
-                    )
+                    })
                 }
-
             })
         }
     })
@@ -1211,7 +1122,6 @@ self.onInit = function () {
         $('button[type="submit"].mat-primary').prop('disabled', false)
     })
 
-
     // end onInit
 }
 
@@ -1222,13 +1132,12 @@ function saveVisibleAttributes() {
     let matLabel = $('.layout-wrap.vertical-alignment mat-label')
 
     for (let label = 0; label < matLabel.length; label++) {
-
-        if (matLabel[label].innerHTML.toLowerCase().replace(/\s+/g, '').includes('parametersList'.toLowerCase().replace(/\s+/g, ''))) {
+        if (removeSpaces(matLabel[label].innerHTML).includes('parameterslist')) {
             try {
                 parametersList = JSON.parse(matLabel[label].closest('div').firstChild.value)
             } catch (e) { }
         }
-        if (matLabel[label].innerHTML.toLowerCase().replace(/\s+/g, '').includes('visibleAttributes'.toLowerCase().replace(/\s+/g, ''))) {
+        if (removeSpaces(matLabel[label].innerHTML).includes('visibleattributes')) {
             indexOfVA = label
             try {
                 originalVisibleAttributes = JSON.parse(matLabel[label].closest('div').firstChild.value)
@@ -1245,10 +1154,8 @@ function saveVisibleAttributes() {
         newVisibleAttributes.push(parametersList[i])
     }
 
-
     matLabel[indexOfVA].closest('div').firstChild.value = JSON.stringify(newVisibleAttributes)
-    let ev = new Event('input')
-    matLabel[indexOfVA].closest('div').firstChild.dispatchEvent(ev)
+    matLabel[indexOfVA].closest('div').firstChild.dispatchEvent(inputEvent)
 }
 
 self.onDataUpdated = function () {
@@ -1263,7 +1170,6 @@ self.onDataUpdated = function () {
                 $('button')[i].style.display = 'none'
             }
         }
-
     }
     if (currentUser.role == 'administrator' || currentUser.role == 'engineer') {
         $('.btn').css({ 'display': 'block' })
@@ -1273,3 +1179,20 @@ self.onDataUpdated = function () {
     disabledInput('Наименование состояния', 'Работа')
 }
 
+function getDataOf(keyName) {
+    let keyData = []
+    self.ctx.data.forEach((data) => {
+        if (data.dataKey.name == keyName) {
+            try {
+                keyData = JSON.parse(data.data[0][1])
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    })
+    return keyData
+}
+
+function removeSpaces(string) {
+    return string.toLowerCase().replace(/\s+/g, '')
+}
