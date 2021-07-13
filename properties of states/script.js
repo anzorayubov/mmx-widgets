@@ -1,4 +1,5 @@
 let currentUser = JSON.parse(localStorage.getItem('currentUser'))
+let inputEvent = new Event('input')
 
 function drawInputs(keyName, className, optionsArray, quantityInputs) {
     let matLabel = $('.layout-wrap.vertical-alignment mat-label')
@@ -10,7 +11,6 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
 
         if (matLabel[label].innerHTML.toLowerCase().replace(/\s+/g, '').includes(keyName.toLowerCase().replace(/\s+/g, ''))) {
 
-            let inputEvent = new Event('input')
             let arrayWithSelectedParams = [];
             let uniqueArray = [];
 
@@ -58,10 +58,9 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                 }
             })
 
-
             matLabel[label].closest('mat-form-field').append(container)
             // скрыть нативный инпут 
-            matLabel[label].offsetParent.offsetParent.offsetParent.offsetParent.parentNode.firstChild.style.display = 'none';
+            // matLabel[label].offsetParent.offsetParent.offsetParent.offsetParent.parentNode.firstChild.style.display = 'none';
 
 
             // подгрузка и отрисовка инпутов
@@ -109,17 +108,16 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                             input.value = obj[key]
 
                             input.type = "number";
-                            input.min = "0.01";
+                            input.min = "1";
                             input.max = "100";
                             input.pattern = "^([0-9]|[1-9][0-9]|100)$" // <- сделать дробные 
-                            input.step = 0.01
+                            input.step = 0.1
 
                             div.append(input)
                             let span = document.createElement('span');
                             span.classList.add(`event_span_${className}`)
                             span.innerHTML = optionsArray[count]
                             div.prepend(span)
-
                             $(`.container_for_${className}`).append(div)
 
                             // редактирование инпутов
@@ -156,77 +154,54 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                         $('button[type="submit"].mat-primary').prop('disabled', false)
                                     }
                                 }, 500);
-
                             });
 
                             count++
                         }
                     }
 
-
                     if (self.ctx.data[i].data[0][1] !== ' ' && self.ctx.data[i].data[0][1]) {
 
-                        let array = JSON.parse(self.ctx.data[i].data[0][1])
-
-                        let productListPromise
-                        let parametersListPromise
-
-                        if (keyName == 'Определение Рецепта') {
-                            productListPromise = new Promise((resolve, reject) => {
-                                fetch(`http://${window.location.hostname}:1803/getAllProductList`)
-                                    .then(response => response.json())
-                                    .then(recipes => { resolve(recipes) })
-                            })
-                        } else if (keyName == 'Набор технологических  параметров') {
-                            parametersListPromise = new Promise((resolve, reject) => {
-                                fetch(`http://${window.location.hostname}:1803/getAllParametersList`)
-                                    .then(response => response.json())
-                                    .then(recipes => { resolve(recipes) })
-                            })
-                        }
+                        let array = JSON.parse(self.ctx.data[i].data[0][1]);
 
                         for (let ii = 0; ii < array.length; ii++) {
                             arrayWithSelectedParams.push(array[ii])
                             uniqueArray.push(array[ii])
 
-                            $(`.container_${className} .container_for_${className}`).append(`<div><span style="font-size: 
-                            ${array[ii].name.length > 30 ? 12 : 16}px">${array[ii].name}</span></div>`)
-
-                            $(`.container_${className} .boxForDelete_${className}`).append(`<span id="${array[ii].name.replace(/\s+/g, '')}">Х</span>`)
+                            $(`.container_for_${className}`).append(`
+                            <div> <span>${array[ii].name}</span> </div>`)
 
                             for (let key in array[ii]) {
                                 if (key.toLowerCase().indexOf('input') != -1) {
-                                    $(`.container_${className} .container_for_${className} div:nth-child(${ii + 1})`).append(`
+                                    $(`.container_for_${className} div:nth-child(${ii + 1})`).append(`
                                     <input placeholder="Адрес в контроллере" class="${key}" value="${array[ii][key]}">
                                 `)
 
                                     // редактирование инпутов
                                     let selectedParam = {}
-                                    $(`.container_${className} .container_for_${className} div:nth-child(${ii + 1}) .${key}`).change((event) => {
+                                    $(`.container_for_${className} div:nth-child(${ii + 1}) .${key}`).change((event) => {
 
                                         let key = event.target.closest('div').querySelector('span').innerHTML;
                                         let currentInput = event.target.className;
-
                                         uniqueArray.forEach((obj) => {
                                             if (obj.name == key) {
                                                 obj[currentInput] = event.target.value
                                             }
                                         })
 
+                                        inputOriginal.value = JSON.stringify(uniqueArray) // вставка массива в нативный инпут
+                                        inputOriginal.dispatchEvent(inputEvent)
 
                                         if (keyName == 'Определение Рецепта') {
-                                            // fetch(`http://${window.location.hostname}:1803/getAllProductList`)
-                                            //   .then(response => response.json())
-                                            //   .then(recipes => {
-                                            productListPromise
+                                            fetch(`http://${window.location.hostname}:1803/getAllProductList`)
+                                                .then(response => response.json())
                                                 .then(recipes => {
                                                     Array.from(matLabel).forEach((item) => {
                                                         if (item.innerHTML.toLowerCase().replace(/\s+/g, '').includes('productlist')) {
-                                                            let inputEvent = new Event('input')
                                                             let inputOriginal = item.closest('div').firstChild
 
                                                             for (let v = 0; v < recipes.length; v++) {
-                                                                if (recipes[v].name == key) {
+                                                                if (recipes[v].name == event.target.parentElement.firstChild.innerHTML) {
 
                                                                     switch (currentInput) {
                                                                         case 'input-1':
@@ -239,7 +214,6 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                                             recipes[v].value = event.target.value
                                                                             break;
                                                                     }
-
                                                                 }
 
                                                                 Array.from(event.target.closest(`.container_for_recipes`).querySelectorAll('span')).forEach((span) => {
@@ -267,8 +241,6 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                                 })
                                                             }
 
-                                                            console.log('productlist', arrayForProductList)
-
                                                             inputOriginal.value = JSON.stringify(arrayForProductList)// вставка в нативный инпут
                                                             inputOriginal.dispatchEvent(inputEvent)
                                                         }
@@ -277,20 +249,16 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                         }
 
                                         if (keyName == 'Набор технологических  параметров') {
-                                            //     fetch(`http://${window.location.hostname}:1803/getAllParametersList`)
-                                            //       .then(response => response.json())
-                                            //   .then(recipes => {
-                                            parametersListPromise
+                                            fetch(`http://${window.location.hostname}:1803/getAllParametersList`)
+                                                .then(response => response.json())
                                                 .then(recipes => {
                                                     Array.from(matLabel).forEach((item) => {
                                                         if (item.innerHTML.toLowerCase().replace(/\s+/g, '').includes('parameterslist')) {
-                                                            let inputEvent = new Event('input')
                                                             let inputOriginal = item.closest('div').firstChild
 
                                                             recipes.forEach((recip, index) => {
                                                                 if (recip.name == event.target.previousElementSibling.innerHTML) {
                                                                     recip.address = event.target.value
-                                                                    //recip.inInformation = 
                                                                 }
                                                                 Array.from(event.target.closest('.container_for_params').querySelectorAll('span')).forEach((span) => {
                                                                     if (recip.name == span.innerHTML && arrayForParametersList == []) {
@@ -306,35 +274,30 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                                 })
                                                             })
 
-                                                            console.log('parameterslist', arrayForParametersList)
-
                                                             inputOriginal.value = JSON.stringify(arrayForParametersList)// вставка в нативный инпут
                                                             inputOriginal.dispatchEvent(inputEvent)
                                                         }
                                                     })
                                                 })
-                                            //   })
                                         }
 
-
-                                        inputOriginal.value = JSON.stringify(uniqueArray) // вставка массива в нативный инпут
-                                        inputOriginal.dispatchEvent(inputEvent)
                                     })
 
-                                    for (let j = 0; j < $(`.container_${className} .event_select_${className} option`).length; j++) {
-                                        if ($(`.container_${className} .event_select_${className} option`)[j].value == array[ii].name) {
-                                            $(`.container_${className} .event_select_${className} option`)[j].remove()
-                                        }
+                                    // удалить option из селекта
+                                    for (let j = 0; j < $(`.event_select_${className} option`).length; j++) {
+                                        if ($(`.event_select_${className} option`)[j].value == array[ii].name)
+                                            $(`.event_select_${className} option`)[j].remove()
                                     }
+
                                 } else if (key == 'inInformation') {
 
-                                    $(`.container_${className} .container_for_${className} div:nth-child(${ii + 1})`).append(`
+                                    $(`.container_for_${className} div:nth-child(${ii + 1})`).append(`
                                     <input type="checkbox" class="${key}" >
                                 `)
 
                                     // редактирование checkbox
                                     let selectedParam = {}
-                                    let checkbox = $(`.container_${className} .container_for_${className} div:nth-child(${ii + 1}) .${key}`)
+                                    let checkbox = $(`.container_for_${className} div:nth-child(${ii + 1}) .${key}`)
 
                                     $(checkbox).prop('checked', array[ii][key] == 'false' ? '' : array[ii][key])
 
@@ -362,140 +325,50 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
 
                                         Array.from(matLabel).forEach((item) => {
                                             if (item.innerHTML.toLowerCase().replace(/\s+/g, '').includes('parameterslist')) {
-                                                let inputEvent = new Event('input')
                                                 let inputParamList = item.closest('div').firstChild
 
                                                 inputParamList.value = JSON.stringify(arrayForParametersList)
                                                 inputParamList.dispatchEvent(inputEvent)
                                             }
-
                                         })
 
                                         inputOriginal.value = JSON.stringify(uniqueArray) // вставка массива в нативный инпут
                                         inputOriginal.dispatchEvent(inputEvent)
                                     })
 
-
                                 }
                             }
+
+                            // вставка кнопки удаления
+                            $(`.container_for_${className} div:nth-child(${ii + 1})`).append(`
+                           <button class="deleteBtn" data-id="${array[ii].name.replace(/\s+/g, '')}">&nbsp;&nbsp;</button> `)
                         }
                     }
                 }
             }
 
             // логика удаления
-            $(`.container_${className} span`).click((event) => {
+            $(`.container_${className} .deleteBtn`).click((event) => {
+
+                let elementID = event.target.dataset.id.replace(/\s+/g, '')
+
+                Array.from($(`.container_${className} > div > div`)).forEach(div => {
+                    if (div.querySelector('.deleteBtn').dataset.id.replace(/\s+/g, '') === elementID) {
+                        div.remove()
+                    }
+                })
+
                 for (let i = 0; i < uniqueArray.length; i++) {
-                    if (uniqueArray[i].name.replace(/\s+/g, '') === event.target.id.replace(/\s+/g, '')) {
+                    if (uniqueArray[i].name.replace(/\s+/g, '') === elementID) {
 
-                        uniqueArray.splice(i, 1);
-                        $(`.container_for_${className}`).empty()
-                        for (let ii = 0; ii < uniqueArray.length; ii++) {
-                            $(`.container_for_${className}`).append(`<div><span>${uniqueArray[ii].name}</span</div>`)
-                            // перерисовать инпуты
-                            for (let key in uniqueArray[ii]) {
-                                if (key.toLowerCase().indexOf('input') != -1) {
-                                    $(`.container_for_${className} div:nth-child(${ii + 1})`).append(`
-                                    <input class="${key}" value="${uniqueArray[ii][key]}">
-                                `)
-                                } else if (key == 'inInformation') {
-                                    $(`.container_${className} .container_for_${className} div:nth-child(${ii + 1})`).append(`
-                                        <input type="checkbox" class="${key}" >
-                                    `)
-                                    // редактирование checkbox
-                                    let selectedParam = {}
-                                    let checkbox = $(`.container_${className} .container_for_${className} div:nth-child(${ii + 1}) .${key}`)
-                                    $(checkbox).prop('checked', uniqueArray[ii][key] == 'false' ? '' : uniqueArray[ii][key])
-                                    checkbox.change((event) => {
-                                        let key = event.target.closest('div').querySelector('span').innerHTML;
-                                        let currentInput = event.target.className;
-                                        if (checkbox.is(':checked')) {
-                                            checkbox.attr('value', true)
-                                        } else {
-                                            checkbox.attr('value', false)
-                                        }
-                                        uniqueArray.forEach((obj) => {
-                                            if (obj.name == key) {
-                                                obj[currentInput] = checkbox[0].value
-                                            }
-                                        })
-                                        inputOriginal.value = JSON.stringify(uniqueArray) // вставка массива в нативный инпут
-                                        inputOriginal.dispatchEvent(inputEvent)
-                                    })
-                                }
-                            }
-
-                        }
+                        uniqueArray.splice(i, 1)
 
                         inputOriginal.value = JSON.stringify(uniqueArray)
                         inputOriginal.dispatchEvent(inputEvent)
-
-                        if (keyName == 'Определение Рецепта') {
-                            arrayForProductList.forEach((item, index) => {
-                                if (item.name == event.target.id) {
-                                    arrayForProductList.splice(index, 1)
-                                }
-                            })
-                            Array.from(matLabel).forEach((i) => {
-                                if (i.innerHTML.toLowerCase().replace(/\s+/g, '').includes('productlist')) {
-                                    let inputEvent = new Event('input')
-                                    let inputOriginal = i.closest('div').firstChild
-                                    inputOriginal.value = JSON.stringify(arrayForProductList)// вставка в нативный инпут
-                                    inputOriginal.dispatchEvent(inputEvent)
-                                }
-                            })
-                        }
-                        if (keyName == 'Набор технологических  параметров') {
-
-                            arrayForParametersList.forEach((item, index) => {
-
-                                if (item.name.replace(/\s+/g, '') == event.target.id) {
-                                    arrayForParametersList.splice(index, 1)
-                                }
-                            })
-                            Array.from(matLabel).forEach((i) => {
-                                if (i.innerHTML.toLowerCase().replace(/\s+/g, '').includes('parameterslist')) {
-                                    let inputEvent = new Event('input')
-                                    let inputOriginal = i.closest('div').firstChild
-                                    inputOriginal.value = JSON.stringify(arrayForParametersList)// вставка в нативный инпут
-                                    inputOriginal.dispatchEvent(inputEvent)
-                                }
-                            })
-                        }
-
-                    }
-                    // удаление спана
-                    if ($(`.container_${className} .boxForDelete_${className} span`)[i].id.replace(/\s+/g, '') === event.target.id.replace(/\s+/g, '')) {
-                        $(`.container_${className} .boxForDelete_${className} span`)[i].remove();
                     }
                 }
-
-                $(`.container_for_${className} input`).css({
-                    'height': '36px',
-                    'width': '45%',
-                    'margin': '0px 5px',
-                    'border': '1px solid #cacaca',
-                    'border-radius': '5px',
-                    'padding-left': '5px'
-                })
-                $(`.container_for_${className} input[type="checkbox"]`).css({
-                    'width': '19px',
-
-                })
-                $(`.container_for_${className} div`).css({
-                    'display': 'flex',
-                    'width': '100%',
-                    'margin-bottom': '6px'
-                })
-                $(`.container_for_${className} div span`).css({
-                    'width': '300px',
-                    'display': 'flex',
-                    'align-items': 'center',
-
-                })
-                $(`.boxForDelete_${className} span:first-child`).css({ 'margin-top': '7px', })
-
             })
+
 
             $(`.event_select_${className}`).on('change', (e) => {
 
@@ -538,7 +411,6 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                         if (keyName == 'Набор технологических  параметров' && i == quantityInputs - 1) {
                             input.setAttribute('type', 'checkbox')
                             input.className = `inInformation`
-                            // <label for="subscribeNews">Subscribe to newsletter?</label>
                         }
 
                         // листенер для инпутов
@@ -571,7 +443,6 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
 
                                 Array.from(matLabel).forEach((item) => {
                                     if (item.innerHTML.toLowerCase().replace(/\s+/g, '').includes('parameterslist')) {
-                                        let inputEvent = new Event('input')
                                         let inputParamList = item.closest('div').firstChild
 
                                         inputParamList.value = JSON.stringify(arrayForParametersList)
@@ -605,15 +476,12 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                 inputOriginal.value = JSON.stringify(uniqueArray) // вставка массива в нативный инпут
                             }
 
-
-                            //function dataInsertion(keyName1, linkParam, whereToPut ,className) {
                             if (keyName == 'Определение Рецепта') {
                                 fetch(`http://${window.location.hostname}:1803/getAllProductList`)
                                     .then(response => response.json())
                                     .then(recipes => {
                                         Array.from(matLabel).forEach((item) => {
                                             if (item.innerHTML.toLowerCase().replace(/\s+/g, '').includes('productlist')) {
-                                                let inputEvent = new Event('input')
                                                 let inputOriginal = item.closest('div').firstChild
 
                                                 for (let v = 0; v < recipes.length; v++) {
@@ -658,8 +526,6 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                     })
                                                 }
 
-                                                console.log('productlist', arrayForProductList)
-
                                                 inputOriginal.value = JSON.stringify(arrayForProductList)// вставка в нативный инпут
                                                 inputOriginal.dispatchEvent(inputEvent)
                                             }
@@ -673,7 +539,6 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                     .then(recipes => {
                                         Array.from(matLabel).forEach((item) => {
                                             if (item.innerHTML.toLowerCase().replace(/\s+/g, '').includes('parameterslist')) {
-                                                let inputEvent = new Event('input')
                                                 let inputOriginal = item.closest('div').firstChild
 
                                                 recipes.forEach((recip, index) => {
@@ -694,15 +559,12 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                         }
                                                     })
                                                 })
-                                                console.log('parameterslist', arrayForParametersList)
-
                                                 inputOriginal.value = JSON.stringify(arrayForParametersList)// вставка в нативный инпут
                                                 inputOriginal.dispatchEvent(inputEvent)
                                             }
                                         })
                                     })
                             }
-
 
                             inputOriginal.dispatchEvent(inputEvent)
                         })
@@ -742,7 +604,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                 }
             })
 
-            $(parentNode[label]).after(`<details id="details_${className}" open><summary>${keyName}</summary></details>`)
+            $(parentNode[label]).after(`<details id="details_${className}" close><summary>${keyName}</summary></details>`)
             $(parentNode[label]).prependTo(`#details_${className}`)
         }
 
@@ -821,7 +683,6 @@ function drawSelect(keyName, className, arrayWihtSections) {
 
         if (matLabel[label].innerHTML.toLowerCase().replace(/\s+/g, '').includes(keyName.toLowerCase().replace(/\s+/g, ''))) {
 
-            let inputEvent = new Event('input')
             let arrayWithSelectedParams = [];
             let uniqueArray = [];
 
@@ -855,9 +716,11 @@ function drawSelect(keyName, className, arrayWihtSections) {
                     } catch (e) { }
 
                     for (let key in array) {
-                        for (let j = 0; j < $(`.container_${className} .event_select_${className} option`).length; j++) {
-                            if ($(`.container_${className} .event_select_${className} option`)[j].value == array[key]) {
-                                $(`.container_${className} .event_select_${className} option`)[j].selected = true
+                        const options = $(`.event_select_${className} option`)
+
+                        for (let j = 0; j < options.length; j++) {
+                            if (options[j].value == array[key]) {
+                                options[j].selected = true
                             }
                         }
                     }
@@ -873,7 +736,6 @@ function drawSelect(keyName, className, arrayWihtSections) {
                             fetch(`http://${window.location.hostname}:1803/getPossibleIndexInEntity?entityID=${response.id.id}`)
                                 .then(response => response.json())
                                 .then(indexes => {
-                                    // indexes.unshift('')
                                     indexes.forEach(index => {
                                         dropDown.innerHTML += `<option data-index="${index}">${index}</option>`
                                     })
@@ -883,7 +745,6 @@ function drawSelect(keyName, className, arrayWihtSections) {
                                         if (valueSelected != '') {
                                             Array.from(matLabel).forEach((item) => {
                                                 if (item.innerHTML.replace(/\s+/g, '').includes('shiftPositionInRelation')) {
-                                                    let inputEvent = new Event('input')
                                                     let inputOriginal = item.closest('div').firstChild
                                                     inputOriginal.value = valueSelected
                                                     inputOriginal.dispatchEvent(inputEvent)
@@ -894,7 +755,6 @@ function drawSelect(keyName, className, arrayWihtSections) {
 
                                     Array.from(matLabel).forEach((item) => {
                                         if (item.innerHTML.replace(/\s+/g, '').includes('shiftPositionInRelation')) {
-                                            let inputEvent = new Event('input')
                                             let inputOriginal = item.closest('div').firstChild
                                             $(dropDown).prepend(`<option selected data-index="${inputOriginal.value}">${inputOriginal.value}</option>`)
                                         }
@@ -949,7 +809,6 @@ function drawSelect(keyName, className, arrayWihtSections) {
                                         if (valueSelected != '') {
                                             Array.from(matLabel).forEach((item) => {
                                                 if (item.innerHTML.replace(/\s+/g, '').includes('shiftPositionInRelation')) {
-                                                    let inputEvent = new Event('input')
                                                     let inputOriginal = item.closest('div').firstChild
                                                     inputOriginal.value = valueSelected
                                                     inputOriginal.dispatchEvent(inputEvent)
@@ -959,13 +818,6 @@ function drawSelect(keyName, className, arrayWihtSections) {
                                     })
                                 })
                         })
-                        // Array.from(matLabel).forEach((item) => {
-                        //     if (item.innerHTML.replace(/\s+/g,'').includes('shiftPositionInRelation')) {
-                        //         let inputEvent = new Event('input')
-                        //         let inputOriginal = item.closest('div').firstChild
-                        //         // $(`.dropDown_${className}`).prepend(`<option selected data-index="${inputOriginal.value}">${inputOriginal.value}</option>`)
-                        //     }
-                        // })
 
                         break;
                     case 'Принадлежность к производству':
@@ -982,7 +834,7 @@ function drawSelect(keyName, className, arrayWihtSections) {
                     inputOriginal.dispatchEvent(inputEvent)
                 }
 
-                assetService.findByName(valueSelected).subscribe((response) => {
+                assetService.findByName(valueSelected).subscribe((response) => { // находим актив по названию
                     $('#submit').click(() => {
                         $('button[type="submit"].mat-primary').click(() => {
                             let xhr = new XMLHttpRequest()
@@ -990,7 +842,9 @@ function drawSelect(keyName, className, arrayWihtSections) {
                                 case 'Принадлежность к цеху':
                                     xhr.open('GET', `http://${window.location.hostname}:1803/assignEntity?from=${response.id.id}&typeFrom=asset&to=${self.ctx.datasources[0].entityId}&typeTo=asset`, true)
                                     xhr.send()
-
+                                    // xhr.onload = function() {
+                                    //   if (xhr.status != 200) {console.log(`Ошибка ${xhr.status}: ${xhr.statusText}`) } else { console.log(`respone: ${xhr.response}`) }
+                                    // }
                                     break;
                                 case 'Принадлежность к линии':
                                     xhr.open('GET', `http://${window.location.hostname}:1803/assignEntity?from=${response.id.id}&typeFrom=asset&to=${self.ctx.datasources[0].entityId}&typeTo=device`, true)
@@ -1034,7 +888,7 @@ function drawOnlyAccordeon(keyName, className, label) {
 
     for (let i = 0; i < matLabel.length; i++) {
         if (matLabel[i].innerHTML.toLowerCase().replace(/\s+/g, '').includes(key)) {
-            $(parentNode[i]).before(`<details id="details_links" open><summary>${label}</summary></details>`)
+            $(parentNode[i]).before(`<details id="details_links" close><summary>${label}</summary></details>`)
 
             for (let ii = 0; ii < parentNode.length - 1; ii++) {
                 if (typeof parentNode[ii] == 'String')
@@ -1129,7 +983,6 @@ self.onInit = function () {
     // вставка инпутов
 
     drawInputs('Набор событий', 'events', ['+', 'событие 1', 'событие 2', 'событие 3'], 3)
-    // drawInputs('Набор состояний*', 'conditions', ['+','Простой','Работа','Ошибка'],3)
 
     if (self.ctx.datasources[0].entityType == 'DEVICE') {
         drawInputs('Расчет ОЕЕ', 'configuration', [
@@ -1144,13 +997,7 @@ self.onInit = function () {
             'GP -  Выпуск качественной продукции'
         ], 1)
     } else {
-        drawInputs('Расчет ОЕЕ', 'configuration', [
-            '',
-            'Q - Плановое значение качества',
-            'P - Плановое значение производительности',
-            'A - Плановое значение достуности',
-            'OEE - Плановое значение ОЕЕ'
-        ], 1)
+        drawInputs('Расчет ОЕЕ', 'configuration', ['', 'Q - Плановое значение качества', 'P - Плановое значение производительности', 'A - Плановое значение достуности', 'OEE - Плановое значение ОЕЕ'], 1)
     }
 
     drawOnlyAccordeon('Адрес коммуникационного контроллера', 'links', 'Параметры связи')
@@ -1181,10 +1028,6 @@ self.onInit = function () {
             let arrayRecipes = recipes.map(item => item.name)
             arrayRecipes.unshift('+')
 
-            // для теста
-            //   arrayRecipes.push('Трехкомп., изомальт, неофиц. на серию 400,0 кг (без аэросила)',
-            //   'Трехкомп., изомальт, неофиц. на серию 340,0 кг (без аэросила)')
-
             drawInputs('Определение Рецепта', 'recipes', arrayRecipes, 3)
         })
 
@@ -1195,9 +1038,6 @@ self.onInit = function () {
             arrayParams.unshift('+')
             drawInputs('Набор технологических  параметров', 'params', arrayParams, 2)
         })
-
-
-
 
     for (let i = 0; i < matLabel.length; i++) {
         // вставка колор пикера
@@ -1286,9 +1126,6 @@ self.onInit = function () {
         }
     }
 
-
-
-
     $(`input[data-jscolor]`).change(() => {
         let input = matLabel[ii].parentElement.parentElement.parentElement.firstChild;
         let ev = new Event('input');
@@ -1314,6 +1151,7 @@ self.onInit = function () {
             if (asset.id.entityType == 'DEVICE')
                 saveVisibleAttributes()
             $('.modal').fadeIn(200)
+            $('.blur').fadeIn(200)
             // поправить тут затемнение фона
             // $('.modal').parent('.tb-noselect').css({'background-color': 'rgb(136 136 136 / 0.5)'})
 
@@ -1348,7 +1186,6 @@ self.onInit = function () {
 
                     deviceService.saveDevice(asset).subscribe(() => {
                         self.ctx.updateAliases();
-                        console.log('asset', asset)
                         fetch(`http://${window.location.hostname}:1803/updateMachineConfiguration?id=${asset.id.id}`)
                     }
                     )
@@ -1357,7 +1194,6 @@ self.onInit = function () {
             })
         }
     })
-
 
     // запрет нажатие на enter
     $('input').keydown((event) => {
@@ -1368,6 +1204,8 @@ self.onInit = function () {
 
     $('#cancel').click(() => {
         $('.modal').hide(100)
+        $('.blur').hide(100)
+
         // $('.tb-widget').css({'background-color': '#fff'})
         accessClick = true;
         $('button[type="submit"].mat-primary').prop('disabled', false)
@@ -1411,9 +1249,6 @@ function saveVisibleAttributes() {
     matLabel[indexOfVA].closest('div').firstChild.value = JSON.stringify(newVisibleAttributes)
     let ev = new Event('input')
     matLabel[indexOfVA].closest('div').firstChild.dispatchEvent(ev)
-
-    console.log('newVisibleAttributes', newVisibleAttributes)
-
 }
 
 self.onDataUpdated = function () {
@@ -1437,3 +1272,4 @@ self.onDataUpdated = function () {
     disabledInput('Наименование состояния', 'Простой')
     disabledInput('Наименование состояния', 'Работа')
 }
+
