@@ -363,10 +363,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                             input.className = `inInformation`
                         }
 
-                        // листенер для инпутов
                         input.addEventListener('change', (e) => {
-
-                            // при изменении инпута каждый раз новый объект пушится, надо чтобы мидифицировался уже существующий
                             if (keyName === 'Расчет ОЕЕ') {
                                 selectedParam[`${valueSelected.includes('Q') ?
                                     'Q_plan' : valueSelected.includes('DP') ?
@@ -412,7 +409,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                             }
                             arrayWithSelectedParams.push(selectedParam)
 
-                            // удаляем повторяющиеся объекты. ToDo: надо бы не пушить лишние
+                            // удаляем одинаковые объекты
                             uniqueArray = arrayWithSelectedParams.filter((item, pos) => {
                                 return arrayWithSelectedParams.indexOf(item) == pos;
                             })
@@ -424,9 +421,9 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                         objWithParams[i] = key[i]
                                     }
                                 })
-                                inputOriginal.value = JSON.stringify(objWithParams) // вставка объекта в нативный инпут
+                                inputOriginal.value = JSON.stringify(objWithParams) // вставка в нативный инпут
                             } else {
-                                inputOriginal.value = JSON.stringify(uniqueArray) // вставка массива в нативный инпут
+                                inputOriginal.value = JSON.stringify(uniqueArray) // вставка массива в инпут
                             }
 
                             if (keyName === 'Определение Рецепта') {
@@ -439,7 +436,6 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
 
                                                 for (let v = 0; v < recipes.length; v++) {
                                                     if (recipes[v].name === e.target.parentElement.firstChild.innerHTML) {
-
                                                         switch (e.target.className) {
                                                             case 'input-1':
                                                                 recipes[v].address = e.target.value
@@ -451,7 +447,6 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                                 recipes[v].value = e.target.value
                                                                 break;
                                                         }
-
                                                     }
 
                                                     Array.from(e.target.closest(`.container_for_recipes`).querySelectorAll('span')).forEach((span) => {
@@ -479,7 +474,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                     })
                                                 }
 
-                                                inputOriginal.value = JSON.stringify(arrayForProductList) // вставка в нативный инпут
+                                                inputOriginal.value = JSON.stringify(arrayForProductList) // вставка в инпут
                                                 inputOriginal.dispatchEvent(inputEvent)
                                             }
                                         })
@@ -512,7 +507,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                         }
                                                     })
                                                 })
-                                                inputOriginal.value = JSON.stringify(arrayForParametersList) // вставка в нативный инпут
+                                                inputOriginal.value = JSON.stringify(arrayForParametersList) // вставка в инпут
                                                 inputOriginal.dispatchEvent(inputEvent)
                                             }
                                         })
@@ -553,14 +548,12 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                         'display': 'flex',
                         'align-items': 'center',
                     })
-
                 }
             })
 
             $(parentNode[label]).after(`<details id="details_${className}" close><summary>${keyName}</summary></details>`)
             $(parentNode[label]).prependTo(`#details_${className}`)
         }
-
     }
     // inputs styles
 
@@ -799,7 +792,6 @@ function drawSelect(keyName, className, arrayWihtSections) {
                                     xhr.send()
                                     break;
                             }
-
                         })
                     })
                 })
@@ -957,14 +949,14 @@ self.onInit = function () {
             drawSelect('Принадлежность к производству', 'belongingFactory', factory.arr)
         })
 
-    fetch(`http://${window.location.hostname}:1803/getAllProductList`)
-        .then(response => response.json())
-        .then(recipes => {
-            let arrayRecipes = recipes.map(item => item.name)
-            arrayRecipes.unshift('+')
+    // fetch(`http://${window.location.hostname}:1803/getAllProductList`)
+    //     .then(response => response.json())
+    //     .then(recipes => {
+    //         let arrayRecipes = recipes.map(item => item.name)
+    //         arrayRecipes.unshift('+')
 
-            // drawInputs('Определение Рецепта', 'recipes', arrayRecipes, 3)
-        })
+    //         // drawInputs('Определение Рецепта', 'recipes', arrayRecipes, 3)
+    //     })
 
     fetch(`http://${window.location.hostname}:1803/getAllParametersList`)
         .then(response => response.json())
@@ -999,7 +991,6 @@ self.onInit = function () {
             $('.jscolor').click(() => {
                 let top = $('.jscolor-picker-wrap')[0].getBoundingClientRect().top + 181
                 let left = $('.jscolor-picker-wrap')[0].getBoundingClientRect().left
-                // let inputTB = matLabel[i].parentElement.parentElement.parentElement.firstChild;
                 let inputTB = matLabel[i].closest('div').firstChild
 
                 if ($('.paletteColor').length === 0) {
@@ -1037,13 +1028,10 @@ self.onInit = function () {
                     })
 
                     $('.paletteColor .colors div').mousedown((event) => {
-
                         let color = event.target.attributes["data-color"].value
                         document.querySelector('.jscolor').jscolor.fromString(color)
-
                         inputTB.value = `#${color}`
                         inputTB.dispatchEvent(inputEvent);
-
                     })
                 }
 
@@ -1119,8 +1107,6 @@ self.onInit = function () {
     $('#cancel').click(() => {
         $('.modal').hide(100)
         $('.blur').hide(100)
-
-        // $('.tb-widget').css({'background-color': '#fff'})
         accessClick = true;
         $('button[type="submit"].mat-primary').prop('disabled', false)
     })
