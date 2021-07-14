@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f16758c5-e835-40eb-982c-d94bdb0a97aa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mainMenuNew/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/mainMenuNew/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/properties of states/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/properties of states/script.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +38,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/dounat_with_small_legend" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -49,7 +49,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -90,6 +90,7 @@
       <workItem from="1617024104892" duration="1470000" />
       <workItem from="1617107076426" duration="277000" />
       <workItem from="1617800728716" duration="2040000" />
+      <workItem from="1626244678489" duration="605000" />
     </task>
     <servers />
   </component>

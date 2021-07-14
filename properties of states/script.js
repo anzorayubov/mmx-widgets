@@ -44,16 +44,16 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                         if (self.ctx.data[i].data[0][1] == '') {
                             optionsArray.forEach(option => {
                                 if (option) {
-                                    inputLabels[`${optionsArray[q].includes('Q') ?
-                                        'Q_plan' : optionsArray[q].includes('DP') ?
-                                            'DP' : optionsArray[q] == 'PP - Плановая производств' ?
-                                                'PP' : optionsArray[q] == 'PPT - Общее доступное время, мин' ?
-                                                    'PPT' : optionsArray[q] == 'P - Плановое значение производительности' ?
-                                                        'P_plan' : optionsArray[q].includes('A') ?
-                                                            'A_plan' : optionsArray[q].includes('OEE') ?
-                                                                'OEE_plan' : optionsArray[q] == 'GP - Выпуск качественной продукции' ?
-                                                                    'GP' : optionsArray[q]
-                                        }`] = ''
+                                    inputLabels[`${option.includes('Q') ?
+                                        'Q_plan' : option.includes('DP') ?
+                                            'DP' : option == 'PP - Плановая производств' ?
+                                                'PP' : option == 'PPT - Общее доступное время, мин' ?
+                                                    'PPT' : option == 'P - Плановое значение производительности' ?
+                                                        'P_plan' : option.includes('A') ?
+                                                            'A_plan' : option.includes('OEE') ?
+                                                                'OEE_plan' : option == 'GP - Выпуск качественной продукции' ?
+                                                                    'GP' : option
+                                    }`] = ''
                                 }
                             })
                         } else {
@@ -76,7 +76,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                             input.type = "number";
                             input.min = "1";
                             input.max = "100";
-                            input.pattern = "^([0-9]|[1-9][0-9]|100)$" // <- сделать дробные 
+                            input.pattern = "^([0-9]|[1-9][0-9]|100)$" // <- сделать дробные
                             input.step = 0.1
 
                             div.append(input)
@@ -302,7 +302,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                 }
             }
 
-            // код удаления 
+            // код удаления
             $(`.container_${className} .deleteBtn`).click((event) => {
                 const elementID = event.target.dataset.id.replace(/\s+/g, '')
 
@@ -378,10 +378,14 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                         'A_plan' : valueSelected.includes('OEE') ?
                                                             'OEE_plan' : valueSelected == 'GP - Выпуск качественной продукции' ?
                                                                 'GP' : ''
-                                    }`] = e.target.value
+                                }`] = e.target.value
 
                             } else if (keyName == 'Набор технологических  параметров' && i == quantityInputs - 1) {
-                                if ($(input).is(':checked')) { $(input).attr('value', true) } else { $(input).attr('value', false) }
+                                if ($(input).is(':checked')) {
+                                    $(input).attr('value', true)
+                                } else {
+                                    $(input).attr('value', false)
+                                }
 
                                 selectedParam[`inInformation`] = e.target.value == false ? '' : e.target.value
 
@@ -580,7 +584,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
             'width': '100%',
             'margin-bottom': '6px'
         })
-        $(`#details_${className}`).css({ 'width': '100%', 'margin-bottom': '14px' })
+        $(`#details_${className}`).css({'width': '100%', 'margin-bottom': '14px'})
     }
 
     $(`.container_for_${className} div span`).css({
@@ -608,13 +612,13 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
         'border-radius': '50%',
         'padding-top': '1px',
     })
-    $(`.boxForDelete_${className} span:hover`).css({ "background-color": "#eee" })
+    $(`.boxForDelete_${className} span:hover`).css({"background-color": "#eee"})
     $(`.boxForDelete_${className} span`).hover(function () {
-        $(this).css({ "background-color": "#eee" })
+        $(this).css({"background-color": "#eee"})
     }, function () {
-        $(this).css({ "background-color": "#fff" })
+        $(this).css({"background-color": "#fff"})
     });
-    $(`.boxForDelete_${className} span:first-child`).css({ 'margin-top': '7px', })
+    $(`.boxForDelete_${className} span:first-child`).css({'margin-top': '7px',})
     $(`#details_${className} summary`).css({
         'margin-bottom': '10px'
     })
@@ -645,10 +649,10 @@ function drawSelect(keyName, className, arrayWihtSections) {
             arrayWihtSections.forEach(section => {
                 select.innerHTML += `<option>${section}</option>`
             })
-            container.append(span, select) // add label 
+            container.append(span, select) // add label
 
             matLabel[label].closest('mat-form-field').append(container)
-            // скрыть нативный инпут 
+            // скрыть нативный инпут
             matLabel[label].offsetParent.offsetParent.offsetParent.offsetParent.parentNode.firstChild.style.display = 'none';
 
             // подгрузка и отрисовка
@@ -657,7 +661,8 @@ function drawSelect(keyName, className, arrayWihtSections) {
                     let array
                     try {
                         array = JSON.parse(self.ctx.data[i].data[0][1])
-                    } catch (e) { }
+                    } catch (e) {
+                    }
 
                     for (let key in array) {
                         const options = $(`.event_select_${className} option`)
@@ -807,8 +812,8 @@ function drawSelect(keyName, className, arrayWihtSections) {
                 'border': '1px solid #cacaca',
                 'border-radius': '5px',
             })
-            $(`.container_${className}`).css({ 'display': 'flex', 'flex-direction': 'column' })
-            $(`.event_span_${className}`).css({ 'font-size': '0.9em', 'margin-bottom': '5px', 'color': '#8e8e8e' })
+            $(`.container_${className}`).css({'display': 'flex', 'flex-direction': 'column'})
+            $(`.event_span_${className}`).css({'font-size': '0.9em', 'margin-bottom': '5px', 'color': '#8e8e8e'})
 
         }
     }
@@ -988,7 +993,7 @@ self.onInit = function () {
             div.append(p, input)
 
             matLabel[i].offsetParent.offsetParent.offsetParent.offsetParent.parentNode.append(div)
-            // скрыть нативный инпут 
+            // скрыть нативный инпут
             matLabel[i].offsetParent.offsetParent.offsetParent.offsetParent.parentNode.firstChild.style.visibility = 'hidden';
 
             jscolor.init()
@@ -1044,7 +1049,7 @@ self.onInit = function () {
                     })
                 }
 
-                $('.paletteColor').css({ 'top': top, 'display': 'block', 'left': left })
+                $('.paletteColor').css({'top': top, 'display': 'block', 'left': left})
 
                 setInterval(() => {
                     if (!$('.color_picker_div input').is(':focus')) {
@@ -1135,13 +1140,15 @@ function saveVisibleAttributes() {
         if (removeSpaces(matLabel[label].innerHTML).includes('parameterslist')) {
             try {
                 parametersList = JSON.parse(matLabel[label].closest('div').firstChild.value)
-            } catch (e) { }
+            } catch (e) {
+            }
         }
         if (removeSpaces(matLabel[label].innerHTML).includes('visibleattributes')) {
             indexOfVA = label
             try {
                 originalVisibleAttributes = JSON.parse(matLabel[label].closest('div').firstChild.value)
-            } catch (e) { }
+            } catch (e) {
+            }
         }
     }
     let newVisibleAttributes = []
@@ -1166,13 +1173,15 @@ self.onDataUpdated = function () {
         $('.jscolor ').prop('disabled', true)
 
         for (let i = 0; i < $('button').length; i++) {
-            if ($('button')[i].innerText.toLowerCase() == 'откатить' || $('button')[i].innerText.toLowerCase() == 'сохранить') {
+            if ($('button')[i].innerText.toLowerCase() == 'откатить' ||
+                $('button')[i].innerText.toLowerCase() == 'сохранить') {
                 $('button')[i].style.display = 'none'
+                console.log($('button')[i])
             }
         }
     }
     if (currentUser.role == 'administrator' || currentUser.role == 'engineer') {
-        $('.btn').css({ 'display': 'block' })
+        $('.btn').css({'display': 'block'})
     }
 
     disabledInput('Наименование состояния', 'Простой')
