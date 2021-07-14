@@ -25,7 +25,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
 
             const boxForDelete = document.createElement('div');
             boxForDelete.className = `boxForDelete_${className}`
-            if (className == 'configuration') {
+            if (className === 'configuration') {
                 container.append(div)
             } else {
                 container.append(div, select, boxForDelete)
@@ -37,22 +37,21 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
 
             // подгрузка и отрисовка инпутов
             for (let i = 0; i < self.ctx.data.length; i++) {
-                if (removeSpaces(self.ctx.data[i].dataKey.label) == removeSpaces(keyName)) {
-                    if (keyName == 'Расчет ОЕЕ') {
+                if (removeSpaces(self.ctx.data[i].dataKey.label) === removeSpaces(keyName)) {
+                    if (keyName === 'Расчет ОЕЕ') {
                         let inputLabels = {}
 
-                        if (self.ctx.data[i].data[0][1] == '') {
+                        if (self.ctx.data[i].data[0][1] === '') {
                             optionsArray.forEach(option => {
                                 if (option) {
                                     inputLabels[`${option.includes('Q') ?
                                         'Q_plan' : option.includes('DP') ?
-                                            'DP' : option == 'PP - Плановая производств' ?
-                                                'PP' : option == 'PPT - Общее доступное время, мин' ?
-                                                    'PPT' : option == 'P - Плановое значение производительности' ?
+                                            'DP' : option === 'PP - Плановая производств' ?
+                                                'PP' : option === 'PPT - Общее доступное время, мин' ?
+                                                    'PPT' : option === 'P - Плановое значение производительности' ?
                                                         'P_plan' : option.includes('A') ?
                                                             'A_plan' : option.includes('OEE') ?
-                                                                'OEE_plan' : option == 'GP - Выпуск качественной продукции' ?
-                                                                    'GP' : option
+                                                                'OEE_plan' : option === 'GP - Выпуск качественной продукции' ? 'GP' : option
                                     }`] = ''
                                 }
                             })
@@ -136,7 +135,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                             $(`.container_for_${className}`).append(`<div> <span>${array[ii].name}</span> </div>`)
 
                             for (let key in array[ii]) {
-                                if (key.toLowerCase().indexOf('input') != -1) {
+                                if (key.toLowerCase().indexOf('input') !== -1) {
                                     $(`.container_for_${className} div:nth-child(${ii + 1})`).append(`
                                     <input placeholder="Адрес в контроллере" class="${key}" value="${array[ii][key]}">
                                 `)
@@ -145,7 +144,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                         let key = event.target.closest('div').querySelector('span').innerHTML;
                                         let currentInput = event.target.className;
                                         uniqueArray.forEach((obj) => {
-                                            if (obj.name == key) {
+                                            if (obj.name === key) {
                                                 obj[currentInput] = event.target.value
                                             }
                                         })
@@ -153,7 +152,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                         inputOriginal.value = JSON.stringify(uniqueArray) // вставка массива в нативный инпут
                                         inputOriginal.dispatchEvent(inputEvent)
 
-                                        if (keyName == 'Определение Рецепта') {
+                                        if (keyName === 'Определение Рецепта') {
                                             fetch(`http://${window.location.hostname}:1803/getAllProductList`)
                                                 .then(response => response.json())
                                                 .then(recipes => {
@@ -162,7 +161,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                             let inputOriginal = item.closest('div').firstChild
 
                                                             for (let v = 0; v < recipes.length; v++) {
-                                                                if (recipes[v].name == event.target.parentElement.firstChild.innerHTML) {
+                                                                if (recipes[v].name === event.target.parentElement.firstChild.innerHTML) {
                                                                     switch (currentInput) {
                                                                         case 'input-1':
                                                                             recipes[v].address = event.target.value
@@ -179,11 +178,11 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                                 Array.from(event.target.closest(`.container_for_recipes`).querySelectorAll('span')).forEach((span) => {
                                                                     let checkArray = arrayForProductList.map((p) => p.name)
 
-                                                                    if (recipes[v].name == span.innerHTML && !checkArray.includes(span.innerHTML)) {
+                                                                    if (recipes[v].name === span.innerHTML && !checkArray.includes(span.innerHTML)) {
                                                                         arrayForProductList.push(recipes[v])
-                                                                    } else if (recipes[v].name == span.innerHTML && arrayForProductList.length !== 0) {
+                                                                    } else if (recipes[v].name === span.innerHTML && arrayForProductList.length !== 0) {
                                                                         arrayForProductList.forEach((i) => {
-                                                                            if (i.name == event.target.parentElement.firstChild.innerHTML) {
+                                                                            if (i.name === event.target.parentElement.firstChild.innerHTML) {
                                                                                 switch (currentInput) {
                                                                                     case 'input-1':
                                                                                         i.address = event.target.value
@@ -208,7 +207,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                 })
                                         }
 
-                                        if (keyName == 'Набор технологических  параметров') {
+                                        if (keyName === 'Набор технологических  параметров') {
                                             fetch(`http://${window.location.hostname}:1803/getAllParametersList`)
                                                 .then(response => response.json())
                                                 .then(recipes => {
@@ -217,15 +216,15 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                             let inputOriginal = item.closest('div').firstChild
 
                                                             recipes.forEach((recip) => {
-                                                                if (recip.name == event.target.previousElementSibling.innerHTML) {
+                                                                if (recip.name === event.target.previousElementSibling.innerHTML) {
                                                                     recip.address = event.target.value
                                                                 }
                                                                 Array.from(event.target.closest('.container_for_params').querySelectorAll('span')).forEach((span) => {
-                                                                    if (recip.name == span.innerHTML && arrayForParametersList == []) {
+                                                                    if (recip.name === span.innerHTML && arrayForParametersList == []) {
                                                                         arrayForParametersList.push(recip)
                                                                     } else {
                                                                         arrayForParametersList.forEach((i) => {
-                                                                            if (i.name == event.target.previousElementSibling.innerHTML) {
+                                                                            if (i.name === event.target.previousElementSibling.innerHTML) {
                                                                                 i.address = event.target.value
                                                                             }
                                                                         })
@@ -245,17 +244,17 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
 
                                     // удалить option из селекта
                                     for (let j = 0; j < $(`.event_select_${className} option`).length; j++) {
-                                        if ($(`.event_select_${className} option`)[j].value == array[ii].name)
+                                        if ($(`.event_select_${className} option`)[j].value === array[ii].name)
                                             $(`.event_select_${className} option`)[j].remove()
                                     }
 
-                                } else if (key == 'inInformation') {
+                                } else if (key === 'inInformation') {
                                     $(`.container_for_${className} div:nth-child(${ii + 1})`).append(`
                                     <input type="checkbox" class="${key}" >`)
 
                                     let checkbox = $(`.container_for_${className} div:nth-child(${ii + 1}) .${key}`)
 
-                                    $(checkbox).prop('checked', array[ii][key] == 'false' ? '' : array[ii][key])
+                                    $(checkbox).prop('checked', array[ii][key] === 'false' ? '' : array[ii][key])
 
                                     checkbox.change((event) => {
                                         let key = event.target.closest('div').querySelector('span').innerHTML;
@@ -267,13 +266,13 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                             checkbox.attr('value', false)
                                         }
                                         uniqueArray.forEach((obj) => {
-                                            if (obj.name == key) {
+                                            if (obj.name === key) {
                                                 obj[currentInput] = checkbox[0].value
                                             }
                                         })
 
                                         arrayForParametersList.forEach((obj) => {
-                                            if (obj.name == key) {
+                                            if (obj.name === key) {
                                                 obj.inInformation = checkbox[0].value
                                             }
                                         })
@@ -327,14 +326,14 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                 let selectedParam = {}
                 let divWithParams = document.createElement('div')
 
-                if (valueSelected && valueSelected != '+') {
+                if (valueSelected && valueSelected !== '+') {
                     // выбранный option удалить
                     let options = $(`.event_select_${className} option`)
 
                     for (let i = 0; i < options.length; i++) {
-                        if (options[i].value == valueSelected && keyName == 'Расчет ОЕЕ') {
+                        if (options[i].value === valueSelected && keyName === 'Расчет ОЕЕ') {
                             $(options[i]).remove()
-                        } else if (options[i].value == valueSelected && keyName != 'Расчет ОЕЕ') {
+                        } else if (options[i].value === valueSelected && keyName !== 'Расчет ОЕЕ') {
 
                             $(options[i]).remove()
                             selectedParam.name = valueSelected
@@ -345,7 +344,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                         let input = document.createElement('input')
                         input.className = `input-${i + 1}`
 
-                        if (keyName == 'Определение Рецепта') {
+                        if (keyName === 'Определение Рецепта') {
                             switch (i) {
                                 case 0:
                                     input.placeholder = 'Адрес в контроллере'
@@ -359,7 +358,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                             }
                         }
 
-                        if (keyName == 'Набор технологических  параметров' && i == quantityInputs - 1) {
+                        if (keyName === 'Набор технологических  параметров' && i === quantityInputs - 1) {
                             input.setAttribute('type', 'checkbox')
                             input.className = `inInformation`
                         }
@@ -368,19 +367,19 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                         input.addEventListener('change', (e) => {
 
                             // при изменении инпута каждый раз новый объект пушится, надо чтобы мидифицировался уже существующий
-                            if (keyName == 'Расчет ОЕЕ') {
+                            if (keyName === 'Расчет ОЕЕ') {
                                 selectedParam[`${valueSelected.includes('Q') ?
                                     'Q_plan' : valueSelected.includes('DP') ?
-                                        'DP' : valueSelected == 'PP - Плановая производств' ?
-                                            'PP' : valueSelected == 'PPT - Общее доступное время, мин' ?
-                                                'PPT' : valueSelected == 'P - Плановое значение производительности' ?
+                                        'DP' : valueSelected === 'PP - Плановая производств' ?
+                                            'PP' : valueSelected === 'PPT - Общее доступное время, мин' ?
+                                                'PPT' : valueSelected === 'P - Плановое значение производительности' ?
                                                     'P_plan' : valueSelected.includes('A') ?
                                                         'A_plan' : valueSelected.includes('OEE') ?
-                                                            'OEE_plan' : valueSelected == 'GP - Выпуск качественной продукции' ?
+                                                            'OEE_plan' : valueSelected === 'GP - Выпуск качественной продукции' ?
                                                                 'GP' : ''
                                 }`] = e.target.value
 
-                            } else if (keyName == 'Набор технологических  параметров' && i == quantityInputs - 1) {
+                            } else if (keyName === 'Набор технологических  параметров' && i === quantityInputs - 1) {
                                 if ($(input).is(':checked')) {
                                     $(input).attr('value', true)
                                 } else {
@@ -390,7 +389,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                 selectedParam[`inInformation`] = e.target.value == false ? '' : e.target.value
 
                                 arrayForParametersList.forEach((obj) => {
-                                    if (obj.name == e.target.parentElement.firstChild.innerHTML) {
+                                    if (obj.name === e.target.parentElement.firstChild.innerHTML) {
                                         obj.inInformation = e.target.value
                                     }
                                 })
@@ -408,7 +407,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                 selectedParam[`input-${i + 1}`] = e.target.value
                             }
 
-                            if (keyName == 'Набор технологических  параметров' && !selectedParam.inInformation) {
+                            if (keyName === 'Набор технологических  параметров' && !selectedParam.inInformation) {
                                 selectedParam[`inInformation`] = ''
                             }
                             arrayWithSelectedParams.push(selectedParam)
@@ -418,7 +417,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                 return arrayWithSelectedParams.indexOf(item) == pos;
                             })
 
-                            if (keyName == 'Расчет ОЕЕ') {
+                            if (keyName === 'Расчет ОЕЕ') {
                                 let objWithParams = {}
                                 uniqueArray.forEach((key) => {
                                     for (let i in key) {
@@ -430,7 +429,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                 inputOriginal.value = JSON.stringify(uniqueArray) // вставка массива в нативный инпут
                             }
 
-                            if (keyName == 'Определение Рецепта') {
+                            if (keyName === 'Определение Рецепта') {
                                 fetch(`http://${window.location.hostname}:1803/getAllProductList`)
                                     .then(response => response.json())
                                     .then(recipes => {
@@ -439,7 +438,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                 let inputOriginal = item.closest('div').firstChild
 
                                                 for (let v = 0; v < recipes.length; v++) {
-                                                    if (recipes[v].name == e.target.parentElement.firstChild.innerHTML) {
+                                                    if (recipes[v].name === e.target.parentElement.firstChild.innerHTML) {
 
                                                         switch (e.target.className) {
                                                             case 'input-1':
@@ -458,11 +457,11 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                     Array.from(e.target.closest(`.container_for_recipes`).querySelectorAll('span')).forEach((span) => {
                                                         let checkArray = arrayForProductList.map((p) => p.name)
 
-                                                        if (recipes[v].name == span.innerHTML && !checkArray.includes(span.innerHTML)) {
+                                                        if (recipes[v].name === span.innerHTML && !checkArray.includes(span.innerHTML)) {
                                                             arrayForProductList.push(recipes[v])
-                                                        } else if (recipes[v].name == span.innerHTML && arrayForProductList.length !== 0) {
+                                                        } else if (recipes[v].name === span.innerHTML && arrayForProductList.length !== 0) {
                                                             arrayForProductList.forEach((i, ind) => {
-                                                                if (i.name == e.target.parentElement.firstChild.innerHTML) {
+                                                                if (i.name === e.target.parentElement.firstChild.innerHTML) {
                                                                     switch (e.target.className) {
                                                                         case 'input-1':
                                                                             i.address = e.target.value
@@ -487,7 +486,7 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                     })
                             }
 
-                            if (keyName == 'Набор технологических  параметров') {
+                            if (keyName === 'Набор технологических  параметров') {
                                 fetch(`http://${window.location.hostname}:1803/getAllParametersList`)
                                     .then(response => response.json())
                                     .then(recipes => {
@@ -496,17 +495,17 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
                                                 let inputOriginal = item.closest('div').firstChild
 
                                                 recipes.forEach((recip, index) => {
-                                                    if (recip.name == e.target.previousElementSibling.innerHTML) {
+                                                    if (recip.name === e.target.previousElementSibling.innerHTML) {
                                                         recip.address = e.target.value
                                                     }
                                                     Array.from(e.target.closest(`.container_for_params`).querySelectorAll('span')).forEach((span) => {
                                                         let checkArray = arrayForParametersList.map((p) => p.name)
 
-                                                        if (recip.name == span.innerHTML && !checkArray.includes(span.innerHTML)) {
+                                                        if (recip.name === span.innerHTML && !checkArray.includes(span.innerHTML)) {
                                                             arrayForParametersList.push(recip)
-                                                        } else if (recip.name == span.innerHTML && arrayForParametersList.length !== 0) {
+                                                        } else if (recip.name === span.innerHTML && arrayForParametersList.length !== 0) {
                                                             arrayForParametersList.forEach((i, ind) => {
-                                                                if (i.name == e.target.previousElementSibling.innerHTML) {
+                                                                if (i.name === e.target.previousElementSibling.innerHTML) {
                                                                     i.address = e.target.value
                                                                 }
                                                             })
@@ -657,7 +656,7 @@ function drawSelect(keyName, className, arrayWihtSections) {
 
             // подгрузка и отрисовка
             for (let i = 0; i < self.ctx.data.length; i++) {
-                if (removeSpaces(self.ctx.data[i].dataKey.label) == removeSpaces(keyName)) {
+                if (removeSpaces(self.ctx.data[i].dataKey.label) === removeSpaces(keyName)) {
                     let array
                     try {
                         array = JSON.parse(self.ctx.data[i].data[0][1])
@@ -668,13 +667,13 @@ function drawSelect(keyName, className, arrayWihtSections) {
                         const options = $(`.event_select_${className} option`)
 
                         for (let j = 0; j < options.length; j++) {
-                            if (options[j].value == array[key]) {
+                            if (options[j].value === array[key]) {
                                 options[j].selected = true
                             }
                         }
                     }
 
-                    if (keyName == 'Принадлежность к линии') {
+                    if (keyName === 'Принадлежность к линии') {
                         let dropDown = document.createElement('select');
                         dropDown.classList.add(`dropDown_${className}`)
 
@@ -691,7 +690,7 @@ function drawSelect(keyName, className, arrayWihtSections) {
 
                                     $(`.dropDown_${className}`).on('change', (e) => {
                                         let valueSelected = $(`.dropDown_${className}`).val()
-                                        if (valueSelected != '') {
+                                        if (valueSelected !== '') {
                                             Array.from(matLabel).forEach((item) => {
                                                 if (item.innerHTML.replace(/\s+/g, '').includes('shiftPositionInRelation')) {
                                                     let inputOriginal = item.closest('div').firstChild
@@ -712,14 +711,14 @@ function drawSelect(keyName, className, arrayWihtSections) {
                         })
                     }
 
-                    if (keyName == 'Тип') {
+                    if (keyName === 'Тип') {
                         Array.from(matLabel).forEach((item) => {
                             if (item.innerHTML.replace(/\s+/g, '').includes('Тип')) {
                                 setTimeout(() => {
                                     let inputOriginal = item.closest('div').firstChild
-                                    let val = inputOriginal.value == 'plain' ? 'Простой' : inputOriginal.value == 'work' ? 'Работа' : ''
+                                    let val = inputOriginal.value === 'plain' ? 'Простой' : inputOriginal.value === 'work' ? 'Работа' : ''
                                     Array.from($(`.event_select_${className} option`)).forEach((opt) => {
-                                        if (opt.innerHTML == val)
+                                        if (opt.innerHTML === val)
                                             $(opt).prop('selected', true)
                                     })
                                 }, 0);
@@ -754,7 +753,7 @@ function drawSelect(keyName, className, arrayWihtSections) {
                                     })
                                     $(`.dropDown_${className}`).on('change', (e) => {
                                         let valueSelected = $(`.dropDown_${className}`).val()
-                                        if (valueSelected != '') {
+                                        if (valueSelected !== '') {
                                             Array.from(matLabel).forEach((item) => {
                                                 if (item.innerHTML.replace(/\s+/g, '').includes('shiftPositionInRelation')) {
                                                     let inputOriginal = item.closest('div').firstChild
@@ -772,12 +771,12 @@ function drawSelect(keyName, className, arrayWihtSections) {
                         selectedParam[`factory`] = e.target.value
                         break;
                     case 'Тип':
-                        selectedParam = e.target.value == 'Работа' ? 'work' : e.target.value == 'Простой' ? 'plain' : ''
+                        selectedParam = e.target.value === 'Работа' ? 'work' : e.target.value === 'Простой' ? 'plain' : ''
                         inputOriginal.value = selectedParam
                         inputOriginal.dispatchEvent(inputEvent)
                         break;
                 }
-                if (valueSelected && valueSelected != '+' && keyName != 'Тип') {
+                if (valueSelected && valueSelected !== '+' && keyName !== 'Тип') {
                     inputOriginal.value = JSON.stringify(selectedParam) // вставка объекта в нативный инпут
                     inputOriginal.dispatchEvent(inputEvent)
                 }
@@ -832,7 +831,7 @@ function wrapToAccordeon(keyName, className, label) {
             $(parentNode[i]).before(`<details id="details_links" close><summary>${label}</summary></details>`)
 
             for (let ii = 0; ii < parentNode.length - 1; ii++) {
-                if (typeof parentNode[ii] == 'String')
+                if (typeof parentNode[ii] == 'string')
                     continue;
 
                 if (parentNode[ii].querySelector("mat-label")) {
@@ -849,10 +848,10 @@ function wrapToAccordeon(keyName, className, label) {
 function disabledInput(keyName, inputValue) {
     let matLabel = $('.layout-wrap.vertical-alignment mat-label')
     Array.from(matLabel).forEach((label) => {
-        if (label.innerHTML == keyName) {
+        if (label.innerHTML === keyName) {
             // label.offsetParent.offsetParent.offsetParent.offsetParent.parentNode.firstChild.style.display = 'none';
             let inputOriginal = label.closest('div').firstChild
-            if (inputOriginal.value == inputValue) {
+            if (inputOriginal.value === inputValue) {
                 inputOriginal.disabled = true
             }
 
@@ -894,7 +893,7 @@ self.onInit = function () {
     ii = '';
     color = ''
     for (let i = 0; i < self.ctx.data.length; i++) {
-        if (self.ctx.data[i].dataKey.name == 'color') {
+        if (self.ctx.data[i].dataKey.name === 'color') {
             color = self.ctx.data[i].data[0][1]
         }
     }
@@ -904,10 +903,9 @@ self.onInit = function () {
     if (typeof $('.layout-wrap.vertical-alignment')[0] != 'undefined')
         parentNode = $('.layout-wrap.vertical-alignment')[0].childNodes
 
-
     function hideInput(keyName) {
         Array.from(matLabel).forEach((label) => {
-            if (label.innerHTML == keyName) {
+            if (label.innerHTML === keyName) {
                 label.offsetParent.offsetParent.offsetParent.offsetParent.parentNode.firstChild.style.display = 'none';
             }
         })
@@ -921,7 +919,7 @@ self.onInit = function () {
 
     drawInputs('Набор событий', 'events', ['+', 'событие 1', 'событие 2', 'событие 3'], 3)
 
-    if (self.ctx.datasources[0].entityType == 'DEVICE') {
+    if (self.ctx.datasources[0].entityType === 'DEVICE') {
         drawInputs('Расчет ОЕЕ', 'configuration', [
             '',
             'Q - Плановое значение качества',
@@ -965,7 +963,7 @@ self.onInit = function () {
             let arrayRecipes = recipes.map(item => item.name)
             arrayRecipes.unshift('+')
 
-            drawInputs('Определение Рецепта', 'recipes', arrayRecipes, 3)
+            // drawInputs('Определение Рецепта', 'recipes', arrayRecipes, 3)
         })
 
     fetch(`http://${window.location.hostname}:1803/getAllParametersList`)
@@ -1004,7 +1002,7 @@ self.onInit = function () {
                 // let inputTB = matLabel[i].parentElement.parentElement.parentElement.firstChild;
                 let inputTB = matLabel[i].closest('div').firstChild
 
-                if ($('.paletteColor').length == 0) {
+                if ($('.paletteColor').length === 0) {
                     $(document.body).append(`
                         <div class="paletteColor">
                             <div class="colors">
@@ -1072,7 +1070,7 @@ self.onInit = function () {
     $('form').click((event) => {
         if (event.target.innerText.toLowerCase() === 'сохранить' && accessClick && event.target.parentNode.disabled !== true) {
             event.preventDefault()
-            if (asset.id.entityType == 'DEVICE')
+            if (asset.id.entityType === 'DEVICE')
                 saveVisibleAttributes()
             $('.modal').fadeIn(200)
             $('.blur').fadeIn(200)
@@ -1094,13 +1092,13 @@ self.onInit = function () {
                 }
                 asset.type = localStorage.getItem('aliasName')
 
-                if (asset.id.entityType == 'ASSET') {
+                if (asset.id.entityType === 'ASSET') {
                     assetService.saveAsset(asset).subscribe(() => {
                         self.ctx.updateAliases();
-                        if (asset.type == 'Parameter')
+                        if (asset.type === 'Parameter')
                             fetch(`http://${window.location.hostname}:1803/updateParamsRelationsInMachines?id=${asset.id.id}&type${asset.type}`)
                     })
-                } else if (asset.id.entityType == 'DEVICE') {
+                } else if (asset.id.entityType === 'DEVICE') {
 
                     deviceService.saveDevice(asset).subscribe(() => {
                         self.ctx.updateAliases();
@@ -1173,14 +1171,14 @@ self.onDataUpdated = function () {
         $('.jscolor ').prop('disabled', true)
 
         for (let i = 0; i < $('button').length; i++) {
-            if ($('button')[i].innerText.toLowerCase() == 'откатить' ||
-                $('button')[i].innerText.toLowerCase() == 'сохранить') {
+            if ($('button')[i].innerText.toLowerCase() === 'откатить' ||
+                $('button')[i].innerText.toLowerCase() === 'сохранить') {
                 $('button')[i].style.display = 'none'
                 console.log($('button')[i])
             }
         }
     }
-    if (currentUser.role == 'administrator' || currentUser.role == 'engineer') {
+    if (currentUser.role === 'administrator' || currentUser.role === 'engineer') {
         $('.btn').css({'display': 'block'})
     }
 
@@ -1191,7 +1189,7 @@ self.onDataUpdated = function () {
 function getDataOf(keyName) {
     let keyData = []
     self.ctx.data.forEach((data) => {
-        if (data.dataKey.name == keyName) {
+        if (data.dataKey.name === keyName) {
             try {
                 keyData = JSON.parse(data.data[0][1])
             } catch (e) {
