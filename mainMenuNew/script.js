@@ -9,7 +9,7 @@ function mainHeadMenuButtonClicked() {
         burgerMenu.show(200)
         burgerMenu.mouseleave(() => {
             setTimeout(() => {
-                if ($('.accordeon:hover').length == 0) {
+                if ($('.accordeon:hover').length === 0) {
                     burgerMenu.hide(200)
                     $('#checkbox3').prop('checked', false);
                 }
@@ -62,7 +62,7 @@ function getEntityMap() {
         	               <i class="fa fa-angle-down fa-lg  lineLevel"></i>
         	             </a>
         	             <span>
-        	               <a  stateName="section" entityId=${sections[s].id} entityType=${sections[s].entity_type}>${sections[s].name}</a>
+        	               <a stateName="section" entityId=${sections[s].id} entityType=${sections[s].entity_type}>${sections[s].name}</a>
         	             </span>`
 
                     if (sections[s].childs && !sections[s].childs.error && sections[s].childs.length > 0) {
@@ -107,10 +107,13 @@ function initialize() {
     $(document).undelegate("[entityid]", 'click')
     let gridsters = $('gridster-item')
     for (let i = 0; i < gridsters.length; i++) {
-        if (gridsters[i].textContent.indexOf('mainMenu') !== -1)
+        if (gridsters[i].textContent.indexOf('mainMenu') !== -1 || gridsters[i].textContent.indexOf('АдминистрированиеВыход') !==-1){
             continue;
+        }
         gridsters[i].style['z-index'] = 0
     }
+
+    self.ctx.$container.closest('gridster-item')[0].style.zIndex = 999999;
 }
 
 let oldTime = null
@@ -415,10 +418,16 @@ function jqueryActions() {
         e.preventDefault()
         self.ctx.actionsApi.handleWidgetAction(e, actionDescriptors[3], null, null);
     })
-    $(document).delegate("#toDashboardEdit", 'click', function (e) {
-        e.preventDefault();
-        self.ctx.actionsApi.handleWidgetAction(e, actionDescriptors[1], null, null);
+
+    $('#toDashboardEdit').click((e) => {
+        console.log('click from мониторинг', actionDescriptors, e)
+        actionDescriptors.forEach(item => {
+            if (item.name === 'Переход в справочники') {
+                self.ctx.actionsApi.handleWidgetAction(e, item, {id: item.id})
+            }
+        })
     });
+
     $(document).delegate("#roleTologOut", 'click', function (e) {
         localStorage.removeItem('jwt_token')
         localStorage.removeItem('jwt_token_expiration')
@@ -426,6 +435,16 @@ function jqueryActions() {
         localStorage.removeItem('refresh_token_expiration')
         window.location.href = 'http://' + window.location.host + '/login';
     })
+
+    $(document).delegate("#reference", 'click', function (e) {
+        e.preventDefault()
+        actionDescriptors.forEach(item => {
+            if (item.name === 'Переход в справка') {
+                self.ctx.actionsApi.handleWidgetAction(e, item, {id: item.id})
+            }
+        })
+    });
+
     $(document).delegate("[entityid]", 'click', function (e) {
 
         const machineStatesMap = {
@@ -438,14 +457,15 @@ function jqueryActions() {
         }
 
         function generateMachineState(name, state) {
-            if (state === 'machine_alarms' ||
-                state.indexOf('machine') === -1 ||
+            if (state.indexOf('machine') === -1 ||
                 typeof machineStatesMap[name] == 'undefined')
                 return state
             if (state === 'machine')
                 return machineStatesMap[name] + '_main'
             if (state === 'machine_parameters')
                 return machineStatesMap[name] + '_graph'
+            if (state === 'machine_alarms')
+                return machineStatesMap[name] + '_alarms'
         }
 
         e.preventDefault();
@@ -620,13 +640,13 @@ function horizontalNavigation() {
             nowState = machineStatesMap[goalEntity.name] + nowState.slice(nowState.indexOf('_graph'))
         } else if (nowState.indexOf('_main') !== -1) {
             nowState = machineStatesMap[goalEntity.name] + nowState.slice(nowState.indexOf('_main'))
+        } else if (nowState.indexOf('_alarms') !== -1) {
+            nowState = machineStatesMap[goalEntity.name] + nowState.slice(nowState.indexOf('_alarms'))
         }
 
         actionDescriptor.targetDashboardStateId = nowState
 
         //  Для перехода между состояниями дашборда
-        // self.ctx.stateController.openState(goalEntity.id, {}, false)
-
         self.ctx.actionsApi.handleWidgetAction(e, actionDescriptor, entityDescriptor, entityName)
     })
     // end delegate paginator
@@ -976,4 +996,5 @@ self.actionSources = function () {
 
 self.onDestroy = function () {
     self.ctx.interval.clearAll()
+    $(document).off()
 }

@@ -1,3 +1,29 @@
+.deleteBtn {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAUhSURBVHgBzVq9cuM2EF5R9ky66J7AzBNI6tKF7tLl0rmwLd74ASw/gX1dutM9ganxA+RSZVId7wnCe4KwTDqly3j8k2+lhQJCIAGSOCvfDEcUQCz24y6AxYIDCoSTk5P48PAwiaJojL8JrpF2KZRyFU9PT5+Hw2GeZVlJATCgHkjTdASFLgeDQYq/MXVDiesDZLzvQ6oTkdPT0wRv85o2bz4kMhB624VQKyJsgefn53d863i0xFXgWhnlMW1cbeJo35qQN5Hz8/MZhC+o6vMKKxBcYnx8wH0BBVZNsviF4GcCt0wh8zuyu2WJ+rd3d3cZecCLyGw2YyvMLVW5vLmcegDEUrwIdtXYUr1YLpdXLhkDRwfsSj/T7lgoQeBNXwKW/uoIFejvuMnSUYNQJvGRDBI8u+CahibBgEweG1P0+96omrAu4pJWHNRVCInKoEQnV+hrQV8Q8tbnULqUiUVhIt5xbGtntYiMCZ3ESkz7RUno4L7YOlSd+RLRbQc7Y+Ts7CzF7HNbeWjjSgXtAbBMIt6xBfRLb29vl5Uyo1GMh671MnGnvZBg8FhkHfQyTMsLc7xUiJgzhoQNL+ZOdWAdjAlgZIyf/4iwNai6Ype4buh/AnjKDW10UuDZOlF/trOWWGMLWehq522ZnrnNqGt8JHJi1be4sbVPLsezb/TxIu1yvo+UMDKswXM6NUBMy6t9KnN8TN1IfJS+U/j+TdPzsnblWlGixsqaCARUwg9+w+QAFNBnvLgtGY1ErPX7taudqZvSPZLKH7Q6pzXWDXd91puMjQRtwh7nCxSrbN0PbWZrfaTjWHs2Jw/wmOBFklqSaSBx7DvOONLW+7y4uDiKHh8fE/0hCFySJ9qSCUGCIduFLe7v748jCDE3Oa0WP18yoUjYdGQOA8QueoRbIPafUgc0Kco3AUmsAb3/0OQVEVWFr6gjmiwTmoRAt8rIJFJSD9SRofAk2MJ/a39HEQVGDRmFICQsCE9kX2AinceFDTWDXqF1BOCLChF08op6oG7moo4RQBPgokd6HxUiqBxTRzRNv10iAA9UcsoRBH7SO2jKVNTBtdh1DWca+qtkKyHnMxMxV3JXOtMU6rVihyTz8PBQ0REhSxFxal8vRFj8mjzRNuwIRQY6z4yiPJIOS1WiwmIXusZOgcgkep8sc72OGGHxSN8L18GS2vRe7BrIXLvacrpK7xdtfuHfNRH42MKiZCOMEKH1iu2IAGphpquU7pEI5Sk41+oTl1V4hyiWzLqGHYoMy+F0j5m/MmFaYyNi0+92323J6JWSYQy68neFZG1+p+oe/xtFZBtr8V7Y3EL6uNhLwTImM90LKkEj3IUzEroF5jDnnPYMnJZdUvWgaSdRMdT/FEXxz3Q6/Qu327UEDb5H2SfUlbQHwKV48avs0SWRl+tlQ7MhFC7G4/ErPPytVvwaZH5D1Z/0guDTY+jxK26/UmWSj/7JfHZQJ8TYy6+BVf8Kh5MvktRmd5LDVx21OYXaEysI+dE8tcIYegeCR668cB9oOWVzbBYqkWHVl9xCd47gqOXRsS/kQwQ+ZIqNqpxfbNPLaySiADPzMdilpSoIoaYvKWRMOGdOLyIMx1l4iStH1nJ5cHDg9cEAh+JQnnPOKdV8hCCzU0Ye8CYiCsSc+veIkNXnG6VRrjZEsaN91nRWYkMrIgotCLVF5y8pOhFREEJzOZaIqRtKSZwv+syEvYjokE1RAmITSWLEtJuOXV+cJ+DtKe7zUMm6fwGkOE/3aZqP9QAAAABJRU5ErkJggg==');
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    background-size: 22px;
+    background-color: #fff;
+    padding: 0 10px;
+
+}
+
+.deleteBtn:hover {
+    background-size: 24px
+}
+
+.blur {
+    display: none;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    backdrop-filter: blur(3px);
+    bottom: 0;
+    z-index: 100;
+}
+
 .tb-toast {
     min-width: 0;
     font-size: 14px !important;
@@ -47,6 +73,7 @@
     display: none;
     transition: display 500ms;
     padding: 10px;
+    z-index: 200;
 }
 
 .modal:hover {
@@ -130,13 +157,14 @@ button.cancel_btn {
 
 .tb-multiple-input::-webkit-scrollbar {
     width: 8px;
-    background-color: #f5f5f5;
+    background-color: #F5F5F5;
 }
 
 .tb-multiple-input::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background-color: #dadada;
 }
+
 
 #details_links {
     width: 100%;
