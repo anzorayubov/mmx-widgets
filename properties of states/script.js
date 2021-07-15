@@ -667,40 +667,30 @@ function drawSelect(keyName, className, arrayWihtSections) {
                     }
 
                     if (keyName === 'Принадлежность к линии') {
-                        let dropDown = document.createElement('select');
-                        dropDown.classList.add(`dropDown_${className}`)
+                        const lineInput = document.createElement('input')
+                        const deviceId = self.ctx.datasources[0].entityId
+                        lineInput.classList.add(`lineInput_${className}`)
+                        container.append(lineInput)
 
-                        container.append(dropDown)
+                        ctx.attributeService.getEntityAttributes(
+                            {id: deviceId, entityType: 'DEVICE'},
+                            'SERVER_SCOPE',
+                            ['shiftPositionInRelation']).subscribe(response => {
+                            lineInput.value = response[0].value
+                        })
 
-                        let line = $(`.event_select_${className}`).val()
-                        assetService.findByName(line).subscribe((response) => {
-                            fetch(`http://${window.location.hostname}:1803/getPossibleIndexInEntity?entityID=${response.id.id}`)
-                                .then(response => response.json())
-                                .then(indexes => {
-                                    indexes.forEach(index => {
-                                        dropDown.innerHTML += `<option data-index="${index}">${index}</option>`
-                                    })
+                        $(`.lineInput_${className}`).on('change', (e) => {
+                            const value = $(`.lineInput_${className}`).val()
 
-                                    $(`.dropDown_${className}`).on('change', (e) => {
-                                        let valueSelected = $(`.dropDown_${className}`).val()
-                                        if (valueSelected !== '') {
-                                            Array.from(matLabel).forEach((item) => {
-                                                if (item.innerHTML.replace(/\s+/g, '').includes('shiftPositionInRelation')) {
-                                                    let inputOriginal = item.closest('div').firstChild
-                                                    inputOriginal.value = valueSelected
-                                                    inputOriginal.dispatchEvent(inputEvent)
-                                                }
-                                            })
-                                        }
-                                    })
-
-                                    Array.from(matLabel).forEach((item) => {
-                                        if (item.innerHTML.replace(/\s+/g, '').includes('shiftPositionInRelation')) {
-                                            let inputOriginal = item.closest('div').firstChild
-                                            $(dropDown).prepend(`<option selected data-index="${inputOriginal.value}">${inputOriginal.value}</option>`)
-                                        }
-                                    })
+                            if (value) {
+                                Array.from(matLabel).forEach((item) => {
+                                    if (item.innerHTML.replace(/\s+/g, '').includes('shiftPositionInRelation')) {
+                                        const inputOriginal = item.closest('div').firstChild
+                                        inputOriginal.value = value
+                                        inputOriginal.dispatchEvent(inputEvent)
+                                    }
                                 })
+                            }
                         })
                     }
 
@@ -807,6 +797,16 @@ function drawSelect(keyName, className, arrayWihtSections) {
             $(`.event_span_${className}`).css({'font-size': '0.9em', 'margin-bottom': '5px', 'color': '#8e8e8e'})
 
         }
+    }
+
+    function getDeviceName() {
+        let deviceName
+        Array.from(matLabel).forEach(label => {
+            if (label.textContent === 'Наименование') {
+                deviceName = label.closest('div').firstChild.value
+            }
+        })
+        return deviceName
     }
 }
 
