@@ -618,6 +618,8 @@ function drawInputs(keyName, className, optionsArray, quantityInputs) {
         'width': '19px',
     })
 
+    disableInputs()
+
 }
 
 function drawSelect(keyName, className, arrayWihtSections) {
@@ -668,9 +670,16 @@ function drawSelect(keyName, className, arrayWihtSections) {
 
                     if (keyName === 'Принадлежность к линии') {
                         const lineInput = document.createElement('input')
-                        const deviceId = self.ctx.datasources[0].entityId
+                        const line = $(`.event_select_${className}`).val()
                         lineInput.classList.add(`lineInput_${className}`)
+                        lineInput.type = "number";
+                        lineInput.min = 1
+                        lineInput.max = 100
+                        lineInput.step = 1
+
                         container.append(lineInput)
+                        const deviceName = getDeviceName()
+                        const deviceId = self.ctx.datasources[0].entityId
 
                         ctx.attributeService.getEntityAttributes(
                             {id: deviceId, entityType: 'DEVICE'},
@@ -692,6 +701,7 @@ function drawSelect(keyName, className, arrayWihtSections) {
                                 })
                             }
                         })
+
                     }
 
                     if (keyName === 'Тип') {
@@ -808,6 +818,8 @@ function drawSelect(keyName, className, arrayWihtSections) {
         })
         return deviceName
     }
+
+    disableInputs()
 }
 
 // оборачивает input в аккордеон
@@ -1172,6 +1184,30 @@ self.onDataUpdated = function () {
 
     disabledInput('Наименование состояния', 'Простой')
     disabledInput('Наименование состояния', 'Работа')
+
+    disableInputs()
+}
+
+function disableInputs() {
+    const inputs = [
+        ...self.ctx.$container[0].querySelector('form').querySelectorAll('input'),
+        ...self.ctx.$container[0].querySelector('form').querySelectorAll('select'),
+    ]
+
+    inputs.forEach(input => {
+        input.disabled = true
+    })
+    $('.deleteBtn').prop('disabled', true)
+
+    self.ctx.$scope.toggleChanged = (event) => {
+        if (event.checked) {
+            inputs.forEach(input => input.disabled = false)
+            $('.deleteBtn').prop('disabled', false)
+        } else {
+            inputs.forEach(input => input.disabled = true)
+            $('.deleteBtn').prop('disabled', true)
+        }
+    }
 }
 
 function getDataOf(keyName) {
