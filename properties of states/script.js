@@ -1125,7 +1125,7 @@ self.onInit = function () {
         accessClick = true;
         $('button[type="submit"].mat-primary').prop('disabled', false)
     })
-
+        
     // end onInit
 }
 
@@ -1170,6 +1170,7 @@ self.onDataUpdated = function () {
 
         $('.mat-input-element ').prop('disabled', true)
         $('.jscolor ').prop('disabled', true)
+
         const buttons = $('button')
         for (let i = 0; i < buttons.length; i++) {
             if (buttons[i].innerText.toLowerCase() === 'откатить' ||
@@ -1186,6 +1187,28 @@ self.onDataUpdated = function () {
     disabledInput('Наименование состояния', 'Работа')
 
     disableInputs()
+
+    const buttons = [...$('button')]
+    const inputsValues = {}
+    const inputs = [
+        ...self.ctx.$container[0].querySelector('form').querySelectorAll('input'),
+        ...self.ctx.$container[0].querySelector('form').querySelectorAll('select'),
+    ]
+
+    inputs.forEach((item, index) => {
+        inputsValues[index] = item.value
+    })
+
+    buttons.forEach(btn => {
+        if (btn.innerText === 'Откатить') {
+            btn.addEventListener('click', event => {
+                inputs.forEach((input, index) => {
+                    input.value = inputsValues[index]
+                })
+            })
+        }
+    })
+
 }
 
 function disableInputs() {
@@ -1194,9 +1217,7 @@ function disableInputs() {
         ...self.ctx.$container[0].querySelector('form').querySelectorAll('select'),
     ]
 
-    inputs.forEach(input => {
-        input.disabled = true
-    })
+    inputs.forEach(input => { input.disabled = true })
     $('.deleteBtn').prop('disabled', true)
 
     self.ctx.$scope.toggleChanged = (event) => {
