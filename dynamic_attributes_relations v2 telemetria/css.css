@@ -1,14 +1,38 @@
-ng-component {
-    /*overflow: auto;*/
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    height: 80px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    opacity: 0.7;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
 }
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.tooltip .tooltiptext p {
+    font-size: 12px;
+    margin-top: 0.3em; /* Отступ сверху */
+    margin-bottom: 0.3em;
+}
+
 ng-component::-webkit-scrollbar-track {
     border-radius: 10px;
     background-color: #fff;
 }
+
 ng-component::-webkit-scrollbar {
     width: 8px;
     background-color: #F5F5F5;
 }
+
 ng-component::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background-color: #dadada;
@@ -19,20 +43,24 @@ ng-component::-webkit-scrollbar-thumb {
     display: flex;
     justify-content: space-between;
 }
+
 .parameter_name span {
     font-size: 14px;
     text-align: right;
     color: #43C6C9;
 }
+
 .productLabel {
     margin-top: 10px;
 }
+
 .column {
     display: flex;
     flex-direction: column;
     color: gray;
 
 }
+
 .column span {
     font-size: 14px;
 }
@@ -44,11 +72,13 @@ ng-component::-webkit-scrollbar-thumb {
     justify-content: space-around;
     border-radius: 10px;
 }
+
 .qtyErrorsNowText {
     font-size: 12px;
 }
+
 .entityImg {
-    text-align:center;
+    text-align: center;
     width: 36%;
 }
 
@@ -60,15 +90,17 @@ ng-component::-webkit-scrollbar-thumb {
     border: 1px solid #eee;
     transition: background-color 300ms;
 }
-.headerTableAttrs>div:nth-child(1) {
+
+.headerTableAttrs > div:nth-child(1) {
     border-radius: 10px 0 0 10px;
     border-right: 1px solid #816e6e;
 }
 
-.headerTableAttrs>div:nth-child(2) {
+.headerTableAttrs > div:nth-child(2) {
     border-radius: 0 10px 10px 0;
 }
-.entityDiv{
+
+.entityDiv {
     background: #ffffff;
     margin-bottom: 20px;
     border-radius: 20px;
@@ -83,6 +115,7 @@ ng-component::-webkit-scrollbar-thumb {
     height: 35px;
 
 }
+
 .entityNameHeader:hover {
     background-color: rgb(208 209 234);
 }
@@ -93,7 +126,9 @@ h4 {
     font-weight: bold;
     padding-left: 30px;
     text-transform: uppercase;
+    white-space: nowrap;
 }
+
 h4 i {
     margin-right: 6px;
 }
@@ -101,20 +136,20 @@ h4 i {
 .qtyErrorsNow {
     background-color: #fff;
     color: #fff;
-    border-left: none!important;
+    border-left: none !important;
 }
 
 .nowStatus {
-    border-right: none!important;
+    border-right: none !important;
     color: #fff;
     /*background-color: #EAEAEA;*/
 }
 
 .nowStatusImg img {
-    margin-left:5px ;
+    margin-left: 5px;
 }
 
-.analitycButton{
+.analitycButton {
     padding: 0;
     border: none;
     border-radius: 20px;
@@ -126,7 +161,7 @@ h4 i {
     font-weight: 600;
 }
 
-.reportButton{
+.reportButton {
     padding: 0;
     border: none;
     border-radius: 20px;
@@ -135,25 +170,28 @@ h4 i {
     height: 30px;
     font-size: 0.7em;
     font-weight: 600;
-    position: absolute; right: 5%;
+    position: absolute;
+    right: 5%;
 }
 
-.spacer{
+.spacer {
 
 }
-.leftColumn{
+
+.leftColumn {
     font-weight: bold;
     width: 50%;
     font-size: 0.7em;
 }
-.rightColumn{
+
+.rightColumn {
     font-size: 0.7em;
     text-align: right;
     width: 50%;
 }
 
 .mainImg {
-    max-width: 84%;
+    max-width: 86%;
     height: auto;
 }
 
@@ -161,19 +199,24 @@ h5 {
     margin: 5px 0;
     text-align: center;
 }
+
 .box {
     display: flex;
     justify-content: space-evenly;
     margin: 0 auto;
     position: relative;
-    width: 90%;
-}
-.box div {
-    width: 50%;
-    padding: 0 5px;
+    width: 98%;
 }
 
-.entityDiv .box>span {
+.box div:first-child {
+    width: 45%;
+}
+
+.box div:second-child {
+    width: 55%;
+}
+
+.entityDiv .box > span {
     color: gray;
     font-weight: bold;
     font-size: 15px;
