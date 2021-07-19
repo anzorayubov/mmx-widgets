@@ -8,7 +8,6 @@
     border-radius: 6px;
     padding: 5px 0;
     opacity: 0.7;
-    /* Position the tooltip */
     position: absolute;
     z-index: 1;
 }
@@ -19,7 +18,7 @@
 
 .tooltip .tooltiptext p {
     font-size: 12px;
-    margin-top: 0.3em; /* Отступ сверху */
+    margin-top: 0.3em;
     margin-bottom: 0.3em;
 }
 
@@ -104,8 +103,6 @@ ng-component::-webkit-scrollbar-thumb {
     background: #ffffff;
     margin-bottom: 20px;
     border-radius: 20px;
-    /*width: 98%;*/
-    /*max-height: 200px;*/
     padding-bottom: 8px;
 }
 
@@ -113,7 +110,6 @@ ng-component::-webkit-scrollbar-thumb {
     border-radius: 20px 20px 0 0;
     background-color: #EAEAEA;
     height: 35px;
-
 }
 
 .entityNameHeader:hover {
@@ -142,7 +138,6 @@ h4 i {
 .nowStatus {
     border-right: none !important;
     color: #fff;
-    /*background-color: #EAEAEA;*/
 }
 
 .nowStatusImg img {
@@ -172,10 +167,6 @@ h4 i {
     font-weight: 600;
     position: absolute;
     right: 5%;
-}
-
-.spacer {
-
 }
 
 .leftColumn {
@@ -230,4 +221,3 @@ h5 {
     display: flex;
     flex-direction: column;
 }
-
