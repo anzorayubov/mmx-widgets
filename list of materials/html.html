@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="links">
+        <div class="video">
+            <h3>Видео</h3>
+
+            <a *ngFor="let item of videoLinks"
+               (click)="linkClicked(_, $event)"
+               href="{{item.href}}">{{item.name}}</a>
+        </div>
+
+        <div class="text">
+            <h3>Текст</h3>
+
+            <a *ngFor="let item of PDFLinks"
+               href="{{item.href}}">{{item.name}}</a>
+        </div>
+    </div>
+
+    <video id='video' controls="controls" preload='none'
+           width="600">
+        <source id='mp4' src="" type='video/mp4'/>
+    </video>
+</div>

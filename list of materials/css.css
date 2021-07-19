@@ -1,0 +1,14 @@
+.container {
+    display: flex;
+}
+
+.links, .video, .text {
+    display: flex;
+    flex-direction: column;
+    margin-right: 110px;
+}
+
+a {
+    max-width: 300px;
+    padding: 6px;
+}
