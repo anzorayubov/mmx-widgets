@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f16758c5-e835-40eb-982c-d94bdb0a97aa" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/list of materials/css.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/list of materials/html.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/list of materials/script.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mainMenuNewForAdministrating/css.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mainMenuNewForAdministrating/dependencies.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mainMenuNewForAdministrating/html.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mainMenuNewForAdministrating/script.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -95,7 +96,8 @@
       <workItem from="1626244678489" duration="5793000" />
       <workItem from="1626337831886" duration="136000" />
       <workItem from="1626364387069" duration="141000" />
-      <workItem from="1626696496769" duration="128000" />
+      <workItem from="1626696496769" duration="726000" />
+      <workItem from="1626766864506" duration="747000" />
     </task>
     <servers />
   </component>
