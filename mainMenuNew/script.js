@@ -1,3 +1,35 @@
+const environment =
+    window.location.hostname == '31.148.204.228' ? 'DEV'
+        : window.location.hostname == '84.201.162.44' ? 'QA'
+        : 'PROD';
+
+const machineStatesMap = {
+    'DEV': {
+        "663a53f0-f1d8-11ea-8040-276e4b1147fb": 'christ',
+        "0cc2b2d0-f9b3-11ea-9c91-534f7a2edd50": 'bohle',
+        "e74b8440-f1fc-11ea-8040-276e4b1147fb": 'korsch',
+        "6c150bd0-f1d8-11ea-8040-276e4b1147fb": 'cmp_100_heino_ilsemann',
+        "71971c60-f1d8-11ea-8040-276e4b1147fb": 'huttlin',
+        "78075d80-f1d8-11ea-8040-276e4b1147fb": 'bmp_250r_heino_ilsemann',
+    },
+    'QA': {
+        "559122d0-225d-11eb-97e7-5f53207eefa6": 'christ',
+        "5522a990-225d-11eb-97e7-5f53207eefa6": 'bohle',
+        "554a2ec0-225d-11eb-97e7-5f53207eefa6": 'korsch',
+        "5572ec70-225d-11eb-97e7-5f53207eefa6": 'cmp_100_heino_ilsemann',
+        "55ac7300-225d-11eb-97e7-5f53207eefa6": 'huttlin',
+        "55ce79f0-225d-11eb-97e7-5f53207eefa6": 'bmp_250r_heino_ilsemann',
+    },
+    'PROD': {
+        "666dd1c0-387e-11eb-be0e-6fb990557eba": 'christ',
+        "c1605c30-387c-11eb-be0e-6fb990557eba": 'bohle',
+        "d345cfc0-387c-11eb-be0e-6fb990557eba": 'korsch',
+        "5bac10d0-387e-11eb-be0e-6fb990557eba": 'cmp_100_heino_ilsemann',
+        "aafbc920-387c-11eb-be0e-6fb990557eba": 'huttlin',
+        "363c7a60-387e-11eb-be0e-6fb990557eba": 'bmp_250r_heino_ilsemann',
+    }
+}
+
 let structure = {}
 
 function mainHeadMenuButtonClicked() {
@@ -107,7 +139,7 @@ function initialize() {
     $(document).undelegate("[entityid]", 'click')
     let gridsters = $('gridster-item')
     for (let i = 0; i < gridsters.length; i++) {
-        if (gridsters[i].textContent.indexOf('mainMenu') !== -1 || gridsters[i].textContent.indexOf('АдминистрированиеВыход') !==-1){
+        if (gridsters[i].textContent.indexOf('mainMenu') !== -1 || gridsters[i].textContent.indexOf('АдминистрированиеВыход') !== -1) {
             continue;
         }
         gridsters[i].style['z-index'] = 0
@@ -446,26 +478,15 @@ function jqueryActions() {
     });
 
     $(document).delegate("[entityid]", 'click', function (e) {
-
-        const machineStatesMap = {
-            "ОбандероливающаяCHRIST": 'christ',
-            "СмешиваниеРМ1000-L.B.BOHLE": 'bohle',
-            "ТаблетированиеXL400FT-KORSCHAG": 'korsch',
-            "КартонирующаяCMP-100-HeinoIlsemann": 'cmp_100_heino_ilsemann',
-            "НасыщениеHDGC100-HUTTLIN": 'huttlin',
-            "БлистернаяBMP-250R-HeinoIlsemann": 'bmp_250r_heino_ilsemann',
-        }
-
-        function generateMachineState(name, state) {
-            if (state.indexOf('machine') === -1 ||
-                typeof machineStatesMap[name] == 'undefined')
+        function generateMachineState(id, state) {
+            if (state === 'machine_alarms' ||
+                state.indexOf('machine') === -1 ||
+                typeof machineStatesMap[environment][id] == 'undefined')
                 return state
             if (state === 'machine')
-                return machineStatesMap[name] + '_main'
+                return machineStatesMap[environment][id] + '_main'
             if (state === 'machine_parameters')
-                return machineStatesMap[name] + '_graph'
-            if (state === 'machine_alarms')
-                return machineStatesMap[name] + '_alarms'
+                return machineStatesMap[environment][id] + '_graph'
         }
 
         e.preventDefault();
@@ -489,7 +510,7 @@ function jqueryActions() {
             actionDescriptor.targetDashboardStateId = stateName
         else {
             actionDescriptor.targetDashboardStateId = generateMachineState(
-                attributes.entityName.value,
+                attributes.entityid.value,
                 stateName,
             )
         }
@@ -498,7 +519,6 @@ function jqueryActions() {
 }
 
 function horizontalNavigation() {
-
     class HtmlRow {
         constructor() {
             this.arrow = `<i class="fa fa-angle-right fa-lg " style="color: #969CBA"></i>`
@@ -619,14 +639,6 @@ function horizontalNavigation() {
                 }
             }
         }
-        const machineStatesMap = {
-            "Обандероливающая CHRIST": 'christ',
-            "Смешивание РМ 1000-L.B.BOHLE": 'bohle',
-            "Таблетирование XL 400 FT-KORSCH AG": 'korsch',
-            "Картонирующая CMP-100-Heino Ilsemann": 'cmp_100_heino_ilsemann',
-            "Насыщение HDGC100-HUTTLIN": 'huttlin',
-            "Блистерная BMP-250R-Heino Ilsemann": 'bmp_250r_heino_ilsemann',
-        }
 
         let entityName = e.currentTarget.innerHTML
         let entityDescriptor = {
@@ -636,12 +648,11 @@ function horizontalNavigation() {
 
         let actionDescriptor = self.ctx.actionsApi.getActionDescriptors('elementClick')[0]
         let nowState = self.ctx.stateController.stateValue
+
         if (nowState.indexOf('_graph') !== -1) {
-            nowState = machineStatesMap[goalEntity.name] + nowState.slice(nowState.indexOf('_graph'))
+            nowState = machineStatesMap[environment][goalEntity.id] + nowState.slice(nowState.indexOf('_graph'))
         } else if (nowState.indexOf('_main') !== -1) {
-            nowState = machineStatesMap[goalEntity.name] + nowState.slice(nowState.indexOf('_main'))
-        } else if (nowState.indexOf('_alarms') !== -1) {
-            nowState = machineStatesMap[goalEntity.name] + nowState.slice(nowState.indexOf('_alarms'))
+            nowState = machineStatesMap[environment][goalEntity.id] + nowState.slice(nowState.indexOf('_main'))
         }
 
         actionDescriptor.targetDashboardStateId = nowState
@@ -649,7 +660,6 @@ function horizontalNavigation() {
         //  Для перехода между состояниями дашборда
         self.ctx.actionsApi.handleWidgetAction(e, actionDescriptor, entityDescriptor, entityName)
     })
-    // end delegate paginator
 }
 
 function disablePrevNextBtn(structure, currentPage) {
